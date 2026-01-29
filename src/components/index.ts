@@ -8,3 +8,4 @@ export { PathOverlay } from './PathOverlay';
 export { GameHUD } from './GameHUD';
 export { GameModal } from './GameModal';
 export { GameBoard } from './GameBoard';
+export { PremiumModal } from './PremiumModal';

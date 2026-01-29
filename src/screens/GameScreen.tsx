@@ -12,10 +12,11 @@ import {
 } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { GameBoard, GameHUD, GameModal } from '../components';
+import { PremiumModal } from '../components/PremiumModal';
 import { useGameStore } from '../stores/gameStore';
 import { useUserStore } from '../stores/userStore';
 import { GameMode, Difficulty } from '../core/types';
-import { heavyTap, success, warning } from '../utils/haptics';
+import { heavyTap, success, warning, lightTap } from '../utils/haptics';
 import { useTheme } from '../theme';
 
 interface GameScreenProps {
@@ -28,6 +29,7 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
   const {
     gameState,
     isLoading,
+    currentHint,
     startDailyPuzzle,
     startPracticePuzzle,
     startPath,
@@ -36,12 +38,17 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
     commitLine,
     resetPuzzle,
     saveProgress,
+    requestHint,
+    clearHint,
   } = useGameStore();
   
-  const { recordLineDrawn, recordPuzzleComplete, updateDailyStreak } = useUserStore();
+  const { premium, recordLineDrawn, recordPuzzleComplete, updateDailyStreak } = useUserStore();
   
   const [showWinModal, setShowWinModal] = useState(false);
   const [showStuckModal, setShowStuckModal] = useState(false);
+  const [showPremiumModal, setShowPremiumModal] = useState(false);
+  
+  const isPremium = premium.isPremium;
   
   // Initialize game on mount
   useEffect(() => {
@@ -78,9 +85,17 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
     }
   }, [gameState?.isWon, gameState?.isStuck]);
   
+  // Clear hint when path changes
+  useEffect(() => {
+    if (currentHint && gameState?.currentPath) {
+      clearHint();
+    }
+  }, [gameState?.currentPath?.cellIds?.length]);
+  
   const handleStartPath = useCallback((cellId: string) => {
+    clearHint();
     startPath(cellId);
-  }, [startPath]);
+  }, [startPath, clearHint]);
   
   const handleAddToPath = useCallback((cellId: string) => {
     addToPath(cellId);
@@ -99,9 +114,10 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
   
   const handleReset = useCallback(() => {
     resetPuzzle();
+    clearHint();
     setShowWinModal(false);
     setShowStuckModal(false);
-  }, [resetPuzzle]);
+  }, [resetPuzzle, clearHint]);
   
   const handleNewPuzzle = useCallback(() => {
     if (mode === 'practice') {
@@ -109,9 +125,22 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
     } else {
       startDailyPuzzle();
     }
+    clearHint();
     setShowWinModal(false);
     setShowStuckModal(false);
-  }, [mode, difficulty, startPracticePuzzle, startDailyPuzzle]);
+  }, [mode, difficulty, startPracticePuzzle, startDailyPuzzle, clearHint]);
+  
+  const handleHint = useCallback(() => {
+    if (!isPremium) {
+      setShowPremiumModal(true);
+      return;
+    }
+    
+    const hint = requestHint('next-move');
+    if (hint) {
+      lightTap();
+    }
+  }, [isPremium, requestHint]);
   
   if (isLoading || !gameState) {
     return (
@@ -126,6 +155,7 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
   
   const currentPathCellIds = gameState.currentPath?.cellIds ?? [];
   const currentSum = gameState.currentPath?.sum ?? 0;
+  const hintCellId = currentHint?.cellIds?.[0] ?? null;
   
   return (
     <GestureHandlerRootView style={styles.gestureRoot}>
@@ -140,6 +170,9 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
             linesFound={gameState.lines.length}
             remainingCells={gameState.remainingCells}
             onReset={handleReset}
+            onHint={handleHint}
+            isPremium={isPremium}
+            hintCellId={hintCellId}
           />
           
           {/* Game Board */}
@@ -152,6 +185,7 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
               onStartPath={handleStartPath}
               onAddToPath={handleAddToPath}
               onEndPath={handleEndPath}
+              hintCellId={hintCellId}
             />
           </View>
         </View>
@@ -174,6 +208,13 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
           onClose={() => setShowStuckModal(false)}
           onReset={handleReset}
           onNewPuzzle={mode === 'practice' ? handleNewPuzzle : undefined}
+        />
+        
+        {/* Premium Modal */}
+        <PremiumModal
+          visible={showPremiumModal}
+          onClose={() => setShowPremiumModal(false)}
+          feature="hints"
         />
       </SafeAreaView>
     </GestureHandlerRootView>

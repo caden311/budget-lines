@@ -17,9 +17,10 @@ interface CellProps {
   cell: CellType;
   size: number;
   isOverTarget: boolean;
+  isHinted?: boolean;
 }
 
-export function Cell({ cell, size, isOverTarget }: CellProps) {
+export function Cell({ cell, size, isOverTarget, isHinted = false }: CellProps) {
   const { theme, isDark } = useTheme();
   const { state, value } = cell;
   
@@ -31,21 +32,27 @@ export function Cell({ cell, size, isOverTarget }: CellProps) {
         case 'in-path':
           return isOverTarget ? theme.cellInPathOver : theme.cellInPath;
         default:
-          return theme.cellAvailable;
+          return isHinted ? theme.warning : theme.cellAvailable;
       }
     })();
     
-    const scale = state === 'in-path' ? 0.95 : 1;
-    const borderColor = state === 'in-path' 
-      ? (isOverTarget ? theme.pathStrokeOver : theme.pathStroke)
-      : 'transparent';
+    const scale = state === 'in-path' ? 0.95 : (isHinted ? 1.05 : 1);
+    const borderColor = (() => {
+      if (state === 'in-path') {
+        return isOverTarget ? theme.pathStrokeOver : theme.pathStroke;
+      }
+      if (isHinted) {
+        return theme.warning;
+      }
+      return 'transparent';
+    })();
     
     return {
       backgroundColor: withTiming(backgroundColor, { duration: 150 }),
       transform: [{ scale: withSpring(scale, { damping: 15 }) }],
       borderColor: withTiming(borderColor, { duration: 150 }),
     };
-  }, [state, isOverTarget, theme]);
+  }, [state, isOverTarget, isHinted, theme]);
   
   const textStyle = useAnimatedStyle(() => {
     const color = state === 'spent' 

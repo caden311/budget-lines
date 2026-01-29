@@ -14,6 +14,8 @@ import {
   PathAddResult,
   GameMode,
   Difficulty,
+  HintResult,
+  HintType,
 } from '../core/types';
 import {
   createGrid,
@@ -33,12 +35,14 @@ import {
   generatePracticePuzzle,
   restorePuzzleFromValues,
 } from '../core/puzzleGenerator';
+import { generateHint } from '../core/hintGenerator';
 import { saveGameProgress, loadGameProgress, clearGameProgress } from '../utils/storage';
 
 interface GameStore {
   // State
   gameState: GameState | null;
   isLoading: boolean;
+  currentHint: HintResult | null;
   
   // Actions
   startDailyPuzzle: (date?: Date) => Promise<void>;
@@ -57,6 +61,10 @@ interface GameStore {
   resetPuzzle: () => void;
   saveProgress: () => Promise<void>;
   
+  // Hints (Premium)
+  requestHint: (type?: HintType) => HintResult | null;
+  clearHint: () => void;
+  
   // Helpers
   getCurrentSum: () => number;
   getRemainingCells: () => number;
@@ -65,6 +73,7 @@ interface GameStore {
 export const useGameStore = create<GameStore>((set, get) => ({
   gameState: null,
   isLoading: false,
+  currentHint: null,
   
   startDailyPuzzle: async (date = new Date()) => {
     set({ isLoading: true });
@@ -390,6 +399,26 @@ export const useGameStore = create<GameStore>((set, get) => ({
     };
     
     await saveGameProgress(progress);
+  },
+  
+  requestHint: (type: HintType = 'next-move') => {
+    const { gameState } = get();
+    if (!gameState) return null;
+    
+    const hint = generateHint(
+      gameState.grid,
+      gameState.currentPath?.cellIds ?? [],
+      gameState.targetSum,
+      gameState.minLineLength,
+      type
+    );
+    
+    set({ currentHint: hint });
+    return hint;
+  },
+  
+  clearHint: () => {
+    set({ currentHint: null });
   },
   
   getCurrentSum: () => {

@@ -1,6 +1,6 @@
 /**
  * Game HUD component for Budget Lines
- * Displays target sum, current sum, lines found, and reset button
+ * Displays target sum, current sum, lines found, reset and hint buttons
  */
 
 import React from 'react';
@@ -19,6 +19,9 @@ interface GameHUDProps {
   linesFound: number;
   remainingCells: number;
   onReset: () => void;
+  onHint?: () => void;
+  isPremium?: boolean;
+  hintCellId?: string | null;
 }
 
 export function GameHUD({
@@ -29,6 +32,9 @@ export function GameHUD({
   linesFound,
   remainingCells,
   onReset,
+  onHint,
+  isPremium = false,
+  hintCellId,
 }: GameHUDProps) {
   const { theme } = useTheme();
   const isOverTarget = currentSum > targetSum;
@@ -89,17 +95,49 @@ export function GameHUD({
         </Text>
       </View>
       
-      {/* Reset button */}
-      <Pressable 
-        style={({ pressed }) => [
-          styles.resetButton,
-          { backgroundColor: theme.buttonSecondary },
-          pressed && styles.resetButtonPressed
-        ]}
-        onPress={onReset}
-      >
-        <Text style={[styles.resetButtonText, { color: theme.textSecondary }]}>↺ Reset Puzzle</Text>
-      </Pressable>
+      {/* Hint indicator */}
+      {hintCellId && (
+        <View style={[styles.hintBanner, { backgroundColor: theme.backgroundTertiary }]}>
+          <Text style={styles.hintEmoji}>💡</Text>
+          <Text style={[styles.hintText, { color: theme.text }]}>
+            Hint: Look for the glowing cell!
+          </Text>
+        </View>
+      )}
+      
+      {/* Action buttons */}
+      <View style={styles.buttonRow}>
+        <Pressable 
+          style={({ pressed }) => [
+            styles.actionButton,
+            styles.resetButton,
+            { backgroundColor: theme.buttonSecondary },
+            pressed && styles.buttonPressed
+          ]}
+          onPress={onReset}
+        >
+          <Text style={[styles.buttonText, { color: theme.textSecondary }]}>↺ Reset</Text>
+        </Pressable>
+        
+        {onHint && (
+          <Pressable 
+            style={({ pressed }) => [
+              styles.actionButton,
+              styles.hintButton,
+              { backgroundColor: isPremium ? theme.warning : theme.buttonSecondary },
+              pressed && styles.buttonPressed
+            ]}
+            onPress={onHint}
+          >
+            <Text style={[
+              styles.buttonText, 
+              { color: isPremium ? '#000' : theme.textSecondary }
+            ]}>
+              💡 {isPremium ? 'Hint' : '🔒 Hint'}
+            </Text>
+          </Pressable>
+        )}
+      </View>
     </View>
   );
 }
@@ -163,18 +201,39 @@ const styles = StyleSheet.create({
     fontSize: 13,
     marginTop: 8,
   },
-  resetButton: {
+  hintBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    borderRadius: 12,
+    gap: 10,
+  },
+  hintEmoji: {
+    fontSize: 20,
+  },
+  hintText: {
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  actionButton: {
+    flex: 1,
     paddingVertical: 14,
-    paddingHorizontal: 24,
+    paddingHorizontal: 20,
     borderRadius: 12,
     alignItems: 'center',
   },
-  resetButtonPressed: {
+  resetButton: {},
+  hintButton: {},
+  buttonPressed: {
     transform: [{ scale: 0.98 }],
     opacity: 0.8,
   },
-  resetButtonText: {
-    fontSize: 16,
+  buttonText: {
+    fontSize: 15,
     fontWeight: '600',
   },
 });

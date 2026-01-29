@@ -112,6 +112,18 @@ export interface PremiumStatus {
   productId: string | null;
 }
 
+/** Hint types available */
+export type HintType = 'start-cell' | 'next-move' | 'full-path';
+
+/** Hint result from hint system */
+export interface HintResult {
+  type: HintType;
+  /** Cell ID(s) suggested by the hint */
+  cellIds: string[];
+  /** Optional message to show */
+  message?: string;
+}
+
 /** Result of attempting to add a cell to the current path */
 export type PathAddResult =
   | { success: true; action: 'added' }

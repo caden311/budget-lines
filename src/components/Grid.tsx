@@ -13,9 +13,10 @@ interface GridProps {
   grid: CellType[][];
   currentSum: number;
   targetSum: number;
+  hintCellId?: string | null;
 }
 
-export function Grid({ grid, currentSum, targetSum }: GridProps) {
+export function Grid({ grid, currentSum, targetSum, hintCellId }: GridProps) {
   const { theme } = useTheme();
   const { width: screenWidth } = useWindowDimensions();
   
@@ -38,6 +39,7 @@ export function Grid({ grid, currentSum, targetSum }: GridProps) {
                 cell={cell}
                 size={cellSize}
                 isOverTarget={isOverTarget}
+                isHinted={cell.id === hintCellId}
               />
             ))}
           </View>
