@@ -3,14 +3,14 @@
  * Combines Grid and PathOverlay with gesture handling
  */
 
-import React, { useRef, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { View, StyleSheet, useWindowDimensions } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import Animated from 'react-native-reanimated';
+import Animated, { runOnJS, useSharedValue } from 'react-native-reanimated';
 import { Grid } from './Grid';
 import { PathOverlay } from './PathOverlay';
-import { Cell as CellType, positionFromCellId, cellIdFromPosition } from '../core/types';
-import { lightTap, mediumTap, heavyTap, error as hapticError } from '../utils/haptics';
+import { Cell as CellType } from '../core/types';
+import { lightTap } from '../utils/haptics';
 
 interface GameBoardProps {
   grid: CellType[][];
@@ -34,7 +34,7 @@ export function GameBoard({
   hintCellId,
 }: GameBoardProps) {
   const { width: screenWidth } = useWindowDimensions();
-  const lastCellRef = useRef<string | null>(null);
+  const lastCellId = useSharedValue<string | null>(null);
   
   const gridSize = grid.length;
   const padding = 20;
@@ -44,8 +44,9 @@ export function GameBoard({
   const cellSize = Math.floor((availableWidth - cellGap * gridSize) / gridSize);
   const totalGridSize = cellSize * gridSize + cellGap * gridSize + gridPadding * 2;
   
-  // Convert touch position to cell ID
-  const getCellIdFromPosition = useCallback((x: number, y: number): string | null => {
+  // Convert touch position to cell ID (worklet-compatible version)
+  const getCellIdFromPosition = (x: number, y: number): string | null => {
+    'worklet';
     // Account for grid padding
     const adjustedX = x - gridPadding;
     const adjustedY = y - gridPadding;
@@ -59,32 +60,49 @@ export function GameBoard({
       return null;
     }
     
-    return cellIdFromPosition({ row, col });
-  }, [gridSize, cellSize, cellGap, gridPadding]);
+    return `${row}-${col}`;
+  };
+  
+  // JS thread handlers
+  const handleStartPath = useCallback((cellId: string) => {
+    onStartPath(cellId);
+    lightTap();
+  }, [onStartPath]);
+  
+  const handleAddToPath = useCallback((cellId: string) => {
+    onAddToPath(cellId);
+    lightTap();
+  }, [onAddToPath]);
+  
+  const handleEndPath = useCallback(() => {
+    onEndPath();
+  }, [onEndPath]);
   
   const gesture = Gesture.Pan()
     .onStart((event) => {
+      'worklet';
       const cellId = getCellIdFromPosition(event.x, event.y);
       if (cellId) {
-        lastCellRef.current = cellId;
-        onStartPath(cellId);
-        lightTap();
+        lastCellId.value = cellId;
+        runOnJS(handleStartPath)(cellId);
       }
     })
     .onUpdate((event) => {
+      'worklet';
       const cellId = getCellIdFromPosition(event.x, event.y);
-      if (cellId && cellId !== lastCellRef.current) {
-        lastCellRef.current = cellId;
-        onAddToPath(cellId);
-        lightTap();
+      if (cellId && cellId !== lastCellId.value) {
+        lastCellId.value = cellId;
+        runOnJS(handleAddToPath)(cellId);
       }
     })
     .onEnd(() => {
-      lastCellRef.current = null;
-      onEndPath();
+      'worklet';
+      lastCellId.value = null;
+      runOnJS(handleEndPath)();
     })
     .onFinalize(() => {
-      lastCellRef.current = null;
+      'worklet';
+      lastCellId.value = null;
     });
   
   return (
