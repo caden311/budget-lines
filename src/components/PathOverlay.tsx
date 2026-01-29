@@ -6,11 +6,8 @@
 import React from 'react';
 import { StyleSheet, useWindowDimensions } from 'react-native';
 import Svg, { Path, Circle } from 'react-native-svg';
-import Animated, { useAnimatedProps } from 'react-native-reanimated';
 import { positionFromCellId } from '../core/types';
-
-const AnimatedPath = Animated.createAnimatedComponent(Path);
-const AnimatedCircle = Animated.createAnimatedComponent(Circle);
+import { useTheme } from '../theme';
 
 interface PathOverlayProps {
   cellIds: string[];
@@ -19,6 +16,7 @@ interface PathOverlayProps {
 }
 
 export function PathOverlay({ cellIds, gridSize, isOverTarget }: PathOverlayProps) {
+  const { theme } = useTheme();
   const { width: screenWidth } = useWindowDimensions();
   
   const padding = 20;
@@ -46,7 +44,7 @@ export function PathOverlay({ cellIds, gridSize, isOverTarget }: PathOverlayProp
     return index === 0 ? `M ${x} ${y}` : `L ${x} ${y}`;
   }).join(' ');
   
-  const strokeColor = isOverTarget ? '#ef4444' : '#34d399';
+  const strokeColor = isOverTarget ? theme.pathStrokeOver : theme.pathStroke;
   const lastCell = cellIds.length > 0 ? getCellCenter(cellIds[cellIds.length - 1]) : null;
   
   return (

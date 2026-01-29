@@ -16,6 +16,7 @@ import { useGameStore } from '../stores/gameStore';
 import { useUserStore } from '../stores/userStore';
 import { GameMode, Difficulty } from '../core/types';
 import { heavyTap, success, warning } from '../utils/haptics';
+import { useTheme } from '../theme';
 
 interface GameScreenProps {
   mode: GameMode;
@@ -23,6 +24,7 @@ interface GameScreenProps {
 }
 
 export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
+  const { theme } = useTheme();
   const {
     gameState,
     isLoading,
@@ -113,10 +115,10 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
   
   if (isLoading || !gameState) {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#a855f7" />
-          <Text style={styles.loadingText}>Loading puzzle...</Text>
+          <ActivityIndicator size="large" color={theme.primary} />
+          <Text style={[styles.loadingText, { color: theme.textSecondary }]}>Loading puzzle...</Text>
         </View>
       </SafeAreaView>
     );
@@ -127,7 +129,7 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
   
   return (
     <GestureHandlerRootView style={styles.gestureRoot}>
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
         <View style={styles.content}>
           {/* Game HUD */}
           <GameHUD
@@ -184,7 +186,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#0f0f1a',
   },
   content: {
     flex: 1,
@@ -197,7 +198,6 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     fontSize: 16,
-    color: '#94a3b8',
   },
   boardContainer: {
     flex: 1,

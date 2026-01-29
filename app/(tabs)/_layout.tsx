@@ -2,11 +2,12 @@
  * Tab layout for Budget Lines
  */
 
-import React from 'react';
 import { Tabs } from 'expo-router';
-import { View, Text, StyleSheet } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
+import { useTheme } from '../../src/theme';
 
 function TabBarIcon({ name, focused }: { name: string; focused: boolean }) {
+  const { theme } = useTheme();
   const icons: Record<string, string> = {
     home: '🏠',
     practice: '🎮',
@@ -14,20 +15,32 @@ function TabBarIcon({ name, focused }: { name: string; focused: boolean }) {
   };
   
   return (
-    <Text style={[styles.icon, focused && styles.iconFocused]}>
+    <Text style={[
+      styles.icon, 
+      { opacity: focused ? 1 : 0.6 }
+    ]}>
       {icons[name] || '•'}
     </Text>
   );
 }
 
 export default function TabLayout() {
+  const { theme } = useTheme();
+  
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarStyle: styles.tabBar,
-        tabBarActiveTintColor: '#a855f7',
-        tabBarInactiveTintColor: '#64748b',
+        tabBarStyle: {
+          backgroundColor: theme.tabBarBackground,
+          borderTopColor: theme.tabBarBorder,
+          borderTopWidth: 1,
+          height: 90,
+          paddingTop: 8,
+          paddingBottom: 28,
+        },
+        tabBarActiveTintColor: theme.tabBarActive,
+        tabBarInactiveTintColor: theme.tabBarInactive,
         tabBarLabelStyle: styles.tabLabel,
       }}
     >
@@ -57,23 +70,11 @@ export default function TabLayout() {
 }
 
 const styles = StyleSheet.create({
-  tabBar: {
-    backgroundColor: '#16162a',
-    borderTopColor: '#2d2d44',
-    borderTopWidth: 1,
-    height: 85,
-    paddingTop: 8,
-    paddingBottom: 28,
-  },
   tabLabel: {
     fontSize: 12,
     fontWeight: '600',
   },
   icon: {
     fontSize: 24,
-    opacity: 0.6,
-  },
-  iconFocused: {
-    opacity: 1,
   },
 });

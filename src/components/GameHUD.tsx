@@ -7,10 +7,9 @@ import React from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import Animated, {
   useAnimatedStyle,
-  withSpring,
-  withSequence,
   withTiming,
 } from 'react-native-reanimated';
+import { useTheme } from '../theme';
 
 interface GameHUDProps {
   targetSum: number;
@@ -31,57 +30,58 @@ export function GameHUD({
   remainingCells,
   onReset,
 }: GameHUDProps) {
+  const { theme } = useTheme();
   const isOverTarget = currentSum > targetSum;
   const isExactMatch = currentSum === targetSum && currentPathLength >= minLineLength;
   
   const sumStyle = useAnimatedStyle(() => {
-    let color = '#94a3b8'; // Default gray
+    let color = theme.textMuted; // Default gray
     
     if (currentSum > 0) {
       if (isExactMatch) {
-        color = '#34d399'; // Green for exact match
+        color = theme.success; // Green for exact match
       } else if (isOverTarget) {
-        color = '#ef4444'; // Red for over
+        color = theme.error; // Red for over
       } else {
-        color = '#fbbf24'; // Yellow for in progress
+        color = theme.warning; // Amber for in progress
       }
     }
     
     return {
       color: withTiming(color, { duration: 100 }),
     };
-  }, [currentSum, isOverTarget, isExactMatch]);
+  }, [currentSum, isOverTarget, isExactMatch, theme]);
   
   return (
     <View style={styles.container}>
       {/* Top row - Target and Lines */}
       <View style={styles.topRow}>
         <View style={styles.stat}>
-          <Text style={styles.statLabel}>TARGET</Text>
-          <Text style={styles.targetValue}>{targetSum}</Text>
+          <Text style={[styles.statLabel, { color: theme.textMuted }]}>TARGET</Text>
+          <Text style={[styles.targetValue, { color: theme.primary }]}>{targetSum}</Text>
         </View>
         
         <View style={styles.stat}>
-          <Text style={styles.statLabel}>LINES</Text>
-          <Text style={styles.statValue}>{linesFound}</Text>
+          <Text style={[styles.statLabel, { color: theme.textMuted }]}>LINES</Text>
+          <Text style={[styles.statValue, { color: theme.text }]}>{linesFound}</Text>
         </View>
         
         <View style={styles.stat}>
-          <Text style={styles.statLabel}>CELLS</Text>
-          <Text style={styles.statValue}>{remainingCells}</Text>
+          <Text style={[styles.statLabel, { color: theme.textMuted }]}>CELLS</Text>
+          <Text style={[styles.statValue, { color: theme.text }]}>{remainingCells}</Text>
         </View>
       </View>
       
       {/* Current sum display */}
-      <View style={styles.sumContainer}>
-        <Text style={styles.sumLabel}>Current Sum</Text>
+      <View style={[styles.sumContainer, { backgroundColor: theme.cardBackground }]}>
+        <Text style={[styles.sumLabel, { color: theme.textMuted }]}>Current Sum</Text>
         <View style={styles.sumRow}>
           <Animated.Text style={[styles.sumValue, sumStyle]}>
             {currentSum || '—'}
           </Animated.Text>
-          <Text style={styles.sumTarget}>/ {targetSum}</Text>
+          <Text style={[styles.sumTarget, { color: theme.textMuted }]}>/ {targetSum}</Text>
         </View>
-        <Text style={styles.lengthHint}>
+        <Text style={[styles.lengthHint, { color: theme.textMuted }]}>
           {currentPathLength > 0 
             ? `${currentPathLength} cells (min ${minLineLength})`
             : `Draw ${minLineLength}+ cells`
@@ -93,11 +93,12 @@ export function GameHUD({
       <Pressable 
         style={({ pressed }) => [
           styles.resetButton,
+          { backgroundColor: theme.buttonSecondary },
           pressed && styles.resetButtonPressed
         ]}
         onPress={onReset}
       >
-        <Text style={styles.resetButtonText}>↺ Reset Puzzle</Text>
+        <Text style={[styles.resetButtonText, { color: theme.textSecondary }]}>↺ Reset Puzzle</Text>
       </Pressable>
     </View>
   );
@@ -120,31 +121,26 @@ const styles = StyleSheet.create({
   statLabel: {
     fontSize: 11,
     fontWeight: '600',
-    color: '#64748b',
     letterSpacing: 1,
   },
   statValue: {
     fontSize: 28,
     fontWeight: '700',
-    color: '#e2e8f0',
     fontVariant: ['tabular-nums'],
   },
   targetValue: {
     fontSize: 32,
     fontWeight: '800',
-    color: '#a855f7',
     fontVariant: ['tabular-nums'],
   },
   sumContainer: {
     alignItems: 'center',
-    backgroundColor: '#1e1e3a',
     borderRadius: 16,
     padding: 20,
   },
   sumLabel: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#64748b',
     letterSpacing: 0.5,
     marginBottom: 4,
   },
@@ -161,28 +157,24 @@ const styles = StyleSheet.create({
   sumTarget: {
     fontSize: 24,
     fontWeight: '600',
-    color: '#475569',
     fontVariant: ['tabular-nums'],
   },
   lengthHint: {
     fontSize: 13,
-    color: '#64748b',
     marginTop: 8,
   },
   resetButton: {
-    backgroundColor: '#2d2d44',
     paddingVertical: 14,
     paddingHorizontal: 24,
     borderRadius: 12,
     alignItems: 'center',
   },
   resetButtonPressed: {
-    backgroundColor: '#3d3d5c',
     transform: [{ scale: 0.98 }],
+    opacity: 0.8,
   },
   resetButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#94a3b8',
   },
 });

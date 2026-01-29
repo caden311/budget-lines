@@ -16,6 +16,7 @@ import {
 import * as Clipboard from 'expo-clipboard';
 import { GameState } from '../core/types';
 import { generateShareText, formatTime, generateEmojiGrid } from '../utils/sharing';
+import { useTheme } from '../theme';
 
 interface GameModalProps {
   visible: boolean;
@@ -34,6 +35,8 @@ export function GameModal({
   onReset,
   onNewPuzzle,
 }: GameModalProps) {
+  const { theme, isDark } = useTheme();
+  
   if (!gameState) return null;
   
   const isWin = type === 'win';
@@ -58,11 +61,6 @@ export function GameModal({
     }
   };
   
-  const handleCopy = async () => {
-    const shareText = generateShareText(gameState);
-    await Clipboard.setStringAsync(shareText);
-  };
-  
   return (
     <Modal
       visible={visible}
@@ -71,16 +69,16 @@ export function GameModal({
       onRequestClose={onClose}
     >
       <View style={styles.overlay}>
-        <View style={styles.modal}>
+        <View style={[styles.modal, { backgroundColor: theme.cardBackground }]}>
           {/* Header */}
           <View style={styles.header}>
             <Text style={styles.emoji}>
               {isWin ? '🎉' : '😅'}
             </Text>
-            <Text style={styles.title}>
+            <Text style={[styles.title, { color: theme.text }]}>
               {isWin ? 'Puzzle Complete!' : 'No Moves Left'}
             </Text>
-            <Text style={styles.subtitle}>
+            <Text style={[styles.subtitle, { color: theme.textSecondary }]}>
               {isWin 
                 ? `${gameState.lines.length} lines in ${formatTime(timeMs)}`
                 : 'Try resetting and finding a new path'
@@ -90,7 +88,7 @@ export function GameModal({
           
           {/* Emoji grid preview */}
           {isWin && (
-            <View style={styles.gridPreview}>
+            <View style={[styles.gridPreview, { backgroundColor: theme.backgroundSecondary }]}>
               <Text style={styles.emojiGrid}>
                 {generateEmojiGrid(gameState)}
               </Text>
@@ -98,18 +96,18 @@ export function GameModal({
           )}
           
           {/* Stats */}
-          <View style={styles.stats}>
+          <View style={[styles.stats, { borderColor: theme.border }]}>
             <View style={styles.statItem}>
-              <Text style={styles.statValue}>{gameState.lines.length}</Text>
-              <Text style={styles.statLabel}>Lines</Text>
+              <Text style={[styles.statValue, { color: theme.text }]}>{gameState.lines.length}</Text>
+              <Text style={[styles.statLabel, { color: theme.textMuted }]}>Lines</Text>
             </View>
             <View style={styles.statItem}>
-              <Text style={styles.statValue}>{formatTime(timeMs)}</Text>
-              <Text style={styles.statLabel}>Time</Text>
+              <Text style={[styles.statValue, { color: theme.text }]}>{formatTime(timeMs)}</Text>
+              <Text style={[styles.statLabel, { color: theme.textMuted }]}>Time</Text>
             </View>
             <View style={styles.statItem}>
-              <Text style={styles.statValue}>{gameState.targetSum}</Text>
-              <Text style={styles.statLabel}>Target</Text>
+              <Text style={[styles.statValue, { color: theme.text }]}>{gameState.targetSum}</Text>
+              <Text style={[styles.statLabel, { color: theme.textMuted }]}>Target</Text>
             </View>
           </View>
           
@@ -117,7 +115,7 @@ export function GameModal({
           <View style={styles.actions}>
             {isWin && (
               <Pressable
-                style={[styles.button, styles.primaryButton]}
+                style={[styles.button, { backgroundColor: theme.primary }]}
                 onPress={handleShare}
               >
                 <Text style={styles.primaryButtonText}>Share Results</Text>
@@ -125,20 +123,20 @@ export function GameModal({
             )}
             
             <Pressable
-              style={[styles.button, styles.secondaryButton]}
+              style={[styles.button, { backgroundColor: theme.buttonSecondary }]}
               onPress={onReset}
             >
-              <Text style={styles.secondaryButtonText}>
+              <Text style={[styles.secondaryButtonText, { color: theme.text }]}>
                 {isWin ? 'Play Again' : 'Reset Puzzle'}
               </Text>
             </Pressable>
             
             {onNewPuzzle && (
               <Pressable
-                style={[styles.button, styles.tertiaryButton]}
+                style={[styles.button, styles.tertiaryButton, { borderColor: theme.border }]}
                 onPress={onNewPuzzle}
               >
-                <Text style={styles.tertiaryButtonText}>New Puzzle</Text>
+                <Text style={[styles.tertiaryButtonText, { color: theme.textSecondary }]}>New Puzzle</Text>
               </Pressable>
             )}
             
@@ -146,7 +144,7 @@ export function GameModal({
               style={styles.closeButton}
               onPress={onClose}
             >
-              <Text style={styles.closeButtonText}>Close</Text>
+              <Text style={[styles.closeButtonText, { color: theme.textMuted }]}>Close</Text>
             </Pressable>
           </View>
         </View>
@@ -158,13 +156,12 @@ export function GameModal({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 24,
   },
   modal: {
-    backgroundColor: '#1e1e3a',
     borderRadius: 24,
     padding: 28,
     width: '100%',
@@ -182,17 +179,14 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 26,
     fontWeight: '800',
-    color: '#ffffff',
     textAlign: 'center',
   },
   subtitle: {
     fontSize: 15,
-    color: '#94a3b8',
     marginTop: 6,
     textAlign: 'center',
   },
   gridPreview: {
-    backgroundColor: '#16162a',
     borderRadius: 12,
     padding: 16,
     marginBottom: 20,
@@ -211,7 +205,6 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderTopWidth: 1,
     borderBottomWidth: 1,
-    borderColor: '#2d2d44',
   },
   statItem: {
     alignItems: 'center',
@@ -219,12 +212,10 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: 22,
     fontWeight: '700',
-    color: '#ffffff',
     fontVariant: ['tabular-nums'],
   },
   statLabel: {
     fontSize: 12,
-    color: '#64748b',
     marginTop: 4,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
@@ -239,38 +230,28 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     alignItems: 'center',
   },
-  primaryButton: {
-    backgroundColor: '#a855f7',
-  },
   primaryButtonText: {
     fontSize: 17,
     fontWeight: '700',
     color: '#ffffff',
   },
-  secondaryButton: {
-    backgroundColor: '#2d2d44',
-  },
   secondaryButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#e2e8f0',
   },
   tertiaryButton: {
     backgroundColor: 'transparent',
     borderWidth: 2,
-    borderColor: '#3d3d5c',
   },
   tertiaryButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#94a3b8',
   },
   closeButton: {
     paddingVertical: 12,
   },
   closeButtonText: {
     fontSize: 15,
-    color: '#64748b',
     textAlign: 'center',
   },
 });

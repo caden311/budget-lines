@@ -3,10 +3,11 @@
  * Displays the game grid and handles layout
  */
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import { View, StyleSheet, useWindowDimensions } from 'react-native';
 import { Cell } from './Cell';
 import { Cell as CellType } from '../core/types';
+import { useTheme } from '../theme';
 
 interface GridProps {
   grid: CellType[][];
@@ -15,6 +16,7 @@ interface GridProps {
 }
 
 export function Grid({ grid, currentSum, targetSum }: GridProps) {
+  const { theme } = useTheme();
   const { width: screenWidth } = useWindowDimensions();
   
   const gridSize = grid.length;
@@ -27,7 +29,7 @@ export function Grid({ grid, currentSum, targetSum }: GridProps) {
   
   return (
     <View style={styles.container}>
-      <View style={styles.grid}>
+      <View style={[styles.grid, { backgroundColor: theme.backgroundSecondary }]}>
         {grid.map((row, rowIndex) => (
           <View key={rowIndex} style={styles.row}>
             {row.map((cell) => (
@@ -52,7 +54,6 @@ const styles = StyleSheet.create({
   },
   grid: {
     padding: 8,
-    backgroundColor: '#16162a',
     borderRadius: 16,
   },
   row: {

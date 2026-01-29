@@ -5,21 +5,23 @@
 import React from 'react';
 import { View, Pressable, Text, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useTheme } from '../../src/theme';
 import { GameScreen } from '../../src/screens/GameScreen';
 
 export default function DailyGameScreen() {
   const router = useRouter();
+  const { theme } = useTheme();
   
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
       <View style={styles.header}>
         <Pressable 
           style={styles.backButton}
           onPress={() => router.back()}
         >
-          <Text style={styles.backButtonText}>← Back</Text>
+          <Text style={[styles.backButtonText, { color: theme.primary }]}>← Back</Text>
         </Pressable>
-        <Text style={styles.title}>Daily Puzzle</Text>
+        <Text style={[styles.title, { color: theme.text }]}>Daily Puzzle</Text>
         <View style={styles.placeholder} />
       </View>
       <GameScreen mode="daily" />
@@ -30,7 +32,6 @@ export default function DailyGameScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0f0f1a',
   },
   header: {
     flexDirection: 'row',
@@ -45,13 +46,11 @@ const styles = StyleSheet.create({
   },
   backButtonText: {
     fontSize: 16,
-    color: '#a855f7',
     fontWeight: '600',
   },
   title: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#ffffff',
   },
   placeholder: {
     width: 60,

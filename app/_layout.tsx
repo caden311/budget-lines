@@ -5,9 +5,12 @@
 import React, { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useColorScheme } from 'react-native';
+import { ThemeProvider, useTheme } from '../src/theme';
 import { useUserStore } from '../src/stores/userStore';
 
-export default function RootLayout() {
+function RootLayoutNav() {
+  const { theme, isDark } = useTheme();
   const { loadUserData } = useUserStore();
   
   useEffect(() => {
@@ -16,11 +19,11 @@ export default function RootLayout() {
   
   return (
     <>
-      <StatusBar style="light" />
+      <StatusBar style={isDark ? 'light' : 'dark'} />
       <Stack
         screenOptions={{
           headerShown: false,
-          contentStyle: { backgroundColor: '#0f0f1a' },
+          contentStyle: { backgroundColor: theme.background },
           animation: 'slide_from_right',
         }}
       >
@@ -39,5 +42,13 @@ export default function RootLayout() {
         />
       </Stack>
     </>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <ThemeProvider>
+      <RootLayoutNav />
+    </ThemeProvider>
   );
 }

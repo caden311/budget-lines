@@ -2,21 +2,23 @@
  * Home screen - Daily puzzle entry
  */
 
-import React, { useEffect, useState } from 'react';
+import { useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
   Pressable,
   SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useUserStore } from '../../src/stores/userStore';
-import { hasSavedProgress } from '../../src/utils/storage';
 import { getDailyPuzzleId } from '../../src/core/puzzleGenerator';
+import { useUserStore } from '../../src/stores/userStore';
+import { useTheme } from '../../src/theme';
+import { hasSavedProgress } from '../../src/utils/storage';
 
 export default function HomeScreen() {
   const router = useRouter();
+  const { theme, isDark } = useTheme();
   const { stats, isLoading } = useUserStore();
   const [hasProgress, setHasProgress] = useState(false);
   
@@ -37,22 +39,23 @@ export default function HomeScreen() {
   }, []);
   
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
       <View style={styles.content}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.logo}>Budget Lines</Text>
-          <Text style={styles.tagline}>Draw paths. Hit the sum.</Text>
+          <Text style={[styles.logo, { color: theme.text }]}>Budget Lines</Text>
+          <Text style={[styles.tagline, { color: theme.textMuted }]}>Draw paths. Hit the sum.</Text>
         </View>
         
         {/* Daily puzzle card */}
-        <View style={styles.dailyCard}>
-          <Text style={styles.dailyLabel}>TODAY'S PUZZLE</Text>
-          <Text style={styles.dailyDate}>{dateString}</Text>
+        <View style={[styles.dailyCard, { backgroundColor: theme.cardBackground }]}>
+          <Text style={[styles.dailyLabel, { color: theme.primary }]}>TODAY'S PUZZLE</Text>
+          <Text style={[styles.dailyDate, { color: theme.text }]}>{dateString}</Text>
           
           <Pressable
             style={({ pressed }) => [
               styles.playButton,
+              { backgroundColor: pressed ? theme.primaryDark : theme.primary },
               pressed && styles.playButtonPressed,
             ]}
             onPress={() => router.push('/game/daily')}
@@ -63,33 +66,33 @@ export default function HomeScreen() {
           </Pressable>
           
           {hasProgress && (
-            <Text style={styles.progressHint}>Progress saved</Text>
+            <Text style={[styles.progressHint, { color: theme.textMuted }]}>Progress saved</Text>
           )}
         </View>
         
         {/* Streak display */}
-        <View style={styles.streakCard}>
+        <View style={[styles.streakCard, { backgroundColor: theme.cardBackground }]}>
           <Text style={styles.streakEmoji}>🔥</Text>
           <View style={styles.streakInfo}>
-            <Text style={styles.streakValue}>{stats.dailyStreak}</Text>
-            <Text style={styles.streakLabel}>Day Streak</Text>
+            <Text style={[styles.streakValue, { color: theme.text }]}>{stats.dailyStreak}</Text>
+            <Text style={[styles.streakLabel, { color: theme.textMuted }]}>Day Streak</Text>
           </View>
         </View>
         
         {/* How to play */}
         <View style={styles.howToPlay}>
-          <Text style={styles.howToPlayTitle}>How to Play</Text>
+          <Text style={[styles.howToPlayTitle, { color: theme.text }]}>How to Play</Text>
           <View style={styles.rule}>
-            <Text style={styles.ruleNumber}>1</Text>
-            <Text style={styles.ruleText}>Draw a path through adjacent cells</Text>
+            <Text style={[styles.ruleNumber, { backgroundColor: theme.buttonSecondary, color: theme.primary }]}>1</Text>
+            <Text style={[styles.ruleText, { color: theme.textSecondary }]}>Draw a path through adjacent cells</Text>
           </View>
           <View style={styles.rule}>
-            <Text style={styles.ruleNumber}>2</Text>
-            <Text style={styles.ruleText}>Make the path sum equal the target</Text>
+            <Text style={[styles.ruleNumber, { backgroundColor: theme.buttonSecondary, color: theme.primary }]}>2</Text>
+            <Text style={[styles.ruleText, { color: theme.textSecondary }]}>Make the path sum equal the target</Text>
           </View>
           <View style={styles.rule}>
-            <Text style={styles.ruleNumber}>3</Text>
-            <Text style={styles.ruleText}>Use all cells to win!</Text>
+            <Text style={[styles.ruleNumber, { backgroundColor: theme.buttonSecondary, color: theme.primary }]}>3</Text>
+            <Text style={[styles.ruleText, { color: theme.textSecondary }]}>Use all cells to win!</Text>
           </View>
         </View>
       </View>
@@ -100,7 +103,6 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0f0f1a',
   },
   content: {
     flex: 1,
@@ -114,16 +116,13 @@ const styles = StyleSheet.create({
   logo: {
     fontSize: 36,
     fontWeight: '800',
-    color: '#ffffff',
     letterSpacing: -1,
   },
   tagline: {
     fontSize: 16,
-    color: '#64748b',
     marginTop: 8,
   },
   dailyCard: {
-    backgroundColor: '#1e1e3a',
     borderRadius: 20,
     padding: 28,
     alignItems: 'center',
@@ -132,24 +131,20 @@ const styles = StyleSheet.create({
   dailyLabel: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#a855f7',
     letterSpacing: 2,
     marginBottom: 8,
   },
   dailyDate: {
     fontSize: 22,
     fontWeight: '700',
-    color: '#ffffff',
     marginBottom: 24,
   },
   playButton: {
-    backgroundColor: '#a855f7',
     paddingVertical: 18,
     paddingHorizontal: 64,
     borderRadius: 16,
   },
   playButtonPressed: {
-    backgroundColor: '#9333ea',
     transform: [{ scale: 0.98 }],
   },
   playButtonText: {
@@ -159,11 +154,9 @@ const styles = StyleSheet.create({
   },
   progressHint: {
     fontSize: 13,
-    color: '#64748b',
     marginTop: 12,
   },
   streakCard: {
-    backgroundColor: '#1e1e3a',
     borderRadius: 16,
     padding: 20,
     flexDirection: 'row',
@@ -180,11 +173,9 @@ const styles = StyleSheet.create({
   streakValue: {
     fontSize: 32,
     fontWeight: '800',
-    color: '#ffffff',
   },
   streakLabel: {
     fontSize: 14,
-    color: '#64748b',
   },
   howToPlay: {
     gap: 12,
@@ -192,7 +183,6 @@ const styles = StyleSheet.create({
   howToPlayTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#ffffff',
     marginBottom: 8,
   },
   rule: {
@@ -204,16 +194,13 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: '#2d2d44',
     textAlign: 'center',
     lineHeight: 28,
     fontSize: 14,
     fontWeight: '700',
-    color: '#a855f7',
   },
   ruleText: {
     flex: 1,
     fontSize: 15,
-    color: '#94a3b8',
   },
 });
