@@ -40,9 +40,12 @@ export function GameModal({
   if (!gameState) return null;
   
   const isWin = type === 'win';
-  const timeMs = gameState.completedAt && gameState.startedAt
-    ? gameState.completedAt - gameState.startedAt
-    : 0;
+  
+  // Calculate elapsed time
+  // Use current time if completedAt not set yet (modal might render before state updates)
+  const endTime = gameState.completedAt || Date.now();
+  const startTime = gameState.startedAt || 0;
+  const timeMs = startTime > 0 ? endTime - startTime : 0;
   
   const handleShare = async () => {
     const shareText = generateShareText(gameState);

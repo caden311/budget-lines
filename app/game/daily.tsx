@@ -17,7 +17,7 @@ export default function DailyGameScreen() {
       <View style={styles.header}>
         <Pressable 
           style={styles.backButton}
-          onPress={() => router.back()}
+          onPress={() => router.replace('/')}
         >
           <Text style={[styles.backButtonText, { color: theme.primary }]}>← Back</Text>
         </Pressable>

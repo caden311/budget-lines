@@ -19,7 +19,7 @@ export default function PracticeGameScreen() {
       <View style={styles.header}>
         <Pressable 
           style={styles.backButton}
-          onPress={() => router.back()}
+          onPress={() => router.replace('/practice')}
         >
           <Text style={[styles.backButtonText, { color: theme.success }]}>← Back</Text>
         </Pressable>

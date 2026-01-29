@@ -84,13 +84,15 @@ export const useGameStore = create<GameStore>((set, get) => ({
     
     if (savedProgress) {
       // Restore from saved progress
+      // Ensure startedAt is valid (fallback to saved time or now if missing)
+      const validStartedAt = savedProgress.startedAt || savedProgress.savedAt || Date.now();
       const baseState = restorePuzzleFromValues(
         savedProgress.puzzleId,
         savedProgress.mode,
         savedProgress.gridValues,
         savedProgress.targetSum,
         savedProgress.minLineLength,
-        savedProgress.startedAt
+        validStartedAt
       );
       
       // Apply completed lines
@@ -147,13 +149,15 @@ export const useGameStore = create<GameStore>((set, get) => ({
       return false;
     }
     
+    // Ensure startedAt is valid (fallback to saved time or now if missing)
+    const validStartedAt = savedProgress.startedAt || savedProgress.savedAt || Date.now();
     const baseState = restorePuzzleFromValues(
       savedProgress.puzzleId,
       savedProgress.mode,
       savedProgress.gridValues,
       savedProgress.targetSum,
       savedProgress.minLineLength,
-      savedProgress.startedAt
+      validStartedAt
     );
     
     let grid = baseState.grid;

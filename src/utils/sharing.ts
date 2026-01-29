@@ -46,14 +46,23 @@ export function generateEmojiGrid(gameState: GameState): string {
 
 /** Format time for display */
 export function formatTime(ms: number): string {
-  const seconds = Math.floor(ms / 1000);
-  const minutes = Math.floor(seconds / 60);
-  const remainingSeconds = seconds % 60;
+  if (ms <= 0) {
+    return '0s';
+  }
+  
+  const totalSeconds = Math.floor(ms / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  
+  // For very fast completions (under 1 second but > 0)
+  if (totalSeconds === 0 && ms > 0) {
+    return '< 1s';
+  }
   
   if (minutes > 0) {
-    return `${minutes}m ${remainingSeconds}s`;
+    return `${minutes}m ${seconds}s`;
   }
-  return `${remainingSeconds}s`;
+  return `${seconds}s`;
 }
 
 /** Generate full share text */
@@ -62,9 +71,11 @@ export function generateShareText(gameState: GameState): string {
   const emojiGrid = generateEmojiGrid(gameState);
   const lineCount = gameState.lines.length;
   
-  const timeText = gameState.completedAt && gameState.startedAt
-    ? ` in ${formatTime(gameState.completedAt - gameState.startedAt)}`
-    : '';
+  // Calculate elapsed time with fallbacks
+  const endTime = gameState.completedAt || Date.now();
+  const startTime = gameState.startedAt || 0;
+  const timeMs = startTime > 0 ? endTime - startTime : 0;
+  const timeText = timeMs > 0 ? ` in ${formatTime(timeMs)}` : '';
   
   return `Budget Lines ${date}\n${lineCount} lines${timeText}\n\n${emojiGrid}\n\nPlay at: budgetlines.app`;
 }
