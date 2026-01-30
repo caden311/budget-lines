@@ -1,141 +1,85 @@
 /**
  * Hint generator for Budget Lines
- * Provides helpful hints for stuck players (Premium feature)
+ * Provides a single-use hint showing a complete valid line that's part of a solvable solution
  */
 
-import { Cell, HintResult, HintType } from './types';
-import { countAvailableCells } from './grid';
-import { canAddToPath } from './pathValidator';
-import { calculatePathSum } from './sumCalculator';
+import { countAvailableCells, getCellById, markCellsAsSpent } from './grid';
+import { findValidLinesLimited, hasReasonableSolvability } from './stuckDetector';
+import { Cell, HintResult } from './types';
 
 /**
- * Find all valid starting cells that can potentially lead to a solution
+ * Find a solution path where all cells are still available
+ * This guarantees the hint is part of a valid solution
  */
-function findValidStartCells(
+function findAvailableSolutionPath(
   grid: Cell[][],
-  targetSum: number,
-  minLineLength: number
-): string[] {
-  const validStarts: string[] = [];
-  
-  for (const row of grid) {
-    for (const cell of row) {
-      if (cell.state === 'available') {
-        // Check if this cell has at least one adjacent available cell
-        const hasNeighbor = hasAvailableNeighbor(grid, cell);
-        if (hasNeighbor) {
-          validStarts.push(cell.id);
-        }
-      }
-    }
-  }
-  
-  return validStarts;
-}
-
-/**
- * Check if a cell has at least one available neighbor
- */
-function hasAvailableNeighbor(grid: Cell[][], cell: Cell): boolean {
-  const { row, col } = cell.position;
-  const directions = [
-    [-1, 0], [1, 0], [0, -1], [0, 1]
-  ];
-  
-  for (const [dr, dc] of directions) {
-    const newRow = row + dr;
-    const newCol = col + dc;
+  solutionPaths: string[][]
+): string[] | null {
+  for (const path of solutionPaths) {
+    // Check if all cells in this path are still available
+    const allAvailable = path.every(cellId => {
+      const cell = getCellById(grid, cellId);
+      return cell && cell.state === 'available';
+    });
     
-    if (newRow >= 0 && newRow < grid.length && 
-        newCol >= 0 && newCol < grid[0].length) {
-      if (grid[newRow][newCol].state === 'available') {
-        return true;
-      }
+    if (allAvailable) {
+      return path;
     }
   }
   
-  return false;
-}
-
-/**
- * Find valid next moves from the current path
- */
-function findValidNextMoves(
-  grid: Cell[][],
-  currentPathCellIds: string[],
-  targetSum: number
-): string[] {
-  const validMoves: string[] = [];
-  
-  if (currentPathCellIds.length === 0) {
-    // No current path, return all available cells
-    for (const row of grid) {
-      for (const cell of row) {
-        if (cell.state === 'available') {
-          validMoves.push(cell.id);
-        }
-      }
-    }
-    return validMoves;
-  }
-  
-  // Find the last cell in the path
-  const lastCellId = currentPathCellIds[currentPathCellIds.length - 1];
-  const lastCell = findCellById(grid, lastCellId);
-  if (!lastCell) return validMoves;
-  
-  // Check all adjacent cells
-  const { row, col } = lastCell.position;
-  const directions = [
-    [-1, 0], [1, 0], [0, -1], [0, 1]
-  ];
-  
-  const currentSum = calculatePathSum(grid, currentPathCellIds);
-  
-  for (const [dr, dc] of directions) {
-    const newRow = row + dr;
-    const newCol = col + dc;
-    
-    if (newRow >= 0 && newRow < grid.length && 
-        newCol >= 0 && newCol < grid[0].length) {
-      const cell = grid[newRow][newCol];
-      
-      // Check if move is valid
-      const result = canAddToPath(grid, currentPathCellIds, cell.id);
-      if (result.success && result.action === 'added') {
-        // Prefer moves that don't exceed target
-        const newSum = currentSum + cell.value;
-        if (newSum <= targetSum) {
-          validMoves.push(cell.id);
-        }
-      }
-    }
-  }
-  
-  return validMoves;
-}
-
-/**
- * Find a cell by ID in the grid
- */
-function findCellById(grid: Cell[][], cellId: string): Cell | null {
-  for (const row of grid) {
-    for (const cell of row) {
-      if (cell.id === cellId) return cell;
-    }
-  }
   return null;
 }
 
 /**
- * Generate a hint based on current game state
+ * Legacy fallback: Find a valid line using search (for saved games without solution paths)
+ * Only returns a line if it passes the solvability check - NO unsafe fallback
+ */
+function findSolvableLineLegacy(
+  grid: Cell[][],
+  targetSum: number,
+  minLineLength: number
+): string[] | null {
+  const validLines = findValidLinesLimited(grid, targetSum, minLineLength, 500);
+  
+  if (validLines.length === 0) {
+    return null;
+  }
+  
+  const maxLinesToCheck = Math.min(validLines.length, 20);
+  
+  for (let i = 0; i < maxLinesToCheck; i++) {
+    const line = validLines[i];
+    const newGrid = markCellsAsSpent(grid, line);
+    const remainingCells = countAvailableCells(newGrid);
+    
+    // If this line clears all cells, it's definitely good
+    if (remainingCells === 0) {
+      return line;
+    }
+    
+    // Check if remaining puzzle has reasonable solvability
+    if (hasReasonableSolvability(newGrid, targetSum, minLineLength)) {
+      return line;
+    }
+  }
+  
+  // IMPORTANT: Do NOT fall back to validLines[0] - that was the bug!
+  // Return null if no line passes the solvability check
+  return null;
+}
+
+/**
+ * Generate a hint showing a complete valid line that's part of a solvable solution
+ * Uses the original solution paths from puzzle generation to guarantee correctness
+ * Falls back to search-based hints for legacy saved games (without the unsafe fallback)
+ * Returns null if no valid line exists or puzzle is stuck
  */
 export function generateHint(
   grid: Cell[][],
   currentPathCellIds: string[],
   targetSum: number,
   minLineLength: number,
-  hintType: HintType = 'start-cell'
+  solutionPaths: string[][] = []
 ): HintResult | null {
   const availableCells = countAvailableCells(grid);
   
@@ -143,52 +87,30 @@ export function generateHint(
     return null;
   }
   
-  switch (hintType) {
-    case 'start-cell': {
-      // Suggest a good starting cell
-      const validStarts = findValidStartCells(grid, targetSum, minLineLength);
-      if (validStarts.length === 0) return null;
-      
-      // Pick a random valid start
-      const randomStart = validStarts[Math.floor(Math.random() * validStarts.length)];
-      
+  // Use solution paths if available (guaranteed to be part of a valid solution)
+  if (solutionPaths.length > 0) {
+    const line = findAvailableSolutionPath(grid, solutionPaths);
+    
+    if (line && line.length > 0) {
       return {
-        type: 'start-cell',
-        cellIds: [randomStart],
-        message: 'Try starting from this cell',
+        type: 'full-line',
+        cellIds: line,
+        message: 'This line is part of the solution',
       };
     }
-    
-    case 'next-move': {
-      // Suggest the next move
-      const validMoves = findValidNextMoves(grid, currentPathCellIds, targetSum);
-      if (validMoves.length === 0) {
-        return {
-          type: 'next-move',
-          cellIds: [],
-          message: 'No valid moves - try backtracking or reset',
-        };
-      }
-      
-      // Pick a random valid move
-      const randomMove = validMoves[Math.floor(Math.random() * validMoves.length)];
-      
-      return {
-        type: 'next-move',
-        cellIds: [randomMove],
-        message: currentPathCellIds.length === 0 
-          ? 'Start here' 
-          : 'Try adding this cell',
-      };
-    }
-    
-    case 'full-path': {
-      // This would be a more complex algorithm to find a complete solution
-      // For now, just suggest the next move
-      return generateHint(grid, currentPathCellIds, targetSum, minLineLength, 'next-move');
-    }
-    
-    default:
-      return null;
   }
+  
+  // Fallback for legacy saved games without solution paths
+  // Uses search-based approach but WITHOUT the dangerous "return first valid line" fallback
+  const legacyLine = findSolvableLineLegacy(grid, targetSum, minLineLength);
+  
+  if (legacyLine && legacyLine.length > 0) {
+    return {
+      type: 'full-line',
+      cellIds: legacyLine,
+      message: 'This line leads to a solvable state',
+    };
+  }
+  
+  return null;
 }

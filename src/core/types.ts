@@ -75,6 +75,10 @@ export interface GameState {
   completedAt: number | null;
   /** Number of cells remaining */
   remainingCells: number;
+  /** Whether the hint has been used for this puzzle */
+  hintUsed: boolean;
+  /** Original solution paths from puzzle generation (for hints) */
+  solutionPaths: string[][];
 }
 
 /** Saved game progress for persistence */
@@ -93,6 +97,8 @@ export interface SavedGameProgress {
   savedAt: number;
   /** Timestamp when started */
   startedAt: number;
+  /** Original solution paths (for hints) */
+  solutionPaths?: string[][];
 }
 
 /** User statistics */
@@ -113,12 +119,12 @@ export interface PremiumStatus {
 }
 
 /** Hint types available */
-export type HintType = 'start-cell' | 'next-move' | 'full-path';
+export type HintType = 'full-line';
 
 /** Hint result from hint system */
 export interface HintResult {
   type: HintType;
-  /** Cell ID(s) suggested by the hint */
+  /** Cell IDs for the complete line suggested by the hint */
   cellIds: string[];
   /** Optional message to show */
   message?: string;

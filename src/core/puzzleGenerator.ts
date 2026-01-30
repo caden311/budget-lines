@@ -79,7 +79,7 @@ function generatePuzzleWithSeed(
   
   // Use constructive generation - builds puzzle from valid solution paths
   // This guarantees the puzzle is always 100% solvable
-  const { values } = generateSolvablePuzzle(
+  const { values, solutionPaths } = generateSolvablePuzzle(
     {
       gridSize: config.gridSize,
       minLineLength: config.minLineLength,
@@ -104,6 +104,8 @@ function generatePuzzleWithSeed(
     startedAt: Date.now(),
     completedAt: null,
     remainingCells: countAvailableCells(grid),
+    hintUsed: false,
+    solutionPaths,
   };
 }
 
@@ -114,7 +116,8 @@ export function restorePuzzleFromValues(
   gridValues: number[][],
   targetSum: number,
   minLineLength: number,
-  startedAt: number
+  startedAt: number,
+  solutionPaths: string[][] = []
 ): GameState {
   const grid = createGrid(gridValues.length, gridValues);
   
@@ -131,6 +134,8 @@ export function restorePuzzleFromValues(
     startedAt,
     completedAt: null,
     remainingCells: countAvailableCells(grid),
+    hintUsed: false,
+    solutionPaths,
   };
 }
 

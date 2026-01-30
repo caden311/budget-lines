@@ -20,7 +20,7 @@ interface GameBoardProps {
   onStartPath: (cellId: string) => void;
   onAddToPath: (cellId: string) => void;
   onEndPath: () => void;
-  hintCellId?: string | null;
+  hintCellIds?: string[] | null;
 }
 
 export function GameBoard({
@@ -31,7 +31,7 @@ export function GameBoard({
   onStartPath,
   onAddToPath,
   onEndPath,
-  hintCellId,
+  hintCellIds,
 }: GameBoardProps) {
   const { width: screenWidth } = useWindowDimensions();
   const lastCellId = useSharedValue<string | null>(null);
@@ -113,7 +113,7 @@ export function GameBoard({
             grid={grid}
             currentSum={currentSum}
             targetSum={targetSum}
-            hintCellId={hintCellId}
+            hintCellIds={hintCellIds}
           />
           <PathOverlay
             cellIds={currentPathCellIds}

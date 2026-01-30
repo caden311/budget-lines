@@ -26,7 +26,6 @@ import {
   Difficulty,
   GameState,
   HintResult,
-  HintType,
   Line,
   PathAddResult,
   SavedGameProgress
@@ -57,7 +56,7 @@ interface GameStore {
   saveProgress: () => Promise<void>;
   
   // Hints (Premium)
-  requestHint: (type?: HintType) => HintResult | null;
+  requestHint: () => HintResult | null;
   clearHint: () => void;
   
   // Helpers
@@ -95,7 +94,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
         savedProgress.gridValues,
         savedProgress.targetSum,
         savedProgress.minLineLength,
-        validStartedAt
+        validStartedAt,
+        savedProgress.solutionPaths || []
       );
       
       // Apply completed lines
@@ -126,6 +126,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
           isStuck,
           remainingCells,
           completedAt: isWon ? Date.now() : null,
+          hintUsed: false, // Reset hint when loading saved game
         },
         isLoading: false,
       });
@@ -171,7 +172,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
       savedProgress.gridValues,
       savedProgress.targetSum,
       savedProgress.minLineLength,
-      validStartedAt
+      validStartedAt,
+      savedProgress.solutionPaths || []
     );
     
     let grid = baseState.grid;
@@ -201,6 +203,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
         isStuck,
         remainingCells,
         completedAt: isWon ? Date.now() : null,
+        hintUsed: false, // Reset hint when loading saved game
       },
       isLoading: false,
     });
@@ -394,6 +397,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
         isStuck: false,
         remainingCells: countAvailableCells(grid),
         completedAt: null,
+        hintUsed: false, // Reset hint when resetting puzzle
       },
     });
     
@@ -414,24 +418,42 @@ export const useGameStore = create<GameStore>((set, get) => ({
       completedLinesCellIds: gameState.lines.map(line => line.cellIds),
       savedAt: Date.now(),
       startedAt: gameState.startedAt,
+      solutionPaths: gameState.solutionPaths,
     };
     
     await saveGameProgress(progress);
   },
   
-  requestHint: (type: HintType = 'next-move') => {
+  requestHint: () => {
     const { gameState } = get();
     if (!gameState) return null;
+    
+    // If hint already used, don't provide another
+    if (gameState.hintUsed) {
+      return null;
+    }
     
     const hint = generateHint(
       gameState.grid,
       gameState.currentPath?.cellIds ?? [],
       gameState.targetSum,
       gameState.minLineLength,
-      type
+      gameState.solutionPaths
     );
     
-    set({ currentHint: hint });
+    // If hint was provided, mark it as used
+    if (hint) {
+      set({ 
+        currentHint: hint,
+        gameState: {
+          ...gameState,
+          hintUsed: true,
+        }
+      });
+    } else {
+      set({ currentHint: null });
+    }
+    
     return hint;
   },
   

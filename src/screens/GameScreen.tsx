@@ -51,7 +51,7 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
     clearHint,
   } = useGameStore();
   
-  const { recordLineDrawn, recordPuzzleComplete, updateDailyStreak } = useUserStore();
+  const { recordLineDrawn, recordPuzzleComplete, updateDailyStreak, premium } = useUserStore();
   
   const [showWinModal, setShowWinModal] = useState(false);
   const [showStuckModal, setShowStuckModal] = useState(false);
@@ -190,10 +190,10 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
   }, [mode, difficulty, startPracticePuzzle, startDailyPuzzle, clearHint]);
   
   const handleHint = useCallback(() => {
-    const hint = requestHint('next-move');
+    const hint = requestHint();
     if (hint) {
       lightTap();
-      trackHintRequested(mode, 'next-move');
+      trackHintRequested(mode, 'full-line');
     }
   }, [requestHint, mode]);
   
@@ -210,7 +210,8 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
   
   const currentPathCellIds = gameState.currentPath?.cellIds ?? [];
   const currentSum = gameState.currentPath?.sum ?? 0;
-  const hintCellId = currentHint?.cellIds?.[0] ?? null;
+  const hintCellIds = currentHint?.cellIds ?? null;
+  const hintUsed = gameState.hintUsed;
   
   return (
     <GestureHandlerRootView style={styles.gestureRoot}>
@@ -223,9 +224,11 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
             minLineLength={gameState.minLineLength}
             currentPathLength={currentPathCellIds.length}
             linesFound={gameState.lines.length}
+            remainingCells={gameState.remainingCells}
             onReset={handleReset}
             onHint={handleHint}
-            hintCellId={hintCellId}
+            isPremium={premium.isPremium}
+            hintUsed={hintUsed}
           />
           
           {/* Game Board */}
@@ -238,7 +241,7 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
               onStartPath={handleStartPath}
               onAddToPath={handleAddToPath}
               onEndPath={handleEndPath}
-              hintCellId={hintCellId}
+              hintCellIds={hintCellIds}
             />
           </View>
         </View>

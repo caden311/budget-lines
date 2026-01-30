@@ -26,7 +26,7 @@ interface GameHUDProps {
   onReset: () => void;
   onHint?: () => void;
   isPremium?: boolean;
-  hintCellId?: string | null;
+  hintUsed?: boolean;
 }
 
 // Floating +1 indicator component
@@ -68,7 +68,7 @@ export function GameHUD({
   onReset,
   onHint,
   isPremium = false,
-  hintCellId,
+  hintUsed = false,
 }: GameHUDProps) {
   const { theme } = useTheme();
   const isOverTarget = currentSum > targetSum;
@@ -183,16 +183,18 @@ export function GameHUD({
             style={({ pressed }) => [
               styles.actionButton,
               styles.hintButton,
-              { backgroundColor: isPremium ? theme.warning : theme.buttonSecondary },
-              pressed && styles.buttonPressed
+              { backgroundColor: isPremium && !hintUsed ? theme.warning : theme.buttonSecondary },
+              (pressed || hintUsed) && styles.buttonPressed
             ]}
             onPress={onHint}
+            disabled={hintUsed}
           >
             <Text style={[
               styles.buttonText, 
-              { color: isPremium ? '#000' : theme.textSecondary }
+              { color: isPremium && !hintUsed ? '#000' : theme.textSecondary },
+              hintUsed && { opacity: 0.5 }
             ]}>
-              💡 {isPremium ? 'Hint' : '🔒 Hint'}
+              💡 {hintUsed ? 'Used' : (isPremium ? 'Hint' : '🔒 Hint')}
             </Text>
           </Pressable>
         )}

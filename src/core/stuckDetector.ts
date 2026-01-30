@@ -232,7 +232,7 @@ export function hasReasonableSolvability(
 /**
  * Find valid lines with an iteration limit to prevent hanging
  */
-function findValidLinesLimited(
+export function findValidLinesLimited(
   grid: Cell[][],
   targetSum: number,
   minLineLength: number,
