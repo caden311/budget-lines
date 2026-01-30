@@ -13,6 +13,7 @@ const KEYS = {
   PREMIUM_STATUS: 'premium_status',
   SAVED_GAMES_LIST: 'saved_games_list',
   TUTORIAL_COMPLETED: 'tutorial_completed',
+  THEME_PREFERENCE: 'theme_preference',
 };
 
 // ============ Game Progress ============
@@ -167,6 +168,31 @@ export async function setTutorialCompleted(completed: boolean = true): Promise<v
     await AsyncStorage.setItem(KEYS.TUTORIAL_COMPLETED, completed ? 'true' : 'false');
   } catch (error) {
     console.error('Failed to set tutorial status:', error);
+  }
+}
+
+// ============ Theme Preference ============
+
+/** Load theme preference */
+export async function loadThemePreference(): Promise<'light' | 'dark'> {
+  try {
+    const data = await AsyncStorage.getItem(KEYS.THEME_PREFERENCE);
+    if (data === 'light' || data === 'dark') {
+      return data;
+    }
+    return 'light'; // Default to light mode
+  } catch (error) {
+    console.error('Failed to load theme preference:', error);
+    return 'light'; // Default to light mode
+  }
+}
+
+/** Save theme preference */
+export async function saveThemePreference(mode: 'light' | 'dark'): Promise<void> {
+  try {
+    await AsyncStorage.setItem(KEYS.THEME_PREFERENCE, mode);
+  } catch (error) {
+    console.error('Failed to save theme preference:', error);
   }
 }
 

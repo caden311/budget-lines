@@ -3,16 +3,16 @@
  * Displays target sum, current sum, lines found, reset and hint buttons
  */
 
-import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, {
+  Easing,
+  runOnJS,
   useAnimatedStyle,
   useSharedValue,
-  withTiming,
   withSequence,
   withSpring,
-  runOnJS,
-  Easing,
+  withTiming,
 } from 'react-native-reanimated';
 import { useTheme } from '../theme';
 
@@ -157,7 +157,7 @@ export function GameHUD({
         <Text style={[styles.lengthHint, { color: theme.textMuted }]}>
           {currentPathLength > 0 
             ? `${currentPathLength} cells (min ${minLineLength})`
-            : `Draw ${minLineLength}+ cells`
+            : `Select ${minLineLength}+ cells`
           }
         </Text>
       </View>

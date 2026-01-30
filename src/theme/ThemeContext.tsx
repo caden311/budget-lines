@@ -3,28 +3,54 @@
  * Provides theme colors throughout the app
  */
 
-import React, { createContext, useContext, useMemo } from 'react';
-import { useColorScheme } from 'react-native';
+import React, { createContext, useContext, useMemo, useState, useEffect } from 'react';
 import { Theme, lightTheme, darkTheme } from './colors';
+import { loadThemePreference, saveThemePreference } from '../utils/storage';
 
 interface ThemeContextValue {
   theme: Theme;
   isDark: boolean;
+  toggleTheme: () => void;
 }
 
 const ThemeContext = createContext<ThemeContextValue>({
-  theme: darkTheme,
-  isDark: true,
+  theme: lightTheme,
+  isDark: false,
+  toggleTheme: () => {},
 });
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === 'dark';
+  const [themeMode, setThemeMode] = useState<'light' | 'dark'>('light');
+  const [isLoading, setIsLoading] = useState(true);
+  
+  // Load theme preference on mount
+  useEffect(() => {
+    const loadTheme = async () => {
+      const savedTheme = await loadThemePreference();
+      setThemeMode(savedTheme);
+      setIsLoading(false);
+    };
+    loadTheme();
+  }, []);
+  
+  const toggleTheme = async () => {
+    const newMode = themeMode === 'light' ? 'dark' : 'light';
+    setThemeMode(newMode);
+    await saveThemePreference(newMode);
+  };
+  
+  const isDark = themeMode === 'dark';
   
   const value = useMemo(() => ({
     theme: isDark ? darkTheme : lightTheme,
     isDark,
-  }), [isDark]);
+    toggleTheme,
+  }), [isDark, themeMode]);
+  
+  // Don't render until theme is loaded to avoid flash
+  if (isLoading) {
+    return null;
+  }
   
   return (
     <ThemeContext.Provider value={value}>

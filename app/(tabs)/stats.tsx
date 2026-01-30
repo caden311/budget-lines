@@ -1,74 +1,28 @@
 /**
  * Stats screen - All stats free for MVP
- * Also includes notification settings
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   SafeAreaView,
   ScrollView,
-  Switch,
-  Alert,
 } from 'react-native';
 import { useTheme } from '../../src/theme';
 import { useUserStore } from '../../src/stores/userStore';
 import { formatTime } from '../../src/utils/sharing';
-import {
-  areNotificationsEnabled,
-  toggleNotifications,
-  requestNotificationPermissions,
-  getReminderTime,
-} from '../../src/services/notifications';
 import { trackScreenView } from '../../src/services/analytics';
 
 export default function StatsScreen() {
   const { theme } = useTheme();
   const { stats } = useUserStore();
-  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
-  const [reminderTime, setReminderTime] = useState({ hour: 9, minute: 0 });
   
   // Track screen view
   useEffect(() => {
     trackScreenView('Stats');
   }, []);
-  
-  // Load notification settings
-  useEffect(() => {
-    const loadNotificationSettings = async () => {
-      const enabled = await areNotificationsEnabled();
-      const time = await getReminderTime();
-      setNotificationsEnabled(enabled);
-      setReminderTime(time);
-    };
-    loadNotificationSettings();
-  }, []);
-  
-  const handleNotificationToggle = async () => {
-    if (!notificationsEnabled) {
-      // Turning on - need to request permissions
-      const hasPermission = await requestNotificationPermissions();
-      if (!hasPermission) {
-        Alert.alert(
-          'Permissions Required',
-          'Please enable notifications in your device settings to receive daily puzzle reminders.',
-          [{ text: 'OK' }]
-        );
-        return;
-      }
-    }
-    
-    const newState = await toggleNotifications();
-    setNotificationsEnabled(newState);
-  };
-  
-  const formatReminderTime = (hour: number, minute: number): string => {
-    const period = hour >= 12 ? 'PM' : 'AM';
-    const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
-    return `${displayHour}:${minute.toString().padStart(2, '0')} ${period}`;
-  };
   
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
@@ -142,37 +96,6 @@ export default function StatsScreen() {
                 {stats.lastDailyDate || '—'}
               </Text>
             </View>
-          </View>
-        </View>
-        
-        {/* Settings Section */}
-        <View style={[styles.settingsCard, { backgroundColor: theme.cardBackground }]}>
-          <Text style={[styles.settingsTitle, { color: theme.text }]}>Settings</Text>
-          
-          {/* Notification toggle */}
-          <View style={[styles.settingRow, { borderBottomColor: theme.border }]}>
-            <View style={[styles.settingIcon, { backgroundColor: theme.buttonSecondary }]}>
-              <Text>🔔</Text>
-            </View>
-            <View style={styles.settingInfo}>
-              <Text style={[styles.settingLabel, { color: theme.text }]}>Daily Reminders</Text>
-              <Text style={[styles.settingDescription, { color: theme.textMuted }]}>
-                {notificationsEnabled 
-                  ? `Reminder at ${formatReminderTime(reminderTime.hour, reminderTime.minute)}`
-                  : 'Get notified when a new puzzle is ready'
-                }
-              </Text>
-            </View>
-            <Switch
-              value={notificationsEnabled}
-              onValueChange={handleNotificationToggle}
-              trackColor={{ 
-                false: theme.border, 
-                true: theme.primaryDark 
-              }}
-              thumbColor={notificationsEnabled ? theme.primary : theme.textMuted}
-              ios_backgroundColor={theme.border}
-            />
           </View>
         </View>
         
@@ -276,42 +199,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     fontVariant: ['tabular-nums'],
-  },
-  settingsCard: {
-    borderRadius: 20,
-    padding: 24,
-    marginBottom: 24,
-  },
-  settingsTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    marginBottom: 16,
-  },
-  settingRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-  },
-  settingIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 16,
-  },
-  settingInfo: {
-    flex: 1,
-    marginRight: 12,
-  },
-  settingLabel: {
-    fontSize: 15,
-    fontWeight: '600',
-  },
-  settingDescription: {
-    fontSize: 13,
-    marginTop: 2,
   },
   motivationCard: {
     borderRadius: 16,

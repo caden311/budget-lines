@@ -13,6 +13,7 @@ function TabBarIcon({ name, focused }: { name: string; focused: boolean }) {
     home: '🏠',
     practice: '🎮',
     stats: '🏆',
+    settings: '⚙️',
   };
   
   return (
@@ -70,6 +71,13 @@ export default function TabLayout() {
         options={{
           title: 'Stats',
           tabBarIcon: ({ focused }) => <TabBarIcon name="stats" focused={focused} />,
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: 'Settings',
+          tabBarIcon: ({ focused }) => <TabBarIcon name="settings" focused={focused} />,
         }}
       />
     </Tabs>

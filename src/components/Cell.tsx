@@ -37,6 +37,7 @@ export function Cell({ cell, size, isOverTarget, isHinted = false }: CellProps) 
     })();
     
     const scale = state === 'in-path' ? 0.95 : (isHinted ? 1.05 : 1);
+    const needsBorder = state === 'in-path' || isHinted;
     const borderColor = (() => {
       if (state === 'in-path') {
         return isOverTarget ? theme.pathStrokeOver : theme.pathStroke;
@@ -44,13 +45,14 @@ export function Cell({ cell, size, isOverTarget, isHinted = false }: CellProps) 
       if (isHinted) {
         return theme.warning;
       }
-      return 'transparent';
+      return theme.cellAvailable; // Fallback color (won't be visible with borderWidth: 0)
     })();
     
     return {
       backgroundColor: withTiming(backgroundColor, { duration: 150 }),
       transform: [{ scale: withSpring(scale, { damping: 15 }) }],
       borderColor: withTiming(borderColor, { duration: 150 }),
+      borderWidth: withTiming(needsBorder ? 3 : 0, { duration: 150 }),
     };
   }, [state, isOverTarget, isHinted, theme]);
   
@@ -86,8 +88,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 3,
-    borderColor: 'transparent',
     margin: 3,
   },
   value: {
