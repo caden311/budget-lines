@@ -1,9 +1,9 @@
 /**
  * Premium upgrade modal
- * Shows benefits and purchase button
+ * Shows benefits and purchase button with real IAP integration
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -11,9 +11,13 @@ import {
   Pressable,
   Modal,
   Dimensions,
+  ActivityIndicator,
+  Alert,
 } from 'react-native';
 import { useTheme } from '../theme';
 import { useUserStore } from '../stores/userStore';
+import { purchasePremium, restorePurchases, getPremiumPrice } from '../services/iap';
+import { trackPremiumModalView, trackPremiumPurchase } from '../services/analytics';
 
 interface PremiumModalProps {
   visible: boolean;
@@ -51,23 +55,85 @@ const PREMIUM_BENEFITS = [
 export function PremiumModal({ visible, onClose, feature }: PremiumModalProps) {
   const { theme } = useTheme();
   const { setPremiumStatus } = useUserStore();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isRestoring, setIsRestoring] = useState(false);
+  const [price, setPrice] = useState('$3.99');
   
   const message = feature ? FEATURE_MESSAGES[feature] : FEATURE_MESSAGES.default;
   
+  // Track modal view and fetch price when visible
+  useEffect(() => {
+    if (visible) {
+      trackPremiumModalView(feature || 'default');
+      
+      // Fetch real price from store
+      getPremiumPrice().then(setPrice).catch(() => {
+        // Keep fallback price
+      });
+    }
+  }, [visible, feature]);
+  
   const handlePurchase = async () => {
-    // TODO: Implement actual IAP flow
-    // For now, simulate purchase for testing
-    await setPremiumStatus({
-      isPremium: true,
-      purchaseDate: new Date().toISOString(),
-      productId: 'premium_unlock',
-    });
-    onClose();
+    setIsLoading(true);
+    
+    try {
+      const success = await purchasePremium(async (status) => {
+        // Purchase completed successfully
+        await setPremiumStatus(status);
+        trackPremiumPurchase(status.productId || 'premium_unlock');
+        setIsLoading(false);
+        onClose();
+      });
+      
+      if (!success) {
+        setIsLoading(false);
+        Alert.alert(
+          'Purchase Failed',
+          'Unable to complete the purchase. Please try again.',
+          [{ text: 'OK' }]
+        );
+      }
+    } catch (error) {
+      setIsLoading(false);
+      console.error('Purchase error:', error);
+      Alert.alert(
+        'Purchase Error',
+        'An error occurred during the purchase. Please try again.',
+        [{ text: 'OK' }]
+      );
+    }
   };
   
   const handleRestore = async () => {
-    // TODO: Implement restore purchases
-    console.log('Restore purchases');
+    setIsRestoring(true);
+    
+    try {
+      const status = await restorePurchases();
+      
+      if (status) {
+        await setPremiumStatus(status);
+        Alert.alert(
+          'Purchase Restored',
+          'Your premium purchase has been restored!',
+          [{ text: 'OK', onPress: onClose }]
+        );
+      } else {
+        Alert.alert(
+          'No Purchase Found',
+          'We couldn\'t find any previous purchases to restore.',
+          [{ text: 'OK' }]
+        );
+      }
+    } catch (error) {
+      console.error('Restore error:', error);
+      Alert.alert(
+        'Restore Failed',
+        'Unable to restore purchases. Please try again.',
+        [{ text: 'OK' }]
+      );
+    } finally {
+      setIsRestoring(false);
+    }
   };
   
   return (
@@ -80,7 +146,11 @@ export function PremiumModal({ visible, onClose, feature }: PremiumModalProps) {
       <View style={styles.overlay}>
         <View style={[styles.modal, { backgroundColor: theme.cardBackground }]}>
           {/* Close button */}
-          <Pressable style={styles.closeButton} onPress={onClose}>
+          <Pressable 
+            style={styles.closeButton} 
+            onPress={onClose}
+            disabled={isLoading || isRestoring}
+          >
             <Text style={[styles.closeText, { color: theme.textMuted }]}>✕</Text>
           </Pressable>
           
@@ -106,7 +176,7 @@ export function PremiumModal({ visible, onClose, feature }: PremiumModalProps) {
           {/* Price badge */}
           <View style={[styles.priceBadge, { backgroundColor: theme.backgroundTertiary }]}>
             <Text style={[styles.priceLabel, { color: theme.textMuted }]}>One-time purchase</Text>
-            <Text style={[styles.price, { color: theme.text }]}>$3.99</Text>
+            <Text style={[styles.price, { color: theme.text }]}>{price}</Text>
           </View>
           
           {/* Purchase button */}
@@ -115,17 +185,31 @@ export function PremiumModal({ visible, onClose, feature }: PremiumModalProps) {
               styles.purchaseButton,
               { backgroundColor: pressed ? theme.primaryDark : theme.primary },
               pressed && styles.purchaseButtonPressed,
+              (isLoading || isRestoring) && styles.buttonDisabled,
             ]}
             onPress={handlePurchase}
+            disabled={isLoading || isRestoring}
           >
-            <Text style={styles.purchaseButtonText}>Unlock Premium</Text>
+            {isLoading ? (
+              <ActivityIndicator color="#ffffff" size="small" />
+            ) : (
+              <Text style={styles.purchaseButtonText}>Unlock Premium</Text>
+            )}
           </Pressable>
           
           {/* Restore purchases */}
-          <Pressable style={styles.restoreButton} onPress={handleRestore}>
-            <Text style={[styles.restoreText, { color: theme.textMuted }]}>
-              Restore Purchase
-            </Text>
+          <Pressable 
+            style={styles.restoreButton} 
+            onPress={handleRestore}
+            disabled={isLoading || isRestoring}
+          >
+            {isRestoring ? (
+              <ActivityIndicator color={theme.textMuted} size="small" />
+            ) : (
+              <Text style={[styles.restoreText, { color: theme.textMuted }]}>
+                Restore Purchase
+              </Text>
+            )}
           </Pressable>
         </View>
       </View>
@@ -219,6 +303,8 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: 'center',
     marginBottom: 16,
+    minHeight: 56,
+    justifyContent: 'center',
   },
   purchaseButtonPressed: {
     transform: [{ scale: 0.98 }],
@@ -228,9 +314,14 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#ffffff',
   },
+  buttonDisabled: {
+    opacity: 0.7,
+  },
   restoreButton: {
     alignItems: 'center',
     paddingVertical: 8,
+    minHeight: 32,
+    justifyContent: 'center',
   },
   restoreText: {
     fontSize: 14,

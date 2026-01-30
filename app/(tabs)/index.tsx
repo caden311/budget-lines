@@ -15,6 +15,7 @@ import { getDailyPuzzleId } from '../../src/core/puzzleGenerator';
 import { useUserStore } from '../../src/stores/userStore';
 import { useTheme } from '../../src/theme';
 import { hasSavedProgress } from '../../src/utils/storage';
+import { trackScreenView } from '../../src/services/analytics';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -28,6 +29,11 @@ export default function HomeScreen() {
     month: 'long',
     day: 'numeric',
   });
+  
+  // Track screen view
+  useEffect(() => {
+    trackScreenView('Home');
+  }, []);
   
   useEffect(() => {
     const checkProgress = async () => {

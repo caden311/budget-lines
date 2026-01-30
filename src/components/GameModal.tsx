@@ -14,14 +14,16 @@ import {
   Platform,
 } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
-import { GameState } from '../core/types';
+import { GameState, GameMode } from '../core/types';
 import { generateShareText, formatTime, generateEmojiGrid } from '../utils/sharing';
 import { useTheme } from '../theme';
+import { trackShareResults } from '../services/analytics';
 
 interface GameModalProps {
   visible: boolean;
   type: 'win' | 'stuck';
   gameState: GameState | null;
+  gameMode?: GameMode;
   onClose: () => void;
   onReset: () => void;
   onNewPuzzle?: () => void;
@@ -31,6 +33,7 @@ export function GameModal({
   visible,
   type,
   gameState,
+  gameMode = 'daily',
   onClose,
   onReset,
   onNewPuzzle,
@@ -49,6 +52,9 @@ export function GameModal({
   
   const handleShare = async () => {
     const shareText = generateShareText(gameState);
+    
+    // Track share event
+    trackShareResults(gameMode, gameState.lines.length);
     
     if (Platform.OS === 'web') {
       await Clipboard.setStringAsync(shareText);

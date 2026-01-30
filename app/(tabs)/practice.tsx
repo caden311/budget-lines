@@ -2,7 +2,7 @@
  * Practice mode screen - Premium feature
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -16,6 +16,7 @@ import { useUserStore } from '../../src/stores/userStore';
 import { Difficulty } from '../../src/core/types';
 import { getDifficultyConfig } from '../../src/core/puzzleGenerator';
 import { PremiumModal } from '../../src/components/PremiumModal';
+import { trackScreenView } from '../../src/services/analytics';
 
 const DIFFICULTIES: { id: Difficulty; name: string; emoji: string }[] = [
   { id: 'easy', name: 'Easy', emoji: '🌱' },
@@ -32,6 +33,11 @@ export default function PracticeScreen() {
   
   const config = getDifficultyConfig(selectedDifficulty);
   const isPremium = premium.isPremium;
+  
+  // Track screen view
+  useEffect(() => {
+    trackScreenView('Practice');
+  }, []);
   
   const handlePlay = () => {
     if (!isPremium) {

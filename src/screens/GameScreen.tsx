@@ -18,6 +18,15 @@ import { useUserStore } from '../stores/userStore';
 import { GameMode, Difficulty } from '../core/types';
 import { heavyTap, success, warning, lightTap } from '../utils/haptics';
 import { useTheme } from '../theme';
+import {
+  trackPuzzleStarted,
+  trackPuzzleCompleted,
+  trackLineCommitted,
+  trackPuzzleStuck,
+  trackPuzzleReset,
+  trackHintRequested,
+  trackScreenView,
+} from '../services/analytics';
 
 interface GameScreenProps {
   mode: GameMode;
@@ -50,13 +59,24 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
   
   const isPremium = premium.isPremium;
   
+  // Track screen view
+  useEffect(() => {
+    trackScreenView(mode === 'daily' ? 'DailyGame' : 'PracticeGame');
+  }, [mode]);
+  
   // Initialize game on mount
   useEffect(() => {
-    if (mode === 'daily') {
-      startDailyPuzzle();
-    } else {
-      startPracticePuzzle(difficulty);
-    }
+    const initGame = async () => {
+      if (mode === 'daily') {
+        await startDailyPuzzle();
+      } else {
+        await startPracticePuzzle(difficulty);
+      }
+      // Track puzzle start
+      trackPuzzleStarted(mode, difficulty);
+    };
+    
+    initGame();
     
     // Save progress when leaving
     return () => {
@@ -72,7 +92,11 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
       
       // Record stats
       if (gameState.completedAt && gameState.startedAt) {
-        recordPuzzleComplete(gameState.completedAt - gameState.startedAt);
+        const timeMs = gameState.completedAt - gameState.startedAt;
+        recordPuzzleComplete(timeMs);
+        
+        // Track analytics
+        trackPuzzleCompleted(mode, timeMs, gameState.lines.length, difficulty);
       }
       if (mode === 'daily') {
         updateDailyStreak();
@@ -82,6 +106,9 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
     if (gameState?.isStuck && !showStuckModal && !gameState.isWon) {
       setShowStuckModal(true);
       warning();
+      
+      // Track stuck event
+      trackPuzzleStuck(mode, gameState.lines.length);
     }
   }, [gameState?.isWon, gameState?.isStuck]);
   
@@ -107,23 +134,33 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
     if (result.success) {
       heavyTap();
       recordLineDrawn();
+      
+      // Track line committed
+      if (gameState) {
+        trackLineCommitted(mode, gameState.lines.length + 1);
+      }
     } else {
       clearPath();
     }
-  }, [commitLine, clearPath, recordLineDrawn]);
+  }, [commitLine, clearPath, recordLineDrawn, gameState, mode]);
   
   const handleReset = useCallback(() => {
     resetPuzzle();
     clearHint();
     setShowWinModal(false);
     setShowStuckModal(false);
-  }, [resetPuzzle, clearHint]);
+    
+    // Track reset
+    trackPuzzleReset(mode);
+  }, [resetPuzzle, clearHint, mode]);
   
   const handleNewPuzzle = useCallback(() => {
     if (mode === 'practice') {
       startPracticePuzzle(difficulty);
+      trackPuzzleStarted(mode, difficulty);
     } else {
       startDailyPuzzle();
+      trackPuzzleStarted(mode);
     }
     clearHint();
     setShowWinModal(false);
@@ -139,8 +176,9 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
     const hint = requestHint('next-move');
     if (hint) {
       lightTap();
+      trackHintRequested(mode, 'next-move');
     }
-  }, [isPremium, requestHint]);
+  }, [isPremium, requestHint, mode]);
   
   if (isLoading || !gameState) {
     return (
@@ -195,6 +233,7 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
           visible={showWinModal}
           type="win"
           gameState={gameState}
+          gameMode={mode}
           onClose={() => setShowWinModal(false)}
           onReset={handleReset}
           onNewPuzzle={mode === 'practice' ? handleNewPuzzle : undefined}
@@ -205,6 +244,7 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
           visible={showStuckModal}
           type="stuck"
           gameState={gameState}
+          gameMode={mode}
           onClose={() => setShowStuckModal(false)}
           onReset={handleReset}
           onNewPuzzle={mode === 'practice' ? handleNewPuzzle : undefined}
