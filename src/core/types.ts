@@ -99,6 +99,8 @@ export interface SavedGameProgress {
   startedAt: number;
   /** Original solution paths (for hints) */
   solutionPaths?: string[][];
+  /** Whether a hint was used for this puzzle */
+  hintUsed?: boolean;
 }
 
 /** User statistics */

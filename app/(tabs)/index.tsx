@@ -11,11 +11,12 @@ import {
   Text,
   View,
 } from 'react-native';
+import { Tutorial } from '../../src/components';
 import { getDailyPuzzleId } from '../../src/core/puzzleGenerator';
 import { trackScreenView } from '../../src/services/analytics';
 import { useUserStore } from '../../src/stores/userStore';
 import { useTheme } from '../../src/theme';
-import { hasSavedProgress } from '../../src/utils/storage';
+import { getTutorialCompleted, hasSavedProgress, setTutorialCompleted } from '../../src/utils/storage';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -23,6 +24,8 @@ export default function HomeScreen() {
   const { stats, isLoading } = useUserStore();
   const [hasProgress, setHasProgress] = useState(false);
   const [today, setToday] = useState(() => new Date());
+  const [showTutorial, setShowTutorial] = useState(false);
+  const [tutorialChecked, setTutorialChecked] = useState(false);
   
   const dateString = today.toLocaleDateString('en-US', {
     weekday: 'long',
@@ -34,6 +37,30 @@ export default function HomeScreen() {
   useEffect(() => {
     trackScreenView('Home');
   }, []);
+  
+  // Check if tutorial has been completed
+  useEffect(() => {
+    const checkTutorial = async () => {
+      const completed = await getTutorialCompleted();
+      if (!completed) {
+        setShowTutorial(true);
+      }
+      setTutorialChecked(true);
+    };
+    checkTutorial();
+  }, []);
+  
+  // Handle tutorial completion
+  const handleTutorialComplete = async () => {
+    await setTutorialCompleted(true);
+    setShowTutorial(false);
+  };
+  
+  // Handle tutorial skip
+  const handleTutorialSkip = async () => {
+    await setTutorialCompleted(true);
+    setShowTutorial(false);
+  };
   
   // Refresh date and check progress when screen comes into focus
   useFocusEffect(
@@ -52,6 +79,13 @@ export default function HomeScreen() {
   
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
+      {/* Tutorial overlay for first-time users */}
+      <Tutorial
+        visible={showTutorial && tutorialChecked}
+        onComplete={handleTutorialComplete}
+        onSkip={handleTutorialSkip}
+      />
+      
       <View style={styles.content}>
         {/* Header */}
         <View style={styles.header}>

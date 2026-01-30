@@ -126,7 +126,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
           isStuck,
           remainingCells,
           completedAt: isWon ? Date.now() : null,
-          hintUsed: false, // Reset hint when loading saved game
+          hintUsed: savedProgress.hintUsed ?? false, // Restore hint usage from saved progress
         },
         isLoading: false,
       });
@@ -203,7 +203,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
         isStuck,
         remainingCells,
         completedAt: isWon ? Date.now() : null,
-        hintUsed: false, // Reset hint when loading saved game
+        hintUsed: savedProgress.hintUsed ?? false, // Restore hint usage from saved progress
       },
       isLoading: false,
     });
@@ -419,13 +419,14 @@ export const useGameStore = create<GameStore>((set, get) => ({
       savedAt: Date.now(),
       startedAt: gameState.startedAt,
       solutionPaths: gameState.solutionPaths,
+      hintUsed: gameState.hintUsed,
     };
     
     await saveGameProgress(progress);
   },
   
   requestHint: () => {
-    const { gameState } = get();
+    const { gameState, saveProgress } = get();
     if (!gameState) return null;
     
     // If hint already used, don't provide another
@@ -441,7 +442,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       gameState.solutionPaths
     );
     
-    // If hint was provided, mark it as used
+    // If hint was provided, mark it as used and persist immediately
     if (hint) {
       set({ 
         currentHint: hint,
@@ -450,6 +451,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
           hintUsed: true,
         }
       });
+      // Persist hint usage immediately so refreshing won't reset it
+      setTimeout(() => saveProgress(), 0);
     } else {
       set({ currentHint: null });
     }

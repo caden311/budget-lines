@@ -1,0 +1,323 @@
+{"location":"Tutorial.tsx:effect-start","message":"Demo effect started","data":{"currentStep":"demo","visible":true},"timestamp":1769804806728,"sessionId":"debug-session","hypothesisId":"A,B"}
+{"location":"Tutorial.tsx:cleanup","message":"Cleanup called","data":{},"timestamp":1769804806743,"sessionId":"debug-session","hypothesisId":"A,D"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":-1,"activePathLength":0,"sum":0},"timestamp":1769804850302,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:effect-start","message":"Demo effect started","data":{"currentStep":"demo","visible":true},"timestamp":1769804850316,"sessionId":"debug-session","hypothesisId":"A,B"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":-1,"activePathLength":0,"sum":0},"timestamp":1769804850323,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:animateDemo-start","message":"animateDemo called","data":{"cancelled":false},"timestamp":1769804850819,"sessionId":"debug-session","hypothesisId":"A,D"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":0,"cancelled":false},"timestamp":1769804851423,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":0,"activePathLength":1,"sum":3},"timestamp":1769804851427,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":1,"cancelled":false},"timestamp":1769804852026,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":1,"activePathLength":2,"sum":7},"timestamp":1769804852031,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":2,"cancelled":false},"timestamp":1769804852630,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":2,"activePathLength":3,"sum":9},"timestamp":1769804852635,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":3,"cancelled":false},"timestamp":1769804853233,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":3,"activePathLength":4,"sum":12},"timestamp":1769804853237,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:reset-path","message":"Resetting demoPathIndex to -1","data":{"cancelled":false},"timestamp":1769804854736,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":-1,"activePathLength":0,"sum":0},"timestamp":1769804854738,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:animateDemo-start","message":"animateDemo called","data":{"cancelled":false},"timestamp":1769804855238,"sessionId":"debug-session","hypothesisId":"A,D"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":0,"cancelled":false},"timestamp":1769804855840,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":0,"activePathLength":1,"sum":3},"timestamp":1769804855843,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":1,"cancelled":false},"timestamp":1769804856442,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":1,"activePathLength":2,"sum":7},"timestamp":1769804856443,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":2,"cancelled":false},"timestamp":1769804857043,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":2,"activePathLength":3,"sum":9},"timestamp":1769804857047,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":3,"cancelled":false},"timestamp":1769804857645,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":3,"activePathLength":4,"sum":12},"timestamp":1769804857650,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:reset-path","message":"Resetting demoPathIndex to -1","data":{"cancelled":false},"timestamp":1769804859149,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":-1,"activePathLength":0,"sum":0},"timestamp":1769804859154,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:animateDemo-start","message":"animateDemo called","data":{"cancelled":false},"timestamp":1769804859652,"sessionId":"debug-session","hypothesisId":"A,D"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":0,"cancelled":false},"timestamp":1769804860254,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":0,"activePathLength":1,"sum":3},"timestamp":1769804860255,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":1,"cancelled":false},"timestamp":1769804860856,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":1,"activePathLength":2,"sum":7},"timestamp":1769804860859,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":2,"cancelled":false},"timestamp":1769804861459,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":2,"activePathLength":3,"sum":9},"timestamp":1769804861464,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":3,"cancelled":false},"timestamp":1769804862062,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":3,"activePathLength":4,"sum":12},"timestamp":1769804862064,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:reset-path","message":"Resetting demoPathIndex to -1","data":{"cancelled":false},"timestamp":1769804863564,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":-1,"activePathLength":0,"sum":0},"timestamp":1769804863566,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:animateDemo-start","message":"animateDemo called","data":{"cancelled":false},"timestamp":1769804864065,"sessionId":"debug-session","hypothesisId":"A,D"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":0,"cancelled":false},"timestamp":1769804864666,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":0,"activePathLength":1,"sum":3},"timestamp":1769804864669,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":1,"cancelled":false},"timestamp":1769804865268,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":1,"activePathLength":2,"sum":7},"timestamp":1769804865270,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":2,"cancelled":false},"timestamp":1769804865869,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":2,"activePathLength":3,"sum":9},"timestamp":1769804865872,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":3,"cancelled":false},"timestamp":1769804866471,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":3,"activePathLength":4,"sum":12},"timestamp":1769804866471,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:reset-path","message":"Resetting demoPathIndex to -1","data":{"cancelled":false},"timestamp":1769804867972,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":-1,"activePathLength":0,"sum":0},"timestamp":1769804867974,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:animateDemo-start","message":"animateDemo called","data":{"cancelled":false},"timestamp":1769804868473,"sessionId":"debug-session","hypothesisId":"A,D"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":0,"cancelled":false},"timestamp":1769804869074,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":0,"activePathLength":1,"sum":3},"timestamp":1769804869078,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":1,"cancelled":false},"timestamp":1769804869676,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":1,"activePathLength":2,"sum":7},"timestamp":1769804869678,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":2,"cancelled":false},"timestamp":1769804870278,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":2,"activePathLength":3,"sum":9},"timestamp":1769804870279,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":3,"cancelled":false},"timestamp":1769804870879,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":3,"activePathLength":4,"sum":12},"timestamp":1769804870881,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:reset-path","message":"Resetting demoPathIndex to -1","data":{"cancelled":false},"timestamp":1769804872381,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":-1,"activePathLength":0,"sum":0},"timestamp":1769804872382,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:animateDemo-start","message":"animateDemo called","data":{"cancelled":false},"timestamp":1769804872882,"sessionId":"debug-session","hypothesisId":"A,D"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":0,"cancelled":false},"timestamp":1769804873483,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":0,"activePathLength":1,"sum":3},"timestamp":1769804873484,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":1,"cancelled":false},"timestamp":1769804874085,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":1,"activePathLength":2,"sum":7},"timestamp":1769804874087,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":2,"cancelled":false},"timestamp":1769804874687,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":2,"activePathLength":3,"sum":9},"timestamp":1769804874690,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":3,"cancelled":false},"timestamp":1769804875289,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":3,"activePathLength":4,"sum":12},"timestamp":1769804875292,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:reset-path","message":"Resetting demoPathIndex to -1","data":{"cancelled":false},"timestamp":1769804876791,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":-1,"activePathLength":0,"sum":0},"timestamp":1769804876792,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:animateDemo-start","message":"animateDemo called","data":{"cancelled":false},"timestamp":1769804877293,"sessionId":"debug-session","hypothesisId":"A,D"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":0,"cancelled":false},"timestamp":1769804877894,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":0,"activePathLength":1,"sum":3},"timestamp":1769804877899,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":1,"cancelled":false},"timestamp":1769804878495,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":1,"activePathLength":2,"sum":7},"timestamp":1769804878496,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":2,"cancelled":false},"timestamp":1769804879097,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":2,"activePathLength":3,"sum":9},"timestamp":1769804879100,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":3,"cancelled":false},"timestamp":1769804879699,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":3,"activePathLength":4,"sum":12},"timestamp":1769804879702,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:reset-path","message":"Resetting demoPathIndex to -1","data":{"cancelled":false},"timestamp":1769804881201,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":-1,"activePathLength":0,"sum":0},"timestamp":1769804881203,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:animateDemo-start","message":"animateDemo called","data":{"cancelled":false},"timestamp":1769804881703,"sessionId":"debug-session","hypothesisId":"A,D"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":0,"cancelled":false},"timestamp":1769804882305,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":0,"activePathLength":1,"sum":3},"timestamp":1769804882305,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":1,"cancelled":false},"timestamp":1769804882906,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":1,"activePathLength":2,"sum":7},"timestamp":1769804882908,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":2,"cancelled":false},"timestamp":1769804883508,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":2,"activePathLength":3,"sum":9},"timestamp":1769804883509,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":3,"cancelled":false},"timestamp":1769804884110,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":3,"activePathLength":4,"sum":12},"timestamp":1769804884110,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:reset-path","message":"Resetting demoPathIndex to -1","data":{"cancelled":false},"timestamp":1769804885612,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":-1,"activePathLength":0,"sum":0},"timestamp":1769804885615,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:animateDemo-start","message":"animateDemo called","data":{"cancelled":false},"timestamp":1769804886114,"sessionId":"debug-session","hypothesisId":"A,D"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":0,"cancelled":false},"timestamp":1769804886716,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":0,"activePathLength":1,"sum":3},"timestamp":1769804886717,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":1,"cancelled":false},"timestamp":1769804887317,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":1,"activePathLength":2,"sum":7},"timestamp":1769804887320,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":2,"cancelled":false},"timestamp":1769804887920,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":2,"activePathLength":3,"sum":9},"timestamp":1769804887921,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":3,"cancelled":false},"timestamp":1769804888521,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":3,"activePathLength":4,"sum":12},"timestamp":1769804888522,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:reset-path","message":"Resetting demoPathIndex to -1","data":{"cancelled":false},"timestamp":1769804890022,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":-1,"activePathLength":0,"sum":0},"timestamp":1769804890023,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:animateDemo-start","message":"animateDemo called","data":{"cancelled":false},"timestamp":1769804890523,"sessionId":"debug-session","hypothesisId":"A,D"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":0,"cancelled":false},"timestamp":1769804891124,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":0,"activePathLength":1,"sum":3},"timestamp":1769804891127,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":1,"cancelled":false},"timestamp":1769804891727,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":1,"activePathLength":2,"sum":7},"timestamp":1769804891729,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":2,"cancelled":false},"timestamp":1769804892328,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":2,"activePathLength":3,"sum":9},"timestamp":1769804892329,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":3,"cancelled":false},"timestamp":1769804892929,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":3,"activePathLength":4,"sum":12},"timestamp":1769804892931,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:reset-path","message":"Resetting demoPathIndex to -1","data":{"cancelled":false},"timestamp":1769804894431,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":-1,"activePathLength":0,"sum":0},"timestamp":1769804894432,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:animateDemo-start","message":"animateDemo called","data":{"cancelled":false},"timestamp":1769804894932,"sessionId":"debug-session","hypothesisId":"A,D"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":0,"cancelled":false},"timestamp":1769804895532,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":0,"activePathLength":1,"sum":3},"timestamp":1769804895535,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":1,"cancelled":false},"timestamp":1769804896134,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":1,"activePathLength":2,"sum":7},"timestamp":1769804896136,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":2,"cancelled":false},"timestamp":1769804896736,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":2,"activePathLength":3,"sum":9},"timestamp":1769804896739,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":3,"cancelled":false},"timestamp":1769804897337,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":3,"activePathLength":4,"sum":12},"timestamp":1769804897340,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:reset-path","message":"Resetting demoPathIndex to -1","data":{"cancelled":false},"timestamp":1769804898839,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":-1,"activePathLength":0,"sum":0},"timestamp":1769804898840,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:animateDemo-start","message":"animateDemo called","data":{"cancelled":false},"timestamp":1769804899340,"sessionId":"debug-session","hypothesisId":"A,D"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":0,"cancelled":false},"timestamp":1769804899943,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":0,"activePathLength":1,"sum":3},"timestamp":1769804899944,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":1,"cancelled":false},"timestamp":1769804900545,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":1,"activePathLength":2,"sum":7},"timestamp":1769804900545,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":2,"cancelled":false},"timestamp":1769804901146,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":2,"activePathLength":3,"sum":9},"timestamp":1769804901148,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":3,"cancelled":false},"timestamp":1769804901748,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":3,"activePathLength":4,"sum":12},"timestamp":1769804901750,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":-1,"activePathLength":0,"sum":0},"timestamp":1769804903252,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:reset-path","message":"Resetting demoPathIndex to -1","data":{"cancelled":false},"timestamp":1769804903249,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:animateDemo-start","message":"animateDemo called","data":{"cancelled":false},"timestamp":1769804903751,"sessionId":"debug-session","hypothesisId":"A,D"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":0,"cancelled":false},"timestamp":1769804904352,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":0,"activePathLength":1,"sum":3},"timestamp":1769804904353,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":1,"cancelled":false},"timestamp":1769804904953,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":1,"activePathLength":2,"sum":7},"timestamp":1769804904956,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":2,"cancelled":false},"timestamp":1769804905555,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":2,"activePathLength":3,"sum":9},"timestamp":1769804905557,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":3,"cancelled":false},"timestamp":1769804906157,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":3,"activePathLength":4,"sum":12},"timestamp":1769804906158,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:reset-path","message":"Resetting demoPathIndex to -1","data":{"cancelled":false},"timestamp":1769804907658,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":-1,"activePathLength":0,"sum":0},"timestamp":1769804907661,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:animateDemo-start","message":"animateDemo called","data":{"cancelled":false},"timestamp":1769804908160,"sessionId":"debug-session","hypothesisId":"A,D"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":0,"cancelled":false},"timestamp":1769804908762,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":0,"activePathLength":1,"sum":3},"timestamp":1769804908764,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":1,"cancelled":false},"timestamp":1769804909363,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":1,"activePathLength":2,"sum":7},"timestamp":1769804909366,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":2,"cancelled":false},"timestamp":1769804909965,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":2,"activePathLength":3,"sum":9},"timestamp":1769804909969,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":3,"cancelled":false},"timestamp":1769804910567,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":3,"activePathLength":4,"sum":12},"timestamp":1769804910569,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:reset-path","message":"Resetting demoPathIndex to -1","data":{"cancelled":false},"timestamp":1769804912068,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":-1,"activePathLength":0,"sum":0},"timestamp":1769804912070,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:animateDemo-start","message":"animateDemo called","data":{"cancelled":false},"timestamp":1769804912570,"sessionId":"debug-session","hypothesisId":"A,D"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":0,"cancelled":false},"timestamp":1769804913172,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":0,"activePathLength":1,"sum":3},"timestamp":1769804913174,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":1,"cancelled":false},"timestamp":1769804913773,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":1,"activePathLength":2,"sum":7},"timestamp":1769804913775,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":2,"cancelled":false},"timestamp":1769804914375,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":2,"activePathLength":3,"sum":9},"timestamp":1769804914376,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":3,"cancelled":false},"timestamp":1769804914976,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":3,"activePathLength":4,"sum":12},"timestamp":1769804914979,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:reset-path","message":"Resetting demoPathIndex to -1","data":{"cancelled":false},"timestamp":1769804916478,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":-1,"activePathLength":0,"sum":0},"timestamp":1769804916480,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:animateDemo-start","message":"animateDemo called","data":{"cancelled":false},"timestamp":1769804916980,"sessionId":"debug-session","hypothesisId":"A,D"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":0,"cancelled":false},"timestamp":1769804917581,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":0,"activePathLength":1,"sum":3},"timestamp":1769804917583,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":1,"cancelled":false},"timestamp":1769804918184,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":1,"activePathLength":2,"sum":7},"timestamp":1769804918184,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":2,"cancelled":false},"timestamp":1769804918785,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":2,"activePathLength":3,"sum":9},"timestamp":1769804918786,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":3,"cancelled":false},"timestamp":1769804919386,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":3,"activePathLength":4,"sum":12},"timestamp":1769804919389,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:reset-path","message":"Resetting demoPathIndex to -1","data":{"cancelled":false},"timestamp":1769804920888,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":-1,"activePathLength":0,"sum":0},"timestamp":1769804920889,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:animateDemo-start","message":"animateDemo called","data":{"cancelled":false},"timestamp":1769804921390,"sessionId":"debug-session","hypothesisId":"A,D"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":0,"cancelled":false},"timestamp":1769804921991,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":0,"activePathLength":1,"sum":3},"timestamp":1769804921992,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":1,"cancelled":false},"timestamp":1769804922593,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":1,"activePathLength":2,"sum":7},"timestamp":1769804922595,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":2,"cancelled":false},"timestamp":1769804923195,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":2,"activePathLength":3,"sum":9},"timestamp":1769804923196,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":3,"cancelled":false},"timestamp":1769804923796,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":3,"activePathLength":4,"sum":12},"timestamp":1769804923799,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:reset-path","message":"Resetting demoPathIndex to -1","data":{"cancelled":false},"timestamp":1769804925298,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":-1,"activePathLength":0,"sum":0},"timestamp":1769804925299,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:animateDemo-start","message":"animateDemo called","data":{"cancelled":false},"timestamp":1769804925799,"sessionId":"debug-session","hypothesisId":"A,D"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":0,"cancelled":false},"timestamp":1769804926400,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":0,"activePathLength":1,"sum":3},"timestamp":1769804926400,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":1,"cancelled":false},"timestamp":1769804927001,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":1,"activePathLength":2,"sum":7},"timestamp":1769804927004,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":2,"cancelled":false},"timestamp":1769804927603,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":2,"activePathLength":3,"sum":9},"timestamp":1769804927605,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":3,"cancelled":false},"timestamp":1769804928205,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":3,"activePathLength":4,"sum":12},"timestamp":1769804928206,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:reset-path","message":"Resetting demoPathIndex to -1","data":{"cancelled":false},"timestamp":1769804929706,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":-1,"activePathLength":0,"sum":0},"timestamp":1769804929709,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:animateDemo-start","message":"animateDemo called","data":{"cancelled":false},"timestamp":1769804930208,"sessionId":"debug-session","hypothesisId":"A,D"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":0,"cancelled":false},"timestamp":1769804930810,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":0,"activePathLength":1,"sum":3},"timestamp":1769804930812,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":1,"cancelled":false},"timestamp":1769804931411,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":1,"activePathLength":2,"sum":7},"timestamp":1769804931414,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":2,"cancelled":false},"timestamp":1769804932014,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":2,"activePathLength":3,"sum":9},"timestamp":1769804932017,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":3,"cancelled":false},"timestamp":1769804932616,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":3,"activePathLength":4,"sum":12},"timestamp":1769804932617,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:reset-path","message":"Resetting demoPathIndex to -1","data":{"cancelled":false},"timestamp":1769804934117,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":-1,"activePathLength":0,"sum":0},"timestamp":1769804934118,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:animateDemo-start","message":"animateDemo called","data":{"cancelled":false},"timestamp":1769804934620,"sessionId":"debug-session","hypothesisId":"A,D"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":0,"cancelled":false},"timestamp":1769804935221,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":0,"activePathLength":1,"sum":3},"timestamp":1769804935224,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":1,"cancelled":false},"timestamp":1769804935822,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":1,"activePathLength":2,"sum":7},"timestamp":1769804935825,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":2,"cancelled":false},"timestamp":1769804936424,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":2,"activePathLength":3,"sum":9},"timestamp":1769804936425,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":3,"cancelled":false},"timestamp":1769804937025,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":3,"activePathLength":4,"sum":12},"timestamp":1769804937028,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:reset-path","message":"Resetting demoPathIndex to -1","data":{"cancelled":false},"timestamp":1769804938526,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":-1,"activePathLength":0,"sum":0},"timestamp":1769804938527,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:animateDemo-start","message":"animateDemo called","data":{"cancelled":false},"timestamp":1769804939026,"sessionId":"debug-session","hypothesisId":"A,D"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":0,"cancelled":false},"timestamp":1769804939627,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":0,"activePathLength":1,"sum":3},"timestamp":1769804939630,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":1,"cancelled":false},"timestamp":1769804940229,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":1,"activePathLength":2,"sum":7},"timestamp":1769804940230,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":2,"cancelled":false},"timestamp":1769804940830,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":2,"activePathLength":3,"sum":9},"timestamp":1769804940832,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":3,"cancelled":false},"timestamp":1769804941431,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":3,"activePathLength":4,"sum":12},"timestamp":1769804941433,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:reset-path","message":"Resetting demoPathIndex to -1","data":{"cancelled":false},"timestamp":1769804942933,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":-1,"activePathLength":0,"sum":0},"timestamp":1769804942934,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:animateDemo-start","message":"animateDemo called","data":{"cancelled":false},"timestamp":1769804943434,"sessionId":"debug-session","hypothesisId":"A,D"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":0,"cancelled":false},"timestamp":1769804944035,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":0,"activePathLength":1,"sum":3},"timestamp":1769804944037,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":1,"cancelled":false},"timestamp":1769804945360,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":1,"activePathLength":2,"sum":7},"timestamp":1769804945363,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":2,"cancelled":false},"timestamp":1769804946359,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":2,"activePathLength":3,"sum":9},"timestamp":1769804946360,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":3,"cancelled":false},"timestamp":1769804947359,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":3,"activePathLength":4,"sum":12},"timestamp":1769804947362,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:reset-path","message":"Resetting demoPathIndex to -1","data":{"cancelled":false},"timestamp":1769804948862,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":-1,"activePathLength":0,"sum":0},"timestamp":1769804948863,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:animateDemo-start","message":"animateDemo called","data":{"cancelled":false},"timestamp":1769804949362,"sessionId":"debug-session","hypothesisId":"A,D"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":0,"cancelled":false},"timestamp":1769804949963,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":0,"activePathLength":1,"sum":3},"timestamp":1769804949965,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":1,"cancelled":false},"timestamp":1769804950565,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":1,"activePathLength":2,"sum":7},"timestamp":1769804950566,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":2,"cancelled":false},"timestamp":1769804951166,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":2,"activePathLength":3,"sum":9},"timestamp":1769804951168,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":3,"cancelled":false},"timestamp":1769804951768,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":3,"activePathLength":4,"sum":12},"timestamp":1769804951770,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:reset-path","message":"Resetting demoPathIndex to -1","data":{"cancelled":false},"timestamp":1769804953271,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":-1,"activePathLength":0,"sum":0},"timestamp":1769804953273,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:animateDemo-start","message":"animateDemo called","data":{"cancelled":false},"timestamp":1769804953773,"sessionId":"debug-session","hypothesisId":"A,D"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":0,"cancelled":false},"timestamp":1769804954375,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":0,"activePathLength":1,"sum":3},"timestamp":1769804954376,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":1,"cancelled":false},"timestamp":1769804954976,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":1,"activePathLength":2,"sum":7},"timestamp":1769804954978,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":2,"cancelled":false},"timestamp":1769804955578,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":2,"activePathLength":3,"sum":9},"timestamp":1769804955580,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":3,"cancelled":false},"timestamp":1769804956180,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":3,"activePathLength":4,"sum":12},"timestamp":1769804956182,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:reset-path","message":"Resetting demoPathIndex to -1","data":{"cancelled":false},"timestamp":1769804957681,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":-1,"activePathLength":0,"sum":0},"timestamp":1769804957684,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":-1,"activePathLength":0,"sum":0},"timestamp":1769804958170,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:cleanup","message":"Cleanup called","data":{},"timestamp":1769804958177,"sessionId":"debug-session","hypothesisId":"A,D"}
+{"location":"Tutorial.tsx:effect-start","message":"Demo effect started","data":{"currentStep":"demo","visible":true},"timestamp":1769804958178,"sessionId":"debug-session","hypothesisId":"A,B"}
+{"location":"Tutorial.tsx:animateDemo-start","message":"animateDemo called","data":{"cancelled":true},"timestamp":1769804958195,"sessionId":"debug-session","hypothesisId":"A,D"}
+{"location":"Tutorial.tsx:cleanup","message":"Cleanup called","data":{},"timestamp":1769804958196,"sessionId":"debug-session","hypothesisId":"A,D"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":-1,"activePathLength":0,"sum":0},"timestamp":1769804979631,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:effect-start","message":"Demo effect started","data":{"currentStep":"demo","visible":true},"timestamp":1769804979640,"sessionId":"debug-session","hypothesisId":"A,B"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":-1,"activePathLength":0,"sum":0},"timestamp":1769804979651,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:animateDemo-start","message":"animateDemo called","data":{"cancelled":false},"timestamp":1769804980142,"sessionId":"debug-session","hypothesisId":"A,D"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":0,"cancelled":false},"timestamp":1769804980744,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":0,"activePathLength":1,"sum":3},"timestamp":1769804980747,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":1,"cancelled":false},"timestamp":1769804981346,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":1,"activePathLength":2,"sum":7},"timestamp":1769804981348,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":2,"cancelled":false},"timestamp":1769804981948,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":2,"activePathLength":3,"sum":9},"timestamp":1769804981950,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":3,"cancelled":false},"timestamp":1769804982550,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":3,"activePathLength":4,"sum":12},"timestamp":1769804982552,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:reset-path","message":"Resetting demoPathIndex to -1","data":{"cancelled":false},"timestamp":1769804984052,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":-1,"activePathLength":0,"sum":0},"timestamp":1769804984055,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:animateDemo-start","message":"animateDemo called","data":{"cancelled":false},"timestamp":1769804984554,"sessionId":"debug-session","hypothesisId":"A,D"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":0,"cancelled":false},"timestamp":1769804985156,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":0,"activePathLength":1,"sum":3},"timestamp":1769804985158,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":1,"cancelled":false},"timestamp":1769804985757,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":1,"activePathLength":2,"sum":7},"timestamp":1769804985760,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":2,"cancelled":false},"timestamp":1769804986359,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":2,"activePathLength":3,"sum":9},"timestamp":1769804986361,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":3,"cancelled":false},"timestamp":1769804986960,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":3,"activePathLength":4,"sum":12},"timestamp":1769804986962,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:reset-path","message":"Resetting demoPathIndex to -1","data":{"cancelled":false},"timestamp":1769804988461,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":-1,"activePathLength":0,"sum":0},"timestamp":1769804988463,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:animateDemo-start","message":"animateDemo called","data":{"cancelled":false},"timestamp":1769804988964,"sessionId":"debug-session","hypothesisId":"A,D"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":0,"cancelled":false},"timestamp":1769804989566,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":0,"activePathLength":1,"sum":3},"timestamp":1769804989567,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":1,"cancelled":false},"timestamp":1769804990168,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":1,"activePathLength":2,"sum":7},"timestamp":1769804990171,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":2,"cancelled":false},"timestamp":1769804990770,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":2,"activePathLength":3,"sum":9},"timestamp":1769804990771,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":3,"cancelled":false},"timestamp":1769804991371,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":3,"activePathLength":4,"sum":12},"timestamp":1769804991374,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:reset-path","message":"Resetting demoPathIndex to -1","data":{"cancelled":false},"timestamp":1769804992873,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":-1,"activePathLength":0,"sum":0},"timestamp":1769804992875,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:animateDemo-start","message":"animateDemo called","data":{"cancelled":false},"timestamp":1769804993374,"sessionId":"debug-session","hypothesisId":"A,D"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":0,"cancelled":false},"timestamp":1769804993975,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":0,"activePathLength":1,"sum":3},"timestamp":1769804993975,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":1,"cancelled":false},"timestamp":1769804994575,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":1,"activePathLength":2,"sum":7},"timestamp":1769804994576,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":2,"cancelled":false},"timestamp":1769804995176,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":2,"activePathLength":3,"sum":9},"timestamp":1769804995177,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:setDemoPathIndex","message":"Setting demoPathIndex","data":{"i":3,"cancelled":false},"timestamp":1769804995777,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":3,"activePathLength":4,"sum":12},"timestamp":1769804995779,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:reset-path","message":"Resetting demoPathIndex to -1","data":{"cancelled":false},"timestamp":1769804997278,"sessionId":"debug-session","hypothesisId":"C"}
+{"location":"Tutorial.tsx:renderDemoGrid","message":"Rendering demo grid","data":{"demoPathIndex":-1,"activePathLength":0,"sum":0},"timestamp":1769804997279,"sessionId":"debug-session","hypothesisId":"E"}
+{"location":"Tutorial.tsx:animateDemo-start","message":"animateDemo called","data":{"cancelled":false},"timestamp":1769804997779,"sessionId":"debug-session","hypothesisId":"A,D"}
+{"location":"Tutorial.tsx:cleanup","message":"Cleanup called","data":{},"timestamp":1769804997892,"sessionId":"debug-session","hypothesisId":"A,D"}

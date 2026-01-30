@@ -5,13 +5,14 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SecureStore from 'expo-secure-store';
-import { SavedGameProgress, UserStats, PremiumStatus } from '../core/types';
+import { PremiumStatus, SavedGameProgress, UserStats } from '../core/types';
 
 const KEYS = {
   GAME_PROGRESS_PREFIX: 'game_progress_',
   USER_STATS: 'user_stats',
   PREMIUM_STATUS: 'premium_status',
   SAVED_GAMES_LIST: 'saved_games_list',
+  TUTORIAL_COMPLETED: 'tutorial_completed',
 };
 
 // ============ Game Progress ============
@@ -144,6 +145,28 @@ export async function loadPremiumStatus(): Promise<PremiumStatus | null> {
     } catch {
       return null;
     }
+  }
+}
+
+// ============ Tutorial ============
+
+/** Check if user has completed the tutorial */
+export async function getTutorialCompleted(): Promise<boolean> {
+  try {
+    const data = await AsyncStorage.getItem(KEYS.TUTORIAL_COMPLETED);
+    return data === 'true';
+  } catch (error) {
+    console.error('Failed to get tutorial status:', error);
+    return false;
+  }
+}
+
+/** Mark the tutorial as completed */
+export async function setTutorialCompleted(completed: boolean = true): Promise<void> {
+  try {
+    await AsyncStorage.setItem(KEYS.TUTORIAL_COMPLETED, completed ? 'true' : 'false');
+  } catch (error) {
+    console.error('Failed to set tutorial status:', error);
   }
 }
 

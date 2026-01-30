@@ -10,3 +10,4 @@ export { GameModal } from './GameModal';
 export { GameBoard } from './GameBoard';
 export { PremiumModal } from './PremiumModal';
 export { LineCelebration } from './LineCelebration';
+export { Tutorial } from './Tutorial';
