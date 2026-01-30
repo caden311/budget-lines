@@ -107,6 +107,7 @@ export interface SavedGameProgress {
 export interface UserStats {
   dailyStreak: number;
   lastDailyDate: string | null;
+  lastCompletedPuzzleId: string | null;
   totalPuzzlesCompleted: number;
   totalLinesDrawn: number;
   bestTime: number | null;

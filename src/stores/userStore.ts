@@ -23,7 +23,7 @@ interface UserStore {
   loadUserData: () => Promise<void>;
   
   // Stats updates
-  recordPuzzleComplete: (timeMs: number) => Promise<void>;
+  recordPuzzleComplete: (timeMs: number, puzzleId: string) => Promise<void>;
   recordLineDrawn: () => Promise<void>;
   updateDailyStreak: () => Promise<void>;
   
@@ -37,6 +37,7 @@ interface UserStore {
 const DEFAULT_STATS: UserStats = {
   dailyStreak: 0,
   lastDailyDate: null,
+  lastCompletedPuzzleId: null,
   totalPuzzlesCompleted: 0,
   totalLinesDrawn: 0,
   bestTime: null,
@@ -70,8 +71,13 @@ export const useUserStore = create<UserStore>((set, get) => ({
     });
   },
   
-  recordPuzzleComplete: async (timeMs: number) => {
+  recordPuzzleComplete: async (timeMs: number, puzzleId: string) => {
     const { stats } = get();
+    
+    // Only count each puzzle once (prevents counting after reset)
+    if (stats.lastCompletedPuzzleId === puzzleId) {
+      return;
+    }
     
     const totalTime = stats.averageTime
       ? stats.averageTime * stats.totalPuzzlesCompleted + timeMs
@@ -81,6 +87,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
     const newStats: UserStats = {
       ...stats,
       totalPuzzlesCompleted: newCount,
+      lastCompletedPuzzleId: puzzleId,
       bestTime: stats.bestTime ? Math.min(stats.bestTime, timeMs) : timeMs,
       averageTime: Math.round(totalTime / newCount),
     };

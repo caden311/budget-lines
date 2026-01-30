@@ -115,7 +115,7 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
       // Record stats
       if (gameState.completedAt && gameState.startedAt) {
         const timeMs = gameState.completedAt - gameState.startedAt;
-        recordPuzzleComplete(timeMs);
+        recordPuzzleComplete(timeMs, gameState.puzzleId);
         
         // Track analytics
         trackPuzzleCompleted(mode, timeMs, gameState.lines.length, difficulty);
