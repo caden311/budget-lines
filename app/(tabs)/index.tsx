@@ -89,7 +89,7 @@ export default function HomeScreen() {
       <View style={styles.content}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={[styles.logo, { color: theme.text }]}>Budget Lines</Text>
+          <Text style={[styles.logo, { color: theme.text }]}>SumTrails</Text>
           <Text style={[styles.tagline, { color: theme.textMuted }]}>Draw paths. Hit the sum.</Text>
         </View>
         

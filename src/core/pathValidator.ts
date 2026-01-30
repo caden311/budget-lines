@@ -1,5 +1,5 @@
 /**
- * Path validation for Budget Lines
+ * Path validation for SumTrails
  * Handles checking if moves are valid during line drawing
  */
 

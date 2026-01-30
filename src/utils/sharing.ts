@@ -1,5 +1,5 @@
 /**
- * Sharing utilities for Budget Lines
+ * Sharing utilities for SumTrails
  * Generates shareable results like Wordle
  */
 
@@ -70,7 +70,7 @@ export function generateShareText(gameState: GameState): string {
   const emojiGrid = generateEmojiGrid(gameState);
   const lineCount = gameState.lines.length;
   
-  return `Check out Budget Lines! I completed the puzzle and found ${lineCount} lines!\n\n${emojiGrid}\n\nPlay at: budgetlines.app`;
+  return `Check out SumTrails! I completed the puzzle and found ${lineCount} lines!\n\n${emojiGrid}\n\nPlay at: sumtrails.app`;
 }
 
 /** Check if sharing is available */

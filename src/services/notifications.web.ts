@@ -1,5 +1,5 @@
 /**
- * Notifications Service for Budget Lines - Web Stub
+ * Notifications Service for SumTrails - Web Stub
  * Push notifications are not fully supported on web - provides no-op implementations
  */
 

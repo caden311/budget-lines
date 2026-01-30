@@ -1,5 +1,5 @@
 /**
- * Notifications Service for Budget Lines
+ * Notifications Service for SumTrails
  * Handles daily puzzle reminders using expo-notifications
  */
 

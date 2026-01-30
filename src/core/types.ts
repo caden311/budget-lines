@@ -1,5 +1,5 @@
 /**
- * Budget Lines - Core Game Types
+ * SumTrails - Core Game Types
  * 
  * A puzzle game where players draw lines through numbered cells
  * to reach a target sum with a minimum line length.

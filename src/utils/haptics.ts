@@ -1,5 +1,5 @@
 /**
- * Haptic feedback utilities for Budget Lines
+ * Haptic feedback utilities for SumTrails
  */
 
 import * as Haptics from 'expo-haptics';

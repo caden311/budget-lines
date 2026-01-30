@@ -1,5 +1,5 @@
 /**
- * In-App Purchase Service for Budget Lines - Web Stub
+ * In-App Purchase Service for SumTrails - Web Stub
  * IAP is not available on web - provides no-op implementations
  */
 

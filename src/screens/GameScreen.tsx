@@ -1,5 +1,5 @@
 /**
- * Main Game Screen for Budget Lines
+ * Main Game Screen for SumTrails
  */
 
 import { useFocusEffect } from 'expo-router';

@@ -1,5 +1,5 @@
 /**
- * Color palette for Budget Lines
+ * Color palette for SumTrails
  * Blue-focused theme with light and dark modes
  */
 

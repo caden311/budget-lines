@@ -1,5 +1,5 @@
 /**
- * Sum calculation utilities for Budget Lines
+ * Sum calculation utilities for SumTrails
  */
 
 import { Cell } from './types';

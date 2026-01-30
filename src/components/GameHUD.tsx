@@ -1,5 +1,5 @@
 /**
- * Game HUD component for Budget Lines
+ * Game HUD component for SumTrails
  * Displays target sum, current sum, lines found, reset and hint buttons
  */
 

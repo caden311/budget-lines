@@ -1,5 +1,5 @@
 /**
- * Hint generator for Budget Lines
+ * Hint generator for SumTrails
  * Provides a single-use hint showing a complete valid line that's part of a solvable solution
  */
 

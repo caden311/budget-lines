@@ -1,5 +1,5 @@
 /**
- * Theme context for Budget Lines
+ * Theme context for SumTrails
  * Provides theme colors throughout the app
  */
 

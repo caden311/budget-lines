@@ -1,5 +1,5 @@
 /**
- * Tutorial component for Budget Lines
+ * Tutorial component for SumTrails
  * Interactive, animated multi-step tutorial for first-time users
  */
 
@@ -12,7 +12,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import Animated, {
   Easing,
   FadeIn,
@@ -395,7 +395,7 @@ export function Tutorial({ visible, onComplete, onSkip }: TutorialProps) {
           >
             <Text style={styles.welcomeEmoji}>👋</Text>
             <Text style={[styles.stepTitle, { color: theme.text }]}>
-              Welcome to Budget Lines!
+              Welcome to SumTrails!
             </Text>
             <Text style={[styles.stepDescription, { color: theme.textSecondary }]}>
               A relaxing puzzle game where you draw paths through numbered cells to reach a target sum.
@@ -528,75 +528,77 @@ export function Tutorial({ visible, onComplete, onSkip }: TutorialProps) {
       animationType="fade"
       onRequestClose={onSkip}
     >
-      <View style={[styles.overlay, { backgroundColor: 'rgba(0, 0, 0, 0.85)' }]}>
-        <View style={[styles.modal, { backgroundColor: theme.cardBackground }]}>
-          {/* Step indicators */}
-          <View style={styles.stepIndicators}>
-            {STEPS.map((step, index) => (
-              <View
-                key={step}
-                style={[
-                  styles.stepDot,
-                  {
-                    backgroundColor: index <= stepIndex 
-                      ? theme.primary 
-                      : theme.buttonSecondary,
-                  },
-                ]}
-              />
-            ))}
-          </View>
-          
-          {/* Content */}
-          <View style={styles.contentContainer}>
-            {renderStepContent()}
-          </View>
-          
-          {/* Navigation */}
-          <View style={styles.navigation}>
-            {stepIndex > 0 && currentStep !== 'complete' && (
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <View style={[styles.overlay, { backgroundColor: 'rgba(0, 0, 0, 0.85)' }]}>
+          <View style={[styles.modal, { backgroundColor: theme.cardBackground }]}>
+            {/* Step indicators */}
+            <View style={styles.stepIndicators}>
+              {STEPS.map((step, index) => (
+                <View
+                  key={step}
+                  style={[
+                    styles.stepDot,
+                    {
+                      backgroundColor: index <= stepIndex 
+                        ? theme.primary 
+                        : theme.buttonSecondary,
+                    },
+                  ]}
+                />
+              ))}
+            </View>
+            
+            {/* Content */}
+            <View style={styles.contentContainer}>
+              {renderStepContent()}
+            </View>
+            
+            {/* Navigation */}
+            <View style={styles.navigation}>
+              {stepIndex > 0 && currentStep !== 'complete' && (
+                <Pressable
+                  style={[styles.navButton, styles.backButton, { borderColor: theme.border }]}
+                  onPress={goToPrevStep}
+                >
+                  <Text style={[styles.backButtonText, { color: theme.textSecondary }]}>
+                    Back
+                  </Text>
+                </Pressable>
+              )}
+              
               <Pressable
-                style={[styles.navButton, styles.backButton, { borderColor: theme.border }]}
-                onPress={goToPrevStep}
+                style={[
+                  styles.navButton,
+                  styles.nextButton,
+                  { 
+                    backgroundColor: canProceed ? theme.primary : theme.buttonSecondary,
+                    opacity: canProceed ? 1 : 0.5,
+                  },
+                  stepIndex === 0 && styles.fullWidthButton,
+                ]}
+                onPress={goToNextStep}
+                disabled={!canProceed}
               >
-                <Text style={[styles.backButtonText, { color: theme.textSecondary }]}>
-                  Back
+                <Text style={[
+                  styles.nextButtonText,
+                  { color: canProceed ? '#ffffff' : theme.textMuted }
+                ]}>
+                  {currentStep === 'complete' ? 'Start Playing' : 'Continue'}
+                </Text>
+              </Pressable>
+            </View>
+            
+            {/* Skip button */}
+            {currentStep !== 'complete' && (
+              <Pressable style={styles.skipButton} onPress={onSkip}>
+                <Text style={[styles.skipButtonText, { color: theme.textMuted }]}>
+                  Skip Tutorial
                 </Text>
               </Pressable>
             )}
-            
-            <Pressable
-              style={[
-                styles.navButton,
-                styles.nextButton,
-                { 
-                  backgroundColor: canProceed ? theme.primary : theme.buttonSecondary,
-                  opacity: canProceed ? 1 : 0.5,
-                },
-                stepIndex === 0 && styles.fullWidthButton,
-              ]}
-              onPress={goToNextStep}
-              disabled={!canProceed}
-            >
-              <Text style={[
-                styles.nextButtonText,
-                { color: canProceed ? '#ffffff' : theme.textMuted }
-              ]}>
-                {currentStep === 'complete' ? 'Start Playing' : 'Continue'}
-              </Text>
-            </Pressable>
           </View>
-          
-          {/* Skip button */}
-          {currentStep !== 'complete' && (
-            <Pressable style={styles.skipButton} onPress={onSkip}>
-              <Text style={[styles.skipButtonText, { color: theme.textMuted }]}>
-                Skip Tutorial
-              </Text>
-            </Pressable>
-          )}
         </View>
-      </View>
+      </GestureHandlerRootView>
     </Modal>
   );
 }

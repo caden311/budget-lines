@@ -1,5 +1,5 @@
 /**
- * Puzzle generator for Budget Lines
+ * Puzzle generator for SumTrails
  * Uses constructive generation to guarantee solvable puzzles
  * Supports seeded generation for daily puzzles
  */
@@ -54,7 +54,7 @@ export function generateDailyPuzzle(
   difficulty: Difficulty = 'medium'
 ): GameState {
   const puzzleId = getDailyPuzzleId(date);
-  const seed = `budgetlines-${puzzleId}`;
+  const seed = `sumtrails-${puzzleId}`;
   return generatePuzzleWithSeed(seed, puzzleId, 'daily', difficulty);
 }
 

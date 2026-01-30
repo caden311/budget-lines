@@ -1,5 +1,5 @@
 /**
- * Grid component for Budget Lines
+ * Grid component for SumTrails
  * Displays the game grid and handles layout
  */
 

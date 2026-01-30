@@ -1,5 +1,5 @@
 /**
- * Grid operations for Budget Lines
+ * Grid operations for SumTrails
  */
 
 import {

@@ -1,5 +1,5 @@
 /**
- * In-App Purchase Service for Budget Lines
+ * In-App Purchase Service for SumTrails
  * Handles premium unlock purchase and restore using react-native-iap
  */
 

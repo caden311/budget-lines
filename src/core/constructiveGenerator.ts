@@ -1,5 +1,5 @@
 /**
- * Constructive Puzzle Generator for Budget Lines
+ * Constructive Puzzle Generator for SumTrails
  * 
  * Generates puzzles that are guaranteed to be solvable by building them
  * backwards from valid solutions. Instead of generating random grids and

@@ -1,5 +1,5 @@
 /**
- * Analytics Service for Budget Lines - Web Stub
+ * Analytics Service for SumTrails - Web Stub
  * Logs analytics events to console on web (Firebase Analytics is native-only)
  */
 

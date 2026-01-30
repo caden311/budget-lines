@@ -1,5 +1,5 @@
 /**
- * Stuck detection for Budget Lines
+ * Stuck detection for SumTrails
  * Determines if the player can no longer complete the puzzle
  */
 

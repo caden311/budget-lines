@@ -1,5 +1,5 @@
 /**
- * Path overlay component for Budget Lines
+ * Path overlay component for SumTrails
  * Draws SVG lines connecting cells in the current path
  */
 

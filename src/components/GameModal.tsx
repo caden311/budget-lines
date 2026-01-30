@@ -1,5 +1,5 @@
 /**
- * Game modal component for Budget Lines
+ * Game modal component for SumTrails
  * Shows win/stuck states with sharing options
  */
 

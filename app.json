@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "Budget Lines",
-    "slug": "budget-lines",
+    "name": "SumTrails",
+    "slug": "sumtrails",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "scheme": "budget-lines",
+    "scheme": "sumtrails",
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -15,7 +15,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.budgetlines.app",
+      "bundleIdentifier": "com.sumtrails.app",
       "infoPlist": {
         "UIBackgroundModes": ["remote-notification"]
       }
@@ -26,7 +26,7 @@
         "backgroundColor": "#0c1222"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.budgetlines.app",
+      "package": "com.sumtrails.app",
       "googleServicesFile": "./google-services.json"
     },
     "web": {
@@ -42,8 +42,7 @@
           "icon": "./assets/icon.png",
           "color": "#3B82F6"
         }
-      ],
-      "@react-native-firebase/app"
+      ]
     ],
     "experiments": {
       "typedRoutes": true

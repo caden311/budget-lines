@@ -1,5 +1,5 @@
 /**
- * Storage utilities for Budget Lines
+ * Storage utilities for SumTrails
  * Handles persisting game progress, user stats, and premium status
  */
 

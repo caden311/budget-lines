@@ -1,5 +1,5 @@
 /**
- * GameBoard component for Budget Lines
+ * GameBoard component for SumTrails
  * Combines Grid and PathOverlay with gesture handling
  */
 

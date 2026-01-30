@@ -1,5 +1,5 @@
 /**
- * Cell component for Budget Lines
+ * Cell component for SumTrails
  * Displays a single cell on the game grid
  */
 
