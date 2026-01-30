@@ -1,5 +1,5 @@
 /**
- * Stats screen - Basic stats free, detailed stats premium
+ * Stats screen - All stats free for MVP
  * Also includes notification settings
  */
 
@@ -10,14 +10,12 @@ import {
   StyleSheet,
   SafeAreaView,
   ScrollView,
-  Pressable,
   Switch,
   Alert,
 } from 'react-native';
 import { useTheme } from '../../src/theme';
 import { useUserStore } from '../../src/stores/userStore';
 import { formatTime } from '../../src/utils/sharing';
-import { PremiumModal } from '../../src/components/PremiumModal';
 import {
   areNotificationsEnabled,
   toggleNotifications,
@@ -28,12 +26,9 @@ import { trackScreenView } from '../../src/services/analytics';
 
 export default function StatsScreen() {
   const { theme } = useTheme();
-  const { stats, premium, isLoading } = useUserStore();
-  const [showPremiumModal, setShowPremiumModal] = useState(false);
+  const { stats } = useUserStore();
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [reminderTime, setReminderTime] = useState({ hour: 9, minute: 0 });
-  
-  const isPremium = premium.isPremium;
   
   // Track screen view
   useEffect(() => {
@@ -84,7 +79,7 @@ export default function StatsScreen() {
           <Text style={[styles.subtitle, { color: theme.textMuted }]}>Your puzzle-solving journey</Text>
         </View>
         
-        {/* Main stats - FREE */}
+        {/* Main stats */}
         <View style={styles.mainStats}>
           <View style={[styles.statCard, { backgroundColor: theme.cardBackground }]}>
             <Text style={styles.statEmoji}>🔥</Text>
@@ -99,122 +94,55 @@ export default function StatsScreen() {
           </View>
         </View>
         
-        {/* Detailed stats - PREMIUM */}
+        {/* Detailed stats */}
         <View style={[styles.detailsCard, { backgroundColor: theme.cardBackground }]}>
-          <View style={styles.detailsHeader}>
-            <Text style={[styles.detailsTitle, { color: theme.text }]}>Performance</Text>
-            {!isPremium && (
-              <View style={[styles.proBadge, { backgroundColor: theme.warning }]}>
-                <Text style={styles.proBadgeText}>👑 PRO</Text>
-              </View>
-            )}
+          <Text style={[styles.detailsTitle, { color: theme.text }]}>Performance</Text>
+          
+          <View style={[styles.detailRow, { borderBottomColor: theme.border }]}>
+            <View style={[styles.detailIcon, { backgroundColor: theme.buttonSecondary }]}>
+              <Text>✏️</Text>
+            </View>
+            <View style={styles.detailInfo}>
+              <Text style={[styles.detailLabel, { color: theme.textSecondary }]}>Total Lines Drawn</Text>
+              <Text style={[styles.detailValue, { color: theme.text }]}>{stats.totalLinesDrawn}</Text>
+            </View>
           </View>
           
-          {isPremium ? (
-            // Premium user - show all stats
-            <>
-              <View style={[styles.detailRow, { borderBottomColor: theme.border }]}>
-                <View style={[styles.detailIcon, { backgroundColor: theme.buttonSecondary }]}>
-                  <Text>✏️</Text>
-                </View>
-                <View style={styles.detailInfo}>
-                  <Text style={[styles.detailLabel, { color: theme.textSecondary }]}>Total Lines Drawn</Text>
-                  <Text style={[styles.detailValue, { color: theme.text }]}>{stats.totalLinesDrawn}</Text>
-                </View>
-              </View>
-              
-              <View style={[styles.detailRow, { borderBottomColor: theme.border }]}>
-                <View style={[styles.detailIcon, { backgroundColor: theme.buttonSecondary }]}>
-                  <Text>⚡</Text>
-                </View>
-                <View style={styles.detailInfo}>
-                  <Text style={[styles.detailLabel, { color: theme.textSecondary }]}>Best Time</Text>
-                  <Text style={[styles.detailValue, { color: theme.text }]}>
-                    {stats.bestTime ? formatTime(stats.bestTime) : '—'}
-                  </Text>
-                </View>
-              </View>
-              
-              <View style={[styles.detailRow, { borderBottomColor: theme.border }]}>
-                <View style={[styles.detailIcon, { backgroundColor: theme.buttonSecondary }]}>
-                  <Text>⏱️</Text>
-                </View>
-                <View style={styles.detailInfo}>
-                  <Text style={[styles.detailLabel, { color: theme.textSecondary }]}>Average Time</Text>
-                  <Text style={[styles.detailValue, { color: theme.text }]}>
-                    {stats.averageTime ? formatTime(stats.averageTime) : '—'}
-                  </Text>
-                </View>
-              </View>
-              
-              <View style={[styles.detailRow, { borderBottomColor: theme.border }]}>
-                <View style={[styles.detailIcon, { backgroundColor: theme.buttonSecondary }]}>
-                  <Text>📅</Text>
-                </View>
-                <View style={styles.detailInfo}>
-                  <Text style={[styles.detailLabel, { color: theme.textSecondary }]}>Last Daily Played</Text>
-                  <Text style={[styles.detailValue, { color: theme.text }]}>
-                    {stats.lastDailyDate || '—'}
-                  </Text>
-                </View>
-              </View>
-            </>
-          ) : (
-            // Free user - show locked stats
-            <>
-              <View style={[styles.detailRow, styles.lockedRow, { borderBottomColor: theme.border }]}>
-                <View style={[styles.detailIcon, { backgroundColor: theme.buttonSecondary, opacity: 0.5 }]}>
-                  <Text>✏️</Text>
-                </View>
-                <View style={styles.detailInfo}>
-                  <Text style={[styles.detailLabel, { color: theme.textMuted }]}>Total Lines Drawn</Text>
-                  <Text style={[styles.lockedValue, { color: theme.textMuted }]}>🔒</Text>
-                </View>
-              </View>
-              
-              <View style={[styles.detailRow, styles.lockedRow, { borderBottomColor: theme.border }]}>
-                <View style={[styles.detailIcon, { backgroundColor: theme.buttonSecondary, opacity: 0.5 }]}>
-                  <Text>⚡</Text>
-                </View>
-                <View style={styles.detailInfo}>
-                  <Text style={[styles.detailLabel, { color: theme.textMuted }]}>Best Time</Text>
-                  <Text style={[styles.lockedValue, { color: theme.textMuted }]}>🔒</Text>
-                </View>
-              </View>
-              
-              <View style={[styles.detailRow, styles.lockedRow, { borderBottomColor: theme.border }]}>
-                <View style={[styles.detailIcon, { backgroundColor: theme.buttonSecondary, opacity: 0.5 }]}>
-                  <Text>⏱️</Text>
-                </View>
-                <View style={styles.detailInfo}>
-                  <Text style={[styles.detailLabel, { color: theme.textMuted }]}>Average Time</Text>
-                  <Text style={[styles.lockedValue, { color: theme.textMuted }]}>🔒</Text>
-                </View>
-              </View>
-              
-              <View style={[styles.detailRow, styles.lockedRow, { borderBottomColor: theme.border }]}>
-                <View style={[styles.detailIcon, { backgroundColor: theme.buttonSecondary, opacity: 0.5 }]}>
-                  <Text>📅</Text>
-                </View>
-                <View style={styles.detailInfo}>
-                  <Text style={[styles.detailLabel, { color: theme.textMuted }]}>Last Daily Played</Text>
-                  <Text style={[styles.lockedValue, { color: theme.textMuted }]}>🔒</Text>
-                </View>
-              </View>
-              
-              {/* Unlock button */}
-              <Pressable
-                style={({ pressed }) => [
-                  styles.unlockButton,
-                  { backgroundColor: pressed ? theme.primaryDark : theme.primary },
-                  pressed && styles.unlockButtonPressed,
-                ]}
-                onPress={() => setShowPremiumModal(true)}
-              >
-                <Text style={styles.unlockButtonText}>👑 Unlock Detailed Stats</Text>
-              </Pressable>
-            </>
-          )}
+          <View style={[styles.detailRow, { borderBottomColor: theme.border }]}>
+            <View style={[styles.detailIcon, { backgroundColor: theme.buttonSecondary }]}>
+              <Text>⚡</Text>
+            </View>
+            <View style={styles.detailInfo}>
+              <Text style={[styles.detailLabel, { color: theme.textSecondary }]}>Best Time</Text>
+              <Text style={[styles.detailValue, { color: theme.text }]}>
+                {stats.bestTime ? formatTime(stats.bestTime) : '—'}
+              </Text>
+            </View>
+          </View>
+          
+          <View style={[styles.detailRow, { borderBottomColor: theme.border }]}>
+            <View style={[styles.detailIcon, { backgroundColor: theme.buttonSecondary }]}>
+              <Text>⏱️</Text>
+            </View>
+            <View style={styles.detailInfo}>
+              <Text style={[styles.detailLabel, { color: theme.textSecondary }]}>Average Time</Text>
+              <Text style={[styles.detailValue, { color: theme.text }]}>
+                {stats.averageTime ? formatTime(stats.averageTime) : '—'}
+              </Text>
+            </View>
+          </View>
+          
+          <View style={[styles.detailRow, { borderBottomColor: theme.border }]}>
+            <View style={[styles.detailIcon, { backgroundColor: theme.buttonSecondary }]}>
+              <Text>📅</Text>
+            </View>
+            <View style={styles.detailInfo}>
+              <Text style={[styles.detailLabel, { color: theme.textSecondary }]}>Last Daily Played</Text>
+              <Text style={[styles.detailValue, { color: theme.text }]}>
+                {stats.lastDailyDate || '—'}
+              </Text>
+            </View>
+          </View>
         </View>
         
         {/* Settings Section */}
@@ -262,12 +190,6 @@ export default function StatsScreen() {
           </Text>
         </View>
       </ScrollView>
-      
-      <PremiumModal
-        visible={showPremiumModal}
-        onClose={() => setShowPremiumModal(false)}
-        feature="stats"
-      />
     </SafeAreaView>
   );
 }
@@ -322,34 +244,16 @@ const styles = StyleSheet.create({
     padding: 24,
     marginBottom: 24,
   },
-  detailsHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 20,
-  },
   detailsTitle: {
     fontSize: 18,
     fontWeight: '700',
-  },
-  proBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 8,
-  },
-  proBadgeText: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#000',
+    marginBottom: 20,
   },
   detailRow: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 14,
     borderBottomWidth: 1,
-  },
-  lockedRow: {
-    opacity: 0.6,
   },
   detailIcon: {
     width: 40,
@@ -372,23 +276,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     fontVariant: ['tabular-nums'],
-  },
-  lockedValue: {
-    fontSize: 16,
-  },
-  unlockButton: {
-    marginTop: 20,
-    paddingVertical: 14,
-    borderRadius: 12,
-    alignItems: 'center',
-  },
-  unlockButtonPressed: {
-    transform: [{ scale: 0.98 }],
-  },
-  unlockButtonText: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#ffffff',
   },
   settingsCard: {
     borderRadius: 20,

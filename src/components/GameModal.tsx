@@ -3,21 +3,20 @@
  * Shows win/stuck states with sharing options
  */
 
-import React from 'react';
+import * as Clipboard from 'expo-clipboard';
 import {
-  View,
-  Text,
-  StyleSheet,
   Modal,
+  Platform,
   Pressable,
   Share,
-  Platform,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
-import * as Clipboard from 'expo-clipboard';
-import { GameState, GameMode } from '../core/types';
-import { generateShareText, formatTime, generateEmojiGrid } from '../utils/sharing';
-import { useTheme } from '../theme';
+import { GameMode, GameState } from '../core/types';
 import { trackShareResults } from '../services/analytics';
+import { useTheme } from '../theme';
+import { formatTime, generateEmojiGrid, generateShareText } from '../utils/sharing';
 
 interface GameModalProps {
   visible: boolean;
@@ -85,12 +84,12 @@ export function GameModal({
               {isWin ? '🎉' : '😅'}
             </Text>
             <Text style={[styles.title, { color: theme.text }]}>
-              {isWin ? 'Puzzle Complete!' : 'No Moves Left'}
+              {isWin ? 'Puzzle Complete!' : 'Got Stuck!'}
             </Text>
             <Text style={[styles.subtitle, { color: theme.textSecondary }]}>
               {isWin 
-                ? `${gameState.lines.length} lines in ${formatTime(timeMs)}`
-                : 'Try resetting and finding a new path'
+                ? `You found ${gameState.lines.length} lines!`
+                : `${gameState.remainingCells} squares left - this puzzle is solvable, try a different path!`
               }
             </Text>
           </View>
@@ -132,11 +131,11 @@ export function GameModal({
             )}
             
             <Pressable
-              style={[styles.button, { backgroundColor: theme.buttonSecondary }]}
+              style={[styles.button, { backgroundColor: isWin ? theme.buttonSecondary : theme.primary }]}
               onPress={onReset}
             >
-              <Text style={[styles.secondaryButtonText, { color: theme.text }]}>
-                {isWin ? 'Play Again' : 'Reset Puzzle'}
+              <Text style={[isWin ? styles.secondaryButtonText : styles.primaryButtonText, isWin && { color: theme.text }]}>
+                {isWin ? 'Play Again' : 'Try Again'}
               </Text>
             </Pressable>
             

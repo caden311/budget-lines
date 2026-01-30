@@ -22,10 +22,8 @@ interface GameHUDProps {
   minLineLength: number;
   currentPathLength: number;
   linesFound: number;
-  remainingCells: number;
   onReset: () => void;
   onHint?: () => void;
-  isPremium?: boolean;
   hintCellId?: string | null;
 }
 
@@ -64,10 +62,8 @@ export function GameHUD({
   minLineLength,
   currentPathLength,
   linesFound,
-  remainingCells,
   onReset,
   onHint,
-  isPremium = false,
   hintCellId,
 }: GameHUDProps) {
   const { theme } = useTheme();
@@ -140,11 +136,6 @@ export function GameHUD({
             )}
           </View>
         </View>
-        
-        <View style={styles.stat}>
-          <Text style={[styles.statLabel, { color: theme.textMuted }]}>CELLS</Text>
-          <Text style={[styles.statValue, { color: theme.text }]}>{remainingCells}</Text>
-        </View>
       </View>
       
       {/* Current sum display */}
@@ -193,16 +184,13 @@ export function GameHUD({
             style={({ pressed }) => [
               styles.actionButton,
               styles.hintButton,
-              { backgroundColor: isPremium ? theme.warning : theme.buttonSecondary },
+              { backgroundColor: theme.warning },
               pressed && styles.buttonPressed
             ]}
             onPress={onHint}
           >
-            <Text style={[
-              styles.buttonText, 
-              { color: isPremium ? '#000' : theme.textSecondary }
-            ]}>
-              💡 {isPremium ? 'Hint' : '🔒 Hint'}
+            <Text style={[styles.buttonText, { color: '#000' }]}>
+              💡 Hint
             </Text>
           </Pressable>
         )}

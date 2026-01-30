@@ -67,17 +67,10 @@ export function formatTime(ms: number): string {
 
 /** Generate full share text */
 export function generateShareText(gameState: GameState): string {
-  const date = gameState.puzzleId.replace('daily-', '');
   const emojiGrid = generateEmojiGrid(gameState);
   const lineCount = gameState.lines.length;
   
-  // Calculate elapsed time with fallbacks
-  const endTime = gameState.completedAt || Date.now();
-  const startTime = gameState.startedAt || 0;
-  const timeMs = startTime > 0 ? endTime - startTime : 0;
-  const timeText = timeMs > 0 ? ` in ${formatTime(timeMs)}` : '';
-  
-  return `Budget Lines ${date}\n${lineCount} lines${timeText}\n\n${emojiGrid}\n\nPlay at: budgetlines.app`;
+  return `Check out Budget Lines! I completed the puzzle and found ${lineCount} lines!\n\n${emojiGrid}\n\nPlay at: budgetlines.app`;
 }
 
 /** Check if sharing is available */

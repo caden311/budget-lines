@@ -8,4 +8,5 @@ export * from './pathValidator';
 export * from './sumCalculator';
 export * from './stuckDetector';
 export * from './puzzleGenerator';
+export * from './constructiveGenerator';
 export * from './hintGenerator';

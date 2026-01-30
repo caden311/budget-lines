@@ -2,6 +2,7 @@
  * Main Game Screen for Budget Lines
  */
 
+import { useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
@@ -12,7 +13,7 @@ import {
 } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { GameBoard, GameHUD, GameModal, LineCelebration } from '../components';
-import { PremiumModal } from '../components/PremiumModal';
+import { getDailyPuzzleId } from '../core/puzzleGenerator';
 import { Difficulty, GameMode } from '../core/types';
 import {
   trackHintRequested,
@@ -20,7 +21,6 @@ import {
   trackPuzzleCompleted,
   trackPuzzleReset,
   trackPuzzleStarted,
-  trackPuzzleStuck,
   trackScreenView,
 } from '../services/analytics';
 import { useGameStore } from '../stores/gameStore';
@@ -51,14 +51,11 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
     clearHint,
   } = useGameStore();
   
-  const { premium, recordLineDrawn, recordPuzzleComplete, updateDailyStreak } = useUserStore();
+  const { recordLineDrawn, recordPuzzleComplete, updateDailyStreak } = useUserStore();
   
   const [showWinModal, setShowWinModal] = useState(false);
   const [showStuckModal, setShowStuckModal] = useState(false);
-  const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [showLineCelebration, setShowLineCelebration] = useState(false);
-  
-  const isPremium = premium.isPremium;
   
   // Track screen view
   useEffect(() => {
@@ -85,6 +82,30 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
     };
   }, [mode, difficulty]);
   
+  // For daily mode: check if day has changed when screen comes into focus
+  // If the puzzle is from a previous day, force load the new daily puzzle
+  useFocusEffect(
+    useCallback(() => {
+      if (mode === 'daily' && gameState) {
+        const todaysPuzzleId = getDailyPuzzleId(new Date());
+        console.log('[DEBUG] useFocusEffect - checking day change');
+        console.log('[DEBUG] Current gameState.puzzleId:', gameState.puzzleId);
+        console.log('[DEBUG] Today\'s puzzleId:', todaysPuzzleId);
+        console.log('[DEBUG] Day changed?', gameState.puzzleId !== todaysPuzzleId);
+        
+        if (gameState.puzzleId !== todaysPuzzleId) {
+          // Day has changed - load the new daily puzzle
+          console.log('[DEBUG] Loading new daily puzzle!');
+          startDailyPuzzle();
+          trackPuzzleStarted(mode, difficulty);
+          // Reset modal states for fresh puzzle
+          setShowWinModal(false);
+          setShowStuckModal(false);
+        }
+      }
+    }, [mode, gameState?.puzzleId, startDailyPuzzle, difficulty])
+  );
+  
   // Handle win/stuck state changes
   useEffect(() => {
     if (gameState?.isWon && !showWinModal) {
@@ -107,9 +128,6 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
     if (gameState?.isStuck && !showStuckModal && !gameState.isWon) {
       setShowStuckModal(true);
       warning();
-      
-      // Track stuck event
-      trackPuzzleStuck(mode, gameState.lines.length);
     }
   }, [gameState?.isWon, gameState?.isStuck]);
   
@@ -172,17 +190,12 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
   }, [mode, difficulty, startPracticePuzzle, startDailyPuzzle, clearHint]);
   
   const handleHint = useCallback(() => {
-    if (!isPremium) {
-      setShowPremiumModal(true);
-      return;
-    }
-    
     const hint = requestHint('next-move');
     if (hint) {
       lightTap();
       trackHintRequested(mode, 'next-move');
     }
-  }, [isPremium, requestHint, mode]);
+  }, [requestHint, mode]);
   
   if (isLoading || !gameState) {
     return (
@@ -210,10 +223,8 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
             minLineLength={gameState.minLineLength}
             currentPathLength={currentPathCellIds.length}
             linesFound={gameState.lines.length}
-            remainingCells={gameState.remainingCells}
             onReset={handleReset}
             onHint={handleHint}
-            isPremium={isPremium}
             hintCellId={hintCellId}
           />
           
@@ -252,13 +263,6 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
           onClose={() => setShowStuckModal(false)}
           onReset={handleReset}
           onNewPuzzle={mode === 'practice' ? handleNewPuzzle : undefined}
-        />
-        
-        {/* Premium Modal */}
-        <PremiumModal
-          visible={showPremiumModal}
-          onClose={() => setShowPremiumModal(false)}
-          feature="hints"
         />
         
         {/* Line Celebration */}

@@ -1,12 +1,13 @@
 /**
  * Puzzle generator for Budget Lines
+ * Uses constructive generation to guarantee solvable puzzles
  * Supports seeded generation for daily puzzles
  */
 
 import seedrandom from 'seedrandom';
-import { Cell, Difficulty, DifficultyConfig, GameState, GameMode } from './types';
-import { createGrid, countAvailableCells } from './grid';
-import { isGameStuck } from './stuckDetector';
+import { generateSolvablePuzzle } from './constructiveGenerator';
+import { countAvailableCells, createGrid } from './grid';
+import { Difficulty, DifficultyConfig, GameMode, GameState } from './types';
 
 /** Difficulty presets */
 const DIFFICULTY_CONFIGS: Record<Difficulty, DifficultyConfig> = {
@@ -46,26 +47,6 @@ export function getPracticePuzzleId(): string {
   return `practice-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 }
 
-/** Generate grid values using the RNG */
-function generateGridValues(
-  rng: () => number,
-  size: number,
-  valueRange: { min: number; max: number }
-): number[][] {
-  const { min, max } = valueRange;
-  const range = max - min + 1;
-  
-  const values: number[][] = [];
-  for (let row = 0; row < size; row++) {
-    const rowValues: number[] = [];
-    for (let col = 0; col < size; col++) {
-      rowValues.push(Math.floor(rng() * range) + min);
-    }
-    values.push(rowValues);
-  }
-  
-  return values;
-}
 
 /** Generate a daily puzzle (same for everyone on the same day) */
 export function generateDailyPuzzle(
@@ -96,37 +77,18 @@ function generatePuzzleWithSeed(
   const config = DIFFICULTY_CONFIGS[difficulty];
   const rng = createRng(seed);
   
-  // Try to generate a solvable puzzle (max attempts)
-  let attempts = 0;
-  const maxAttempts = 50;
+  // Use constructive generation - builds puzzle from valid solution paths
+  // This guarantees the puzzle is always 100% solvable
+  const { values } = generateSolvablePuzzle(
+    {
+      gridSize: config.gridSize,
+      minLineLength: config.minLineLength,
+      targetSum: config.targetSum,
+      valueRange: config.valueRange,
+    },
+    rng
+  );
   
-  while (attempts < maxAttempts) {
-    const values = generateGridValues(rng, config.gridSize, config.valueRange);
-    const grid = createGrid(config.gridSize, values);
-    
-    // Check if at least one valid move exists
-    if (!isGameStuck(grid, config.targetSum, config.minLineLength)) {
-      return {
-        puzzleId,
-        mode,
-        grid,
-        targetSum: config.targetSum,
-        minLineLength: config.minLineLength,
-        lines: [],
-        currentPath: null,
-        isWon: false,
-        isStuck: false,
-        startedAt: Date.now(),
-        completedAt: null,
-        remainingCells: countAvailableCells(grid),
-      };
-    }
-    
-    attempts++;
-  }
-  
-  // Fallback: return the last generated puzzle anyway
-  const values = generateGridValues(rng, config.gridSize, config.valueRange);
   const grid = createGrid(config.gridSize, values);
   
   return {

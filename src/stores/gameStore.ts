@@ -5,38 +5,33 @@
 
 import { create } from 'zustand';
 import {
-  GameState,
-  Cell,
-  Line,
-  CurrentPath,
-  SavedGameProgress,
-  CommitResult,
-  PathAddResult,
-  GameMode,
-  Difficulty,
-  HintResult,
-  HintType,
-} from '../core/types';
-import {
-  createGrid,
-  getCellById,
-  updateCellsState,
-  markCellsAsSpent,
   countAvailableCells,
   extractGridValues,
-  restoreGridFromProgress,
+  getCellById,
+  markCellsAsSpent,
   resetGrid,
+  updateCellsState
 } from '../core/grid';
+import { generateHint } from '../core/hintGenerator';
 import { canAddToPath } from '../core/pathValidator';
-import { calculatePathSum, isSumCorrect, meetsMinLength } from '../core/sumCalculator';
-import { isGameStuck } from '../core/stuckDetector';
 import {
   generateDailyPuzzle,
   generatePracticePuzzle,
   restorePuzzleFromValues,
 } from '../core/puzzleGenerator';
-import { generateHint } from '../core/hintGenerator';
-import { saveGameProgress, loadGameProgress, clearGameProgress } from '../utils/storage';
+import { isGameStuck } from '../core/stuckDetector';
+import { calculatePathSum, isSumCorrect, meetsMinLength } from '../core/sumCalculator';
+import {
+  CommitResult,
+  Difficulty,
+  GameState,
+  HintResult,
+  HintType,
+  Line,
+  PathAddResult,
+  SavedGameProgress
+} from '../core/types';
+import { loadGameProgress, saveGameProgress } from '../utils/storage';
 
 interface GameStore {
   // State
@@ -80,7 +75,15 @@ export const useGameStore = create<GameStore>((set, get) => ({
     
     // Check for saved progress first
     const puzzleId = `daily-${date.toISOString().split('T')[0]}`;
+    console.log('[DEBUG] startDailyPuzzle called');
+    console.log('[DEBUG] Current date:', date.toISOString());
+    console.log('[DEBUG] Today\'s puzzle ID:', puzzleId);
+    
     const savedProgress = await loadGameProgress(puzzleId);
+    console.log('[DEBUG] Saved progress found:', savedProgress ? 'YES' : 'NO');
+    if (savedProgress) {
+      console.log('[DEBUG] Saved progress puzzle ID:', savedProgress.puzzleId);
+    }
     
     if (savedProgress) {
       // Restore from saved progress
@@ -127,16 +130,27 @@ export const useGameStore = create<GameStore>((set, get) => ({
         isLoading: false,
       });
     } else {
-      // Generate new puzzle
-      const gameState = generateDailyPuzzle(date);
-      set({ gameState, isLoading: false });
+      // Generate new puzzle - defer to next tick so loading UI can render
+      await new Promise<void>((resolve) => {
+        setTimeout(() => {
+          const gameState = generateDailyPuzzle(date);
+          set({ gameState, isLoading: false });
+          resolve();
+        }, 0);
+      });
     }
   },
   
   startPracticePuzzle: async (difficulty = 'medium') => {
     set({ isLoading: true });
-    const gameState = generatePracticePuzzle(difficulty);
-    set({ gameState, isLoading: false });
+    // Defer to next tick so loading UI can render
+    await new Promise<void>((resolve) => {
+      setTimeout(() => {
+        const gameState = generatePracticePuzzle(difficulty);
+        set({ gameState, isLoading: false });
+        resolve();
+      }, 0);
+    });
   },
   
   loadSavedGame: async (puzzleId: string) => {
