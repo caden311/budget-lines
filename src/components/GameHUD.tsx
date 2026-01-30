@@ -22,8 +22,10 @@ interface GameHUDProps {
   minLineLength: number;
   currentPathLength: number;
   linesFound: number;
+  remainingCells: number;
   onReset: () => void;
   onHint?: () => void;
+  isPremium?: boolean;
   hintCellId?: string | null;
 }
 
@@ -62,8 +64,10 @@ export function GameHUD({
   minLineLength,
   currentPathLength,
   linesFound,
+  remainingCells,
   onReset,
   onHint,
+  isPremium = false,
   hintCellId,
 }: GameHUDProps) {
   const { theme } = useTheme();
@@ -136,6 +140,11 @@ export function GameHUD({
             )}
           </View>
         </View>
+        
+        <View style={styles.stat}>
+          <Text style={[styles.statLabel, { color: theme.textMuted }]}>CELLS</Text>
+          <Text style={[styles.statValue, { color: theme.text }]}>{remainingCells}</Text>
+        </View>
       </View>
       
       {/* Current sum display */}
@@ -154,16 +163,6 @@ export function GameHUD({
           }
         </Text>
       </View>
-      
-      {/* Hint indicator */}
-      {hintCellId && (
-        <View style={[styles.hintBanner, { backgroundColor: theme.backgroundTertiary }]}>
-          <Text style={styles.hintEmoji}>💡</Text>
-          <Text style={[styles.hintText, { color: theme.text }]}>
-            Hint: Look for the glowing cell!
-          </Text>
-        </View>
-      )}
       
       {/* Action buttons */}
       <View style={styles.buttonRow}>
@@ -184,13 +183,16 @@ export function GameHUD({
             style={({ pressed }) => [
               styles.actionButton,
               styles.hintButton,
-              { backgroundColor: theme.warning },
+              { backgroundColor: isPremium ? theme.warning : theme.buttonSecondary },
               pressed && styles.buttonPressed
             ]}
             onPress={onHint}
           >
-            <Text style={[styles.buttonText, { color: '#000' }]}>
-              💡 Hint
+            <Text style={[
+              styles.buttonText, 
+              { color: isPremium ? '#000' : theme.textSecondary }
+            ]}>
+              💡 {isPremium ? 'Hint' : '🔒 Hint'}
             </Text>
           </Pressable>
         )}
@@ -271,20 +273,6 @@ const styles = StyleSheet.create({
   lengthHint: {
     fontSize: 13,
     marginTop: 8,
-  },
-  hintBanner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 12,
-    borderRadius: 12,
-    gap: 10,
-  },
-  hintEmoji: {
-    fontSize: 20,
-  },
-  hintText: {
-    fontSize: 14,
-    fontWeight: '500',
   },
   buttonRow: {
     flexDirection: 'row',
