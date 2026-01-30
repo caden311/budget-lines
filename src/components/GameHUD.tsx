@@ -25,7 +25,6 @@ interface GameHUDProps {
   remainingCells: number;
   onReset: () => void;
   onHint?: () => void;
-  isPremium?: boolean;
   hintUsed?: boolean;
 }
 
@@ -67,7 +66,6 @@ export function GameHUD({
   remainingCells,
   onReset,
   onHint,
-  isPremium = false,
   hintUsed = false,
 }: GameHUDProps) {
   const { theme } = useTheme();
@@ -183,7 +181,7 @@ export function GameHUD({
             style={({ pressed }) => [
               styles.actionButton,
               styles.hintButton,
-              { backgroundColor: isPremium && !hintUsed ? theme.warning : theme.buttonSecondary },
+              { backgroundColor: theme.buttonSecondary },
               (pressed || hintUsed) && styles.buttonPressed
             ]}
             onPress={onHint}
@@ -191,10 +189,10 @@ export function GameHUD({
           >
             <Text style={[
               styles.buttonText, 
-              { color: isPremium && !hintUsed ? '#000' : theme.textSecondary },
+              { color: theme.textSecondary },
               hintUsed && { opacity: 0.5 }
             ]}>
-              💡 {hintUsed ? 'Used' : (isPremium ? 'Hint' : '🔒 Hint')}
+              💡 {hintUsed ? 'Used' : 'Hint'}
             </Text>
           </Pressable>
         )}

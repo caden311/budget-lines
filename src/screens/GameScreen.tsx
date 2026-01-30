@@ -51,7 +51,7 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
     clearHint,
   } = useGameStore();
   
-  const { recordLineDrawn, recordPuzzleComplete, updateDailyStreak, premium } = useUserStore();
+  const { recordLineDrawn, recordPuzzleComplete, updateDailyStreak } = useUserStore();
   
   const [showWinModal, setShowWinModal] = useState(false);
   const [showStuckModal, setShowStuckModal] = useState(false);
@@ -227,7 +227,6 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
             remainingCells={gameState.remainingCells}
             onReset={handleReset}
             onHint={handleHint}
-            isPremium={premium.isPremium}
             hintUsed={hintUsed}
           />
           

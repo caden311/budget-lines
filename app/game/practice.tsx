@@ -2,12 +2,11 @@
  * Practice puzzle game screen
  */
 
-import React from 'react';
-import { View, Pressable, Text, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useTheme } from '../../src/theme';
-import { useUserStore } from '../../src/stores/userStore';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { GameScreen } from '../../src/screens/GameScreen';
+import { useUserStore } from '../../src/stores/userStore';
+import { useTheme } from '../../src/theme';
 
 export default function PracticeGameScreen() {
   const router = useRouter();
@@ -21,7 +20,7 @@ export default function PracticeGameScreen() {
           style={styles.backButton}
           onPress={() => router.replace('/practice')}
         >
-          <Text style={[styles.backButtonText, { color: theme.success }]}>← Back</Text>
+          <Text style={[styles.backButtonText, { color: theme.primary }]}>← Back</Text>
         </Pressable>
         <Text style={[styles.title, { color: theme.text }]}>Practice Mode</Text>
         <View style={styles.placeholder} />
@@ -40,7 +39,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    paddingTop: 60,
+    paddingTop: 50,
     paddingBottom: 8,
   },
   backButton: {

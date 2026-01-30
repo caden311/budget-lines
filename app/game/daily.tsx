@@ -2,11 +2,10 @@
  * Daily puzzle game screen
  */
 
-import React from 'react';
-import { View, Pressable, Text, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useTheme } from '../../src/theme';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { GameScreen } from '../../src/screens/GameScreen';
+import { useTheme } from '../../src/theme';
 
 export default function DailyGameScreen() {
   const router = useRouter();
@@ -38,7 +37,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    paddingTop: 60,
+    paddingTop: 50,
     paddingBottom: 8,
   },
   backButton: {
