@@ -2,31 +2,31 @@
  * Main Game Screen for Budget Lines
  */
 
-import React, { useEffect, useState, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
-  View,
-  StyleSheet,
-  SafeAreaView,
   ActivityIndicator,
+  SafeAreaView,
+  StyleSheet,
   Text,
+  View,
 } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { GameBoard, GameHUD, GameModal } from '../components';
+import { GameBoard, GameHUD, GameModal, LineCelebration } from '../components';
 import { PremiumModal } from '../components/PremiumModal';
-import { useGameStore } from '../stores/gameStore';
-import { useUserStore } from '../stores/userStore';
-import { GameMode, Difficulty } from '../core/types';
-import { heavyTap, success, warning, lightTap } from '../utils/haptics';
-import { useTheme } from '../theme';
+import { Difficulty, GameMode } from '../core/types';
 import {
-  trackPuzzleStarted,
-  trackPuzzleCompleted,
-  trackLineCommitted,
-  trackPuzzleStuck,
-  trackPuzzleReset,
   trackHintRequested,
+  trackLineCommitted,
+  trackPuzzleCompleted,
+  trackPuzzleReset,
+  trackPuzzleStarted,
+  trackPuzzleStuck,
   trackScreenView,
 } from '../services/analytics';
+import { useGameStore } from '../stores/gameStore';
+import { useUserStore } from '../stores/userStore';
+import { useTheme } from '../theme';
+import { heavyTap, lightTap, success, warning } from '../utils/haptics';
 
 interface GameScreenProps {
   mode: GameMode;
@@ -56,6 +56,7 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
   const [showWinModal, setShowWinModal] = useState(false);
   const [showStuckModal, setShowStuckModal] = useState(false);
   const [showPremiumModal, setShowPremiumModal] = useState(false);
+  const [showLineCelebration, setShowLineCelebration] = useState(false);
   
   const isPremium = premium.isPremium;
   
@@ -134,6 +135,9 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
     if (result.success) {
       heavyTap();
       recordLineDrawn();
+      
+      // Trigger celebration animation
+      setShowLineCelebration(true);
       
       // Track line committed
       if (gameState) {
@@ -255,6 +259,12 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
           visible={showPremiumModal}
           onClose={() => setShowPremiumModal(false)}
           feature="hints"
+        />
+        
+        {/* Line Celebration */}
+        <LineCelebration
+          visible={showLineCelebration}
+          onComplete={() => setShowLineCelebration(false)}
         />
       </SafeAreaView>
     </GestureHandlerRootView>

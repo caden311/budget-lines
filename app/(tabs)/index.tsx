@@ -2,8 +2,8 @@
  * Home screen - Daily puzzle entry
  */
 
-import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback, useEffect, useState } from 'react';
 import {
   Pressable,
   SafeAreaView,
@@ -12,18 +12,18 @@ import {
   View,
 } from 'react-native';
 import { getDailyPuzzleId } from '../../src/core/puzzleGenerator';
+import { trackScreenView } from '../../src/services/analytics';
 import { useUserStore } from '../../src/stores/userStore';
 import { useTheme } from '../../src/theme';
 import { hasSavedProgress } from '../../src/utils/storage';
-import { trackScreenView } from '../../src/services/analytics';
 
 export default function HomeScreen() {
   const router = useRouter();
   const { theme, isDark } = useTheme();
   const { stats, isLoading } = useUserStore();
   const [hasProgress, setHasProgress] = useState(false);
+  const [today, setToday] = useState(() => new Date());
   
-  const today = new Date();
   const dateString = today.toLocaleDateString('en-US', {
     weekday: 'long',
     month: 'long',
@@ -35,14 +35,20 @@ export default function HomeScreen() {
     trackScreenView('Home');
   }, []);
   
-  useEffect(() => {
-    const checkProgress = async () => {
-      const puzzleId = getDailyPuzzleId(today);
-      const saved = await hasSavedProgress(puzzleId);
-      setHasProgress(saved);
-    };
-    checkProgress();
-  }, []);
+  // Refresh date and check progress when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      const now = new Date();
+      setToday(now);
+      
+      const checkProgress = async () => {
+        const puzzleId = getDailyPuzzleId(now);
+        const saved = await hasSavedProgress(puzzleId);
+        setHasProgress(saved);
+      };
+      checkProgress();
+    }, [])
+  );
   
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
@@ -98,7 +104,7 @@ export default function HomeScreen() {
           </View>
           <View style={styles.rule}>
             <Text style={[styles.ruleNumber, { backgroundColor: theme.buttonSecondary, color: theme.primary }]}>3</Text>
-            <Text style={[styles.ruleText, { color: theme.textSecondary }]}>Use all cells to win!</Text>
+            <Text style={[styles.ruleText, { color: theme.textSecondary }]}>Clear all cells — more lines = higher score! 🎉</Text>
           </View>
         </View>
       </View>

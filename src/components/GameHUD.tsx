@@ -3,11 +3,16 @@
  * Displays target sum, current sum, lines found, reset and hint buttons
  */
 
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import Animated, {
   useAnimatedStyle,
+  useSharedValue,
   withTiming,
+  withSequence,
+  withSpring,
+  runOnJS,
+  Easing,
 } from 'react-native-reanimated';
 import { useTheme } from '../theme';
 
@@ -22,6 +27,35 @@ interface GameHUDProps {
   onHint?: () => void;
   isPremium?: boolean;
   hintCellId?: string | null;
+}
+
+// Floating +1 indicator component
+function FloatingPlusOne({ theme, onComplete }: { theme: any; onComplete: () => void }) {
+  const translateY = useSharedValue(0);
+  const opacity = useSharedValue(1);
+  const scale = useSharedValue(0.5);
+
+  useEffect(() => {
+    scale.value = withSpring(1.2, { damping: 8, stiffness: 200 });
+    translateY.value = withTiming(-50, { duration: 800, easing: Easing.out(Easing.cubic) });
+    opacity.value = withTiming(0, { duration: 800, easing: Easing.in(Easing.cubic) }, () => {
+      runOnJS(onComplete)();
+    });
+  }, []);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      { translateY: translateY.value },
+      { scale: scale.value },
+    ],
+    opacity: opacity.value,
+  }));
+
+  return (
+    <Animated.Text style={[styles.floatingPlusOne, { color: theme.success }, animatedStyle]}>
+      +1
+    </Animated.Text>
+  );
 }
 
 export function GameHUD({
@@ -39,6 +73,31 @@ export function GameHUD({
   const { theme } = useTheme();
   const isOverTarget = currentSum > targetSum;
   const isExactMatch = currentSum === targetSum && currentPathLength >= minLineLength;
+  
+  // Track previous lines count for animation
+  const prevLinesRef = useRef(linesFound);
+  const [showPlusOne, setShowPlusOne] = useState(false);
+  
+  // Animated values for lines counter
+  const linesScale = useSharedValue(1);
+  
+  // Detect when lines count increases
+  useEffect(() => {
+    if (linesFound > prevLinesRef.current) {
+      // Trigger pulse animation
+      linesScale.value = withSequence(
+        withSpring(1.4, { damping: 6, stiffness: 300 }),
+        withSpring(1, { damping: 8, stiffness: 200 })
+      );
+      // Show floating +1
+      setShowPlusOne(true);
+    }
+    prevLinesRef.current = linesFound;
+  }, [linesFound]);
+  
+  const linesAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: linesScale.value }],
+  }));
   
   const sumStyle = useAnimatedStyle(() => {
     let color = theme.textMuted; // Default gray
@@ -69,7 +128,17 @@ export function GameHUD({
         
         <View style={styles.stat}>
           <Text style={[styles.statLabel, { color: theme.textMuted }]}>LINES</Text>
-          <Text style={[styles.statValue, { color: theme.text }]}>{linesFound}</Text>
+          <View style={styles.linesContainer}>
+            <Animated.Text style={[styles.statValue, styles.linesValue, { color: theme.success }, linesAnimatedStyle]}>
+              {linesFound}
+            </Animated.Text>
+            {showPlusOne && (
+              <FloatingPlusOne 
+                theme={theme} 
+                onComplete={() => setShowPlusOne(false)} 
+              />
+            )}
+          </View>
         </View>
         
         <View style={styles.stat}>
@@ -165,6 +234,20 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: '700',
     fontVariant: ['tabular-nums'],
+  },
+  linesContainer: {
+    position: 'relative',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  linesValue: {
+    fontWeight: '800',
+  },
+  floatingPlusOne: {
+    position: 'absolute',
+    fontSize: 20,
+    fontWeight: '800',
+    top: 0,
   },
   targetValue: {
     fontSize: 32,
