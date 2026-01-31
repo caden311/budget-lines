@@ -70,7 +70,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   currentHint: null,
   
   startDailyPuzzle: async (date = new Date()) => {
-    set({ isLoading: true });
+    set({ isLoading: true, gameState: null });
     
     // Check for saved progress first
     const puzzleId = `daily-${date.toISOString().split('T')[0]}`;
@@ -143,7 +143,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
   
   startPracticePuzzle: async (difficulty = 'medium') => {
-    set({ isLoading: true });
+    set({ isLoading: true, gameState: null });
     // Defer to next tick so loading UI can render
     await new Promise<void>((resolve) => {
       setTimeout(() => {
