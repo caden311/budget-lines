@@ -173,17 +173,17 @@ export async function setTutorialCompleted(completed: boolean = true): Promise<v
 
 // ============ Theme Preference ============
 
-/** Load theme preference */
-export async function loadThemePreference(): Promise<'light' | 'dark'> {
+/** Load theme preference, returns null if no preference has been set */
+export async function loadThemePreference(): Promise<'light' | 'dark' | null> {
   try {
     const data = await AsyncStorage.getItem(KEYS.THEME_PREFERENCE);
     if (data === 'light' || data === 'dark') {
       return data;
     }
-    return 'light'; // Default to light mode
+    return null; // No preference set yet
   } catch (error) {
     console.error('Failed to load theme preference:', error);
-    return 'light'; // Default to light mode
+    return null; // No preference set yet
   }
 }
 
