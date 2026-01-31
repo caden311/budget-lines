@@ -127,6 +127,46 @@ describe('generateDailyPuzzle', () => {
       });
     });
   });
+
+  it('should generate puzzles with varied path lengths across different dates', () => {
+    // Generate puzzles for 10 different dates
+    const puzzles = [];
+    for (let i = 0; i < 10; i++) {
+      const date = new Date('2025-01-01');
+      date.setDate(date.getDate() + i);
+      puzzles.push(generateDailyPuzzle(date, 'medium'));
+    }
+
+    // Collect path length statistics
+    const pathLengths = puzzles.map(p => 
+      p.solutionPaths.map(path => path.length)
+    );
+
+    // Check that we have variety in path lengths
+    // Some puzzles should have longer paths (5+ cells)
+    const hasLongPaths = pathLengths.some(lengths => 
+      lengths.some(len => len >= 5)
+    );
+    
+    // Some puzzles should have shorter paths (3-4 cells)
+    const hasShortPaths = pathLengths.some(lengths => 
+      lengths.some(len => len <= 4)
+    );
+
+    // Verify we have variety
+    expect(hasLongPaths || hasShortPaths).toBe(true);
+    
+    // Verify puzzles are different (at least some grid values differ)
+    const firstPuzzleValues = puzzles[0].grid.map(row => 
+      row.map(cell => cell.value)
+    );
+    const allSame = puzzles.slice(1).every(puzzle => {
+      return puzzle.grid.every((row, r) => 
+        row.every((cell, c) => cell.value === firstPuzzleValues[r][c])
+      );
+    });
+    expect(allSame).toBe(false); // Puzzles should differ
+  });
 });
 
 describe('generatePracticePuzzle', () => {

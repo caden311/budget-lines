@@ -27,6 +27,39 @@ export interface GenerationConfig {
   valueRange: { min: number; max: number };
 }
 
+/** Generation strategies that create different puzzle patterns */
+type GenerationStrategy =
+  | 'center-snake'    // Start center, wind outward
+  | 'corner-converge'  // Start corners, meet in middle
+  | 'long-chains'      // Prefer fewer, longer paths (5-7 cells)
+  | 'mixed-lengths'    // High variance in path lengths
+  | 'direction-change'; // Force L/S/Z shaped paths
+
+/** Select generation strategies based on seed for day-to-day variety */
+function selectStrategies(rng: () => number): GenerationStrategy[] {
+  const roll = rng();
+  const strategies: GenerationStrategy[] = [];
+  
+  // Primary strategy selection
+  if (roll < 0.2) {
+    strategies.push('center-snake', 'long-chains');
+  } else if (roll < 0.4) {
+    strategies.push('corner-converge', 'direction-change');
+  } else if (roll < 0.6) {
+    strategies.push('mixed-lengths');
+  } else if (roll < 0.75) {
+    strategies.push('long-chains', 'direction-change');
+  } else if (roll < 0.85) {
+    strategies.push('center-snake', 'mixed-lengths');
+  } else if (roll < 0.95) {
+    strategies.push('corner-converge', 'long-chains');
+  } else {
+    strategies.push('direction-change', 'mixed-lengths');
+  }
+  
+  return strategies;
+}
+
 /**
  * Generate a solvable puzzle using constructive generation
  * @param config - Puzzle configuration
@@ -66,6 +99,9 @@ function tryGeneratePuzzle(
   valueRange: { min: number; max: number },
   rng: () => number
 ): GeneratedPuzzle | null {
+  // Select strategies for this puzzle based on seed
+  const strategies = selectStrategies(rng);
+  
   // Track which cells are still uncovered
   const uncovered = new Set<string>();
   for (let row = 0; row < gridSize; row++) {
@@ -76,6 +112,7 @@ function tryGeneratePuzzle(
   
   const paths: string[][] = [];
   const values: number[][] = Array(gridSize).fill(null).map(() => Array(gridSize).fill(0));
+  let pathCount = 0; // Track how many paths we've created
   
   // Keep finding paths until all cells are covered
   while (uncovered.size > 0) {
@@ -85,8 +122,8 @@ function tryGeneratePuzzle(
       return null;
     }
     
-    // Find a random path through uncovered cells
-    const path = findRandomPath(gridSize, uncovered, minLineLength, rng);
+    // Find a path through uncovered cells using selected strategies
+    const path = findRandomPath(gridSize, uncovered, minLineLength, strategies, pathCount, rng);
     
     if (!path || path.length < minLineLength) {
       // Couldn't find a valid path - generation failed
@@ -109,6 +146,7 @@ function tryGeneratePuzzle(
     }
     
     paths.push(path);
+    pathCount++;
   }
   
   return { values, solutionPaths: paths };
@@ -116,31 +154,40 @@ function tryGeneratePuzzle(
 
 /**
  * Find a random connected path through uncovered cells
- * Uses DFS with randomization to create varied paths
+ * Uses strategy-aware starting points and DFS with randomization
  */
 function findRandomPath(
   gridSize: number,
   uncovered: Set<string>,
   minLineLength: number,
+  strategies: GenerationStrategy[],
+  pathCount: number,
   rng: () => number
 ): string[] | null {
   if (uncovered.size === 0) return null;
   
-  // Pick a random starting cell from uncovered cells
-  const uncoveredArray = Array.from(uncovered);
-  const startIdx = Math.floor(rng() * uncoveredArray.length);
-  const startCell = uncoveredArray[startIdx];
+  // Select starting cell based on strategies
+  const startCell = selectStrategicStartCell(
+    gridSize,
+    uncovered,
+    strategies,
+    pathCount,
+    rng
+  );
+  
+  if (!startCell) return null;
   
   // Try to grow path from this starting point
-  const path = growPath(gridSize, uncovered, startCell, minLineLength, rng);
+  const path = growPath(gridSize, uncovered, startCell, minLineLength, strategies, rng);
   
   // If path is too short, try starting from a different cell
   if (path.length < minLineLength) {
+    const uncoveredArray = Array.from(uncovered);
     // Try a few more starting points
     for (let i = 0; i < Math.min(5, uncoveredArray.length); i++) {
       const altStartIdx = Math.floor(rng() * uncoveredArray.length);
       const altStart = uncoveredArray[altStartIdx];
-      const altPath = growPath(gridSize, uncovered, altStart, minLineLength, rng);
+      const altPath = growPath(gridSize, uncovered, altStart, minLineLength, strategies, rng);
       if (altPath.length >= minLineLength) {
         return altPath;
       }
@@ -152,25 +199,123 @@ function findRandomPath(
 }
 
 /**
- * Grow a path from a starting cell using randomized DFS
+ * Select a strategic starting cell based on generation strategies
+ */
+function selectStrategicStartCell(
+  gridSize: number,
+  uncovered: Set<string>,
+  strategies: GenerationStrategy[],
+  pathCount: number,
+  rng: () => number
+): string | null {
+  const uncoveredArray = Array.from(uncovered);
+  if (uncoveredArray.length === 0) return null;
+  
+  // Center-snake: Start near center for early paths
+  if (strategies.includes('center-snake') && pathCount < 3) {
+    const centerRow = Math.floor(gridSize / 2);
+    const centerCol = Math.floor(gridSize / 2);
+    
+    // Find uncovered cells near center, sorted by distance
+    const centerCells = uncoveredArray
+      .map(id => {
+        const pos = positionFromCellId(id);
+        const dist = Math.abs(pos.row - centerRow) + Math.abs(pos.col - centerCol);
+        return { id, dist };
+      })
+      .sort((a, b) => a.dist - b.dist)
+      .slice(0, Math.min(5, uncoveredArray.length));
+    
+    if (centerCells.length > 0) {
+      const pick = Math.floor(rng() * Math.min(3, centerCells.length));
+      return centerCells[pick].id;
+    }
+  }
+  
+  // Corner-converge: Start from corners for early paths
+  if (strategies.includes('corner-converge') && pathCount < 4) {
+    const corners = [
+      { row: 0, col: 0 },
+      { row: 0, col: gridSize - 1 },
+      { row: gridSize - 1, col: 0 },
+      { row: gridSize - 1, col: gridSize - 1 },
+    ];
+    
+    const cornerCells = corners
+      .map(corner => {
+        const id = cellIdFromPosition(corner);
+        return uncovered.has(id) ? { id, pos: corner } : null;
+      })
+      .filter((cell): cell is { id: string; pos: Position } => cell !== null);
+    
+    if (cornerCells.length > 0) {
+      const pick = Math.floor(rng() * cornerCells.length);
+      return cornerCells[pick].id;
+    }
+  }
+  
+  // Edge-weighted: Prefer edge cells for interesting shapes
+  if (strategies.includes('direction-change')) {
+    const edgeCells = uncoveredArray.filter(id => {
+      const pos = positionFromCellId(id);
+      return (
+        pos.row === 0 ||
+        pos.row === gridSize - 1 ||
+        pos.col === 0 ||
+        pos.col === gridSize - 1
+      );
+    });
+    
+    if (edgeCells.length > 0 && rng() < 0.6) {
+      return edgeCells[Math.floor(rng() * edgeCells.length)];
+    }
+  }
+  
+  // Default: random selection
+  return uncoveredArray[Math.floor(rng() * uncoveredArray.length)];
+}
+
+/**
+ * Grow a path from a starting cell using strategy-aware randomized DFS
  */
 function growPath(
   gridSize: number,
   uncovered: Set<string>,
   startCell: string,
   minLineLength: number,
+  strategies: GenerationStrategy[],
   rng: () => number
 ): string[] {
   const path: string[] = [startCell];
   const inPath = new Set<string>([startCell]);
   
-  // Target path length - vary between minLineLength and a bit longer for variety
-  // But also consider how many cells are left
+  // Calculate target path length based on strategies
   const maxPossibleLength = uncovered.size;
-  const targetLength = Math.min(
-    maxPossibleLength,
-    minLineLength + Math.floor(rng() * 3) // Add 0-2 extra cells
-  );
+  let targetLength: number;
+  
+  if (strategies.includes('long-chains')) {
+    // Prefer longer paths: 5-7 cells or up to gridSize+1
+    const longMin = Math.max(minLineLength, 5);
+    const longMax = Math.min(maxPossibleLength, gridSize + 1);
+    targetLength = longMin + Math.floor(rng() * (longMax - longMin + 1));
+  } else if (strategies.includes('mixed-lengths')) {
+    // High variance: sometimes short (3-4), sometimes long (6-7)
+    if (rng() < 0.4) {
+      targetLength = minLineLength + Math.floor(rng() * 2); // 3-4
+    } else {
+      targetLength = 6 + Math.floor(rng() * 2); // 6-7
+    }
+    targetLength = Math.min(targetLength, maxPossibleLength);
+  } else {
+    // Default: wider range than before (3-6 instead of 3-5)
+    targetLength = Math.min(
+      maxPossibleLength,
+      minLineLength + Math.floor(rng() * 4) // Add 0-3 extra cells
+    );
+  }
+  
+  // Track direction for turn-aware selection
+  let lastDirection: Position | null = null;
   
   while (path.length < targetLength) {
     const currentCell = path[path.length - 1];
@@ -188,21 +333,47 @@ function growPath(
       break;
     }
     
-    // Prefer neighbors that won't isolate other cells
-    // Sort by how many uncovered neighbors they have (more is better)
+    // Score neighbors with strategy-aware logic
     const scoredNeighbors = neighbors.map(pos => {
       const id = cellIdFromPosition(pos);
+      
+      // Base score: how many uncovered neighbors this cell has
       const futureNeighbors = getNeighbors(pos, gridSize)
         .filter(p => {
           const nid = cellIdFromPosition(p);
           return uncovered.has(nid) && !inPath.has(nid) && nid !== id;
         });
-      return { pos, score: futureNeighbors.length };
+      let score = futureNeighbors.length;
+      
+      // Direction-aware scoring
+      if (lastDirection) {
+        const direction = {
+          row: pos.row - currentPos.row,
+          col: pos.col - currentPos.col,
+        };
+        const isTurn = !(
+          (direction.row === lastDirection.row && direction.col === lastDirection.col) ||
+          (direction.row === -lastDirection.row && direction.col === -lastDirection.col)
+        );
+        
+        if (strategies.includes('direction-change')) {
+          // Prefer turns to create L/S/Z shapes
+          if (isTurn) {
+            score += 2.0;
+          }
+        } else {
+          // Slight preference for continuing direction (but not too strong)
+          if (!isTurn) {
+            score += 0.5;
+          }
+        }
+      }
+      
+      return { pos, score };
     });
     
     // Sort by score (descending) but add randomness
     scoredNeighbors.sort((a, b) => {
-      // Add some randomness to avoid always picking the same paths
       const aScore = a.score + rng() * 0.5;
       const bScore = b.score + rng() * 0.5;
       return bScore - aScore;
@@ -211,6 +382,15 @@ function growPath(
     // Pick one of the top choices
     const pickIdx = Math.floor(rng() * Math.min(2, scoredNeighbors.length));
     const chosen = scoredNeighbors[pickIdx];
+    
+    // Update direction tracking
+    if (path.length > 0) {
+      const prevPos = positionFromCellId(path[path.length - 1]);
+      lastDirection = {
+        row: chosen.pos.row - prevPos.row,
+        col: chosen.pos.col - prevPos.col,
+      };
+    }
     
     const nextId = cellIdFromPosition(chosen.pos);
     path.push(nextId);
