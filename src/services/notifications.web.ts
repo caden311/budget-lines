@@ -99,3 +99,11 @@ export async function sendTestNotification(): Promise<void> {
 export async function getScheduledNotifications(): Promise<never[]> {
   return [];
 }
+
+/**
+ * Restore scheduled notifications on app startup
+ * No-op on web
+ */
+export async function restoreScheduledNotifications(): Promise<void> {
+  console.log('[Notifications] Web platform - restoration not available');
+}

@@ -228,3 +228,26 @@ export async function sendTestNotification(): Promise<void> {
 export async function getScheduledNotifications(): Promise<Notifications.NotificationRequest[]> {
   return await Notifications.getAllScheduledNotificationsAsync();
 }
+
+/**
+ * Restore scheduled notifications on app startup
+ * Checks if notifications should be enabled and re-schedules if missing
+ */
+export async function restoreScheduledNotifications(): Promise<void> {
+  try {
+    const enabled = await areNotificationsEnabled();
+    if (!enabled) return;
+
+    // Check if notification is already scheduled
+    const scheduled = await Notifications.getAllScheduledNotificationsAsync();
+    const hasReminder = scheduled.some(n => n.identifier === DAILY_REMINDER_ID);
+
+    if (!hasReminder) {
+      console.log('Daily reminder was cleared, re-scheduling...');
+      const { hour, minute } = await getReminderTime();
+      await scheduleDailyReminder(hour, minute);
+    }
+  } catch (error) {
+    console.error('Failed to restore notifications:', error);
+  }
+}

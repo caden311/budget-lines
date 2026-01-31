@@ -9,7 +9,7 @@ import { AppState, AppStateStatus } from 'react-native';
 import { ThemeProvider, useTheme } from '../src/theme';
 import { useUserStore } from '../src/stores/userStore';
 import { initializeIAP, terminateIAP } from '../src/services/iap';
-import { configureNotifications } from '../src/services/notifications';
+import { configureNotifications, restoreScheduledNotifications } from '../src/services/notifications';
 import { setUserPremiumStatus, setUserPuzzlesCompleted, setUserStreak } from '../src/services/analytics';
 
 function RootLayoutNav() {
@@ -27,6 +27,9 @@ function RootLayoutNav() {
       
       // Configure notifications
       configureNotifications();
+      
+      // Restore scheduled notifications if they were cleared
+      await restoreScheduledNotifications();
     };
     
     initializeApp();
