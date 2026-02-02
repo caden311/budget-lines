@@ -372,16 +372,18 @@ function growPath(
       return { pos, score };
     });
     
-    // Sort by score (descending) but add randomness
-    scoredNeighbors.sort((a, b) => {
-      const aScore = a.score + rng() * 0.5;
-      const bScore = b.score + rng() * 0.5;
-      return bScore - aScore;
-    });
+    // Sort by score (descending) with pre-computed randomness
+    // IMPORTANT: Don't call rng() inside sort comparator - different JS engines
+    // use different sort algorithms which call comparator different # of times
+    const scoredWithRandom = scoredNeighbors.map(n => ({
+      ...n,
+      finalScore: n.score + rng() * 0.5
+    }));
+    scoredWithRandom.sort((a, b) => b.finalScore - a.finalScore);
     
     // Pick one of the top choices
-    const pickIdx = Math.floor(rng() * Math.min(2, scoredNeighbors.length));
-    const chosen = scoredNeighbors[pickIdx];
+    const pickIdx = Math.floor(rng() * Math.min(2, scoredWithRandom.length));
+    const chosen = scoredWithRandom[pickIdx];
     
     // Update direction tracking
     if (path.length > 0) {

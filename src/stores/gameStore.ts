@@ -17,6 +17,7 @@ import { canAddToPath } from '../core/pathValidator';
 import {
   generateDailyPuzzle,
   generatePracticePuzzle,
+  getDailyPuzzleId,
   restorePuzzleFromValues,
 } from '../core/puzzleGenerator';
 import { isGameStuck } from '../core/stuckDetector';
@@ -73,16 +74,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
     set({ isLoading: true, gameState: null });
     
     // Check for saved progress first
-    const puzzleId = `daily-${date.toISOString().split('T')[0]}`;
-    console.log('[DEBUG] startDailyPuzzle called');
-    console.log('[DEBUG] Current date:', date.toISOString());
-    console.log('[DEBUG] Today\'s puzzle ID:', puzzleId);
+    // Use getDailyPuzzleId which handles 8am Eastern Time reset
+    const puzzleId = getDailyPuzzleId(date);
     
     const savedProgress = await loadGameProgress(puzzleId);
-    console.log('[DEBUG] Saved progress found:', savedProgress ? 'YES' : 'NO');
-    if (savedProgress) {
-      console.log('[DEBUG] Saved progress puzzle ID:', savedProgress.puzzleId);
-    }
     
     if (savedProgress) {
       // Restore from saved progress

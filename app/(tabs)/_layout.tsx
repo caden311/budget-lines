@@ -3,10 +3,13 @@
  */
 
 import { Tabs } from 'expo-router';
+import Constants from 'expo-constants';
 import { useEffect } from 'react';
 import { StyleSheet, Text } from 'react-native';
 import { useUserStore } from '../../src/stores/userStore';
 import { useTheme } from '../../src/theme';
+
+const showPracticeTab = Constants.expoConfig?.extra?.showPracticeTab === true;
 
 function TabBarIcon({ name, focused }: { name: string; focused: boolean }) {
   const icons: Record<string, string> = {
@@ -64,6 +67,7 @@ export default function TabLayout() {
         options={{
           title: 'Practice',
           tabBarIcon: ({ focused }) => <TabBarIcon name="practice" focused={focused} />,
+          href: showPracticeTab ? undefined : null,
         }}
       />
       <Tabs.Screen

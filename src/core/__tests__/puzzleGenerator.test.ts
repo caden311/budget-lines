@@ -14,7 +14,8 @@ import { countAvailableCells } from '../grid';
 
 describe('getDailyPuzzleId', () => {
   it('should generate consistent ID for the same date', () => {
-    const date = new Date('2025-06-15');
+    // Use noon UTC which is well after 8am ET
+    const date = new Date('2025-06-15T16:00:00Z');
     const id1 = getDailyPuzzleId(date);
     const id2 = getDailyPuzzleId(date);
 
@@ -22,24 +23,33 @@ describe('getDailyPuzzleId', () => {
   });
 
   it('should generate different IDs for different dates', () => {
-    const date1 = new Date('2025-06-15');
-    const date2 = new Date('2025-06-16');
+    // Use noon ET on consecutive days
+    const date1 = new Date('2025-06-15T16:00:00Z');
+    const date2 = new Date('2025-06-16T16:00:00Z');
 
     expect(getDailyPuzzleId(date1)).not.toBe(getDailyPuzzleId(date2));
   });
 
   it('should have correct format', () => {
-    const date = new Date('2025-06-15');
+    // Use a time that's clearly after 8am ET (noon UTC on June 15 = 8am ET)
+    const date = new Date('2025-06-15T12:00:00Z');
     const id = getDailyPuzzleId(date);
 
     expect(id).toBe('daily-2025-06-15');
   });
 
-  it('should use current date when no date provided', () => {
-    const id = getDailyPuzzleId();
-    const today = new Date().toISOString().split('T')[0];
-
-    expect(id).toBe(`daily-${today}`);
+  it('should use puzzle date before 8am ET as previous day', () => {
+    // 6am ET = 10am UTC, which is before 8am ET
+    const beforeReset = new Date('2025-06-15T10:00:00Z'); // 6am ET
+    const afterReset = new Date('2025-06-15T13:00:00Z');  // 9am ET
+    
+    const idBefore = getDailyPuzzleId(beforeReset);
+    const idAfter = getDailyPuzzleId(afterReset);
+    
+    // Before 8am ET should show previous day's puzzle
+    expect(idBefore).toBe('daily-2025-06-14');
+    // After 8am ET should show current day's puzzle
+    expect(idAfter).toBe('daily-2025-06-15');
   });
 });
 
@@ -59,7 +69,8 @@ describe('getPracticePuzzleId', () => {
 
 describe('generateDailyPuzzle', () => {
   it('should generate the same puzzle for the same date', () => {
-    const date = new Date('2025-06-15');
+    // Use noon ET (4pm UTC during EDT)
+    const date = new Date('2025-06-15T16:00:00Z');
     const puzzle1 = generateDailyPuzzle(date, 'easy');
     const puzzle2 = generateDailyPuzzle(date, 'easy');
 
@@ -69,8 +80,8 @@ describe('generateDailyPuzzle', () => {
   });
 
   it('should generate different puzzles for different dates', () => {
-    const puzzle1 = generateDailyPuzzle(new Date('2025-06-15'), 'easy');
-    const puzzle2 = generateDailyPuzzle(new Date('2025-06-16'), 'easy');
+    const puzzle1 = generateDailyPuzzle(new Date('2025-06-15T16:00:00Z'), 'easy');
+    const puzzle2 = generateDailyPuzzle(new Date('2025-06-16T16:00:00Z'), 'easy');
 
     expect(puzzle1.puzzleId).not.toBe(puzzle2.puzzleId);
   });
@@ -129,10 +140,10 @@ describe('generateDailyPuzzle', () => {
   });
 
   it('should generate puzzles with varied path lengths across different dates', () => {
-    // Generate puzzles for 10 different dates
+    // Generate puzzles for 10 different dates (noon ET each day)
     const puzzles = [];
     for (let i = 0; i < 10; i++) {
-      const date = new Date('2025-01-01');
+      const date = new Date('2025-01-01T17:00:00Z'); // Noon ET
       date.setDate(date.getDate() + i);
       puzzles.push(generateDailyPuzzle(date, 'medium'));
     }

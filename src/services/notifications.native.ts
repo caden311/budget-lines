@@ -6,6 +6,8 @@
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getDailyPuzzleId } from '../core/puzzleGenerator';
+import { hasSavedProgress } from '../utils/storage';
 
 const STORAGE_KEYS = {
   NOTIFICATIONS_ENABLED: 'notifications_enabled',
@@ -27,13 +29,30 @@ const DAILY_REMINDER_ID = 'daily-puzzle-reminder';
 export function configureNotifications(): void {
   // Set how notifications should be handled when app is in foreground
   Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-      shouldShowAlert: true,
-      shouldPlaySound: true,
-      shouldSetBadge: false,
-      shouldShowBanner: true,
-      shouldShowList: true,
-    }),
+    handleNotification: async (notification) => {
+      // For daily reminder, check if user has already played today
+      if (notification.request.identifier === DAILY_REMINDER_ID) {
+        const playedToday = await hasPlayedToday();
+        if (playedToday) {
+          // User already played, don't show notification
+          return {
+            shouldShowAlert: false,
+            shouldPlaySound: false,
+            shouldSetBadge: false,
+            shouldShowBanner: false,
+            shouldShowList: false,
+          };
+        }
+      }
+      
+      return {
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: false,
+        shouldShowBanner: true,
+        shouldShowList: true,
+      };
+    },
   });
 }
 
@@ -71,7 +90,21 @@ export async function hasNotificationPermissions(): Promise<boolean> {
 }
 
 /**
+ * Check if user has already played today's puzzle
+ */
+async function hasPlayedToday(): Promise<boolean> {
+  try {
+    const todaysPuzzleId = getDailyPuzzleId(new Date());
+    return await hasSavedProgress(todaysPuzzleId);
+  } catch (error) {
+    console.error('Failed to check if user played today:', error);
+    return false;
+  }
+}
+
+/**
  * Schedule daily puzzle reminder
+ * Only schedules if user hasn't played today's puzzle
  * @param hour - Hour of day (0-23)
  * @param minute - Minute of hour (0-59)
  */
@@ -82,6 +115,19 @@ export async function scheduleDailyReminder(
   try {
     // Cancel any existing reminders first
     await cancelDailyReminder();
+    
+    // Check if user has already played today - if so, don't schedule
+    const playedToday = await hasPlayedToday();
+    if (playedToday) {
+      console.log('User has already played today, skipping notification');
+      // Still save the time settings
+      await AsyncStorage.multiSet([
+        [STORAGE_KEYS.NOTIFICATIONS_ENABLED, 'true'],
+        [STORAGE_KEYS.REMINDER_HOUR, hour.toString()],
+        [STORAGE_KEYS.REMINDER_MINUTE, minute.toString()],
+      ]);
+      return true;
+    }
     
     // Check permissions
     const hasPermission = await hasNotificationPermissions();
@@ -232,11 +278,20 @@ export async function getScheduledNotifications(): Promise<Notifications.Notific
 /**
  * Restore scheduled notifications on app startup
  * Checks if notifications should be enabled and re-schedules if missing
+ * Only schedules if user hasn't played today
  */
 export async function restoreScheduledNotifications(): Promise<void> {
   try {
     const enabled = await areNotificationsEnabled();
     if (!enabled) return;
+
+    // Check if user has already played today
+    const playedToday = await hasPlayedToday();
+    if (playedToday) {
+      // Cancel any existing notification since user already played
+      await cancelDailyReminder();
+      return;
+    }
 
     // Check if notification is already scheduled
     const scheduled = await Notifications.getAllScheduledNotificationsAsync();

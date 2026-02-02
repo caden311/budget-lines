@@ -3,9 +3,11 @@
  */
 
 import { useFocusEffect } from 'expo-router';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
+  AppState,
+  AppStateStatus,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -57,6 +59,9 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
   const [showStuckModal, setShowStuckModal] = useState(false);
   const [showLineCelebration, setShowLineCelebration] = useState(false);
   
+  // Track previous app state to detect when app resumes from background
+  const appState = useRef(AppState.currentState);
+  
   // Track screen view
   useEffect(() => {
     trackScreenView(mode === 'daily' ? 'DailyGame' : 'PracticeGame');
@@ -83,28 +88,47 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
   }, [mode, difficulty]);
   
   // For daily mode: check if day has changed when screen comes into focus
-  // If the puzzle is from a previous day, force load the new daily puzzle
   useFocusEffect(
     useCallback(() => {
       if (mode === 'daily' && gameState) {
         const todaysPuzzleId = getDailyPuzzleId(new Date());
-        console.log('[DEBUG] useFocusEffect - checking day change');
-        console.log('[DEBUG] Current gameState.puzzleId:', gameState.puzzleId);
-        console.log('[DEBUG] Today\'s puzzleId:', todaysPuzzleId);
-        console.log('[DEBUG] Day changed?', gameState.puzzleId !== todaysPuzzleId);
-        
         if (gameState.puzzleId !== todaysPuzzleId) {
-          // Day has changed - load the new daily puzzle
-          console.log('[DEBUG] Loading new daily puzzle!');
           startDailyPuzzle();
           trackPuzzleStarted(mode, difficulty);
-          // Reset modal states for fresh puzzle
           setShowWinModal(false);
           setShowStuckModal(false);
         }
       }
     }, [mode, gameState?.puzzleId, startDailyPuzzle, difficulty])
   );
+  
+  // For daily mode: check if day has changed when app resumes from background
+  useEffect(() => {
+    const handleAppStateChange = (nextAppState: AppStateStatus) => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === 'active' &&
+        mode === 'daily' &&
+        gameState
+      ) {
+        const todaysPuzzleId = getDailyPuzzleId(new Date());
+        if (gameState.puzzleId !== todaysPuzzleId) {
+          startDailyPuzzle();
+          trackPuzzleStarted(mode, difficulty);
+          setShowWinModal(false);
+          setShowStuckModal(false);
+        }
+      }
+      
+      appState.current = nextAppState;
+    };
+    
+    const subscription = AppState.addEventListener('change', handleAppStateChange);
+    
+    return () => {
+      subscription.remove();
+    };
+  }, [mode, gameState?.puzzleId, startDailyPuzzle, difficulty]);
   
   // Handle win/stuck state changes
   useEffect(() => {

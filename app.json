@@ -51,7 +51,8 @@
       "router": {},
       "eas": {
         "projectId": "de60c69e-f752-46a8-b765-85475d73db8c"
-      }
+      },
+      "showPracticeTab": false
     },
     "owner": "cadensorenson"
   }
