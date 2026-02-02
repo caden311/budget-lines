@@ -4,7 +4,7 @@
  */
 
 import { useEffect, useRef, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import Animated, {
   Easing,
   runOnJS,
@@ -73,6 +73,10 @@ export function GameHUD({
   hintUsed = false,
 }: GameHUDProps) {
   const { theme } = useTheme();
+  const { width, height } = useWindowDimensions();
+  const isLargeScreen = width >= 768; // iPad breakpoint
+  const isSmallPhone = height <= 700; // iPhone SE and similar
+  const useCompactLayout = isLargeScreen || isSmallPhone;
   const isOverTarget = currentSum > targetSum;
   const isExactMatch = currentSum === targetSum && currentPathLength >= minLineLength;
   
@@ -127,7 +131,14 @@ export function GameHUD({
           <Text style={[styles.statLabel, { color: theme.textMuted }]}>TARGET</Text>
           <Text style={[styles.targetValue, { color: theme.primary }]}>{targetSum}</Text>
         </View>
-        
+
+        {/* Compact sum display for large screens and small phones */}
+        {useCompactLayout && (
+          <Animated.Text style={[styles.compactSum, sumStyle]}>
+            {currentSum || '—'}/{targetSum}
+          </Animated.Text>
+        )}
+
         <View style={styles.stat}>
           <Text style={[styles.statLabel, { color: theme.textMuted }]}>LINES</Text>
           <View style={styles.linesContainer}>
@@ -143,8 +154,9 @@ export function GameHUD({
           </View>
         </View>
       </View>
-      
-      {/* Current sum display */}
+
+      {/* Current sum display - standard phones only */}
+      {!useCompactLayout && (
       <View style={[styles.sumContainer, { backgroundColor: theme.cardBackground }]}>
         <Text style={[styles.sumLabel, { color: theme.textMuted }]}>Current Sum</Text>
         <View style={styles.sumRow}>
@@ -160,7 +172,8 @@ export function GameHUD({
           }
         </Text>
       </View>
-      
+      )}
+
       {/* Action buttons */}
       <View style={styles.buttonRow}>
         {onUndo && (
@@ -259,6 +272,11 @@ const styles = StyleSheet.create({
   targetValue: {
     fontSize: 32,
     fontWeight: '800',
+    fontVariant: ['tabular-nums'],
+  },
+  compactSum: {
+    fontSize: 28,
+    fontWeight: '700',
     fontVariant: ['tabular-nums'],
   },
   sumContainer: {
