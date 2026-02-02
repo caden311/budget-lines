@@ -51,7 +51,8 @@ interface GameStore {
   
   // Line commitment
   commitLine: () => CommitResult;
-  
+  undoLine: () => boolean;
+
   // Game management
   resetPuzzle: () => void;
   saveProgress: () => Promise<void>;
@@ -356,6 +357,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const isWon = remainingCells === 0;
     const isStuck = !isWon && isGameStuck(grid, targetSum, minLineLength);
     
+    // Set completedAt when game ends (either won or stuck)
+    const gameComplete = isWon || isStuck;
+
     set({
       gameState: {
         ...gameState,
@@ -365,16 +369,53 @@ export const useGameStore = create<GameStore>((set, get) => ({
         isWon,
         isStuck,
         remainingCells,
-        completedAt: isWon ? Date.now() : null,
+        completedAt: gameComplete ? Date.now() : null,
       },
     });
     
     // Auto-save progress
     setTimeout(() => saveProgress(), 0);
-    
+
     return { success: true, isWin: isWon, isStuck };
   },
-  
+
+  undoLine: () => {
+    const { gameState, saveProgress } = get();
+    if (!gameState || gameState.lines.length === 0) {
+      return false;
+    }
+
+    // Get the last line
+    const lastLine = gameState.lines[gameState.lines.length - 1];
+
+    // Restore cells from the last line to available
+    const grid = updateCellsState(gameState.grid, lastLine.cellIds, 'available');
+
+    // Remove the last line
+    const newLines = gameState.lines.slice(0, -1);
+
+    // Recalculate remaining cells
+    const remainingCells = countAvailableCells(grid);
+
+    set({
+      gameState: {
+        ...gameState,
+        grid,
+        lines: newLines,
+        currentPath: null,
+        isWon: false,
+        isStuck: false,
+        remainingCells,
+        completedAt: null,
+      },
+    });
+
+    // Auto-save progress
+    setTimeout(() => saveProgress(), 0);
+
+    return true;
+  },
+
   resetPuzzle: () => {
     const { gameState, saveProgress } = get();
     if (!gameState) return;

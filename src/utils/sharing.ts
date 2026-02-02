@@ -66,11 +66,19 @@ export function formatTime(ms: number): string {
 }
 
 /** Generate full share text */
-export function generateShareText(gameState: GameState): string {
+export function generateShareText(gameState: GameState, timeMs?: number): string {
   const emojiGrid = generateEmojiGrid(gameState);
   const lineCount = gameState.lines.length;
-  
-  return `Check out SumTrails! I completed the puzzle and found ${lineCount} lines!\n\n${emojiGrid}\n\nPlay at: sumtrails.app`;
+
+  // Calculate time if not provided
+  const actualTimeMs = timeMs ?? (gameState.completedAt && gameState.startedAt
+    ? gameState.completedAt - gameState.startedAt
+    : 0);
+  const timeStr = actualTimeMs > 0 ? formatTime(actualTimeMs) : '';
+
+  const timeClause = timeStr ? ` in ${timeStr}` : '';
+
+  return `Check out SumTrails! I found ${lineCount} lines${timeClause}!\n\n${emojiGrid}\n\nPlay at: sumtrails.app`;
 }
 
 /** Check if sharing is available */

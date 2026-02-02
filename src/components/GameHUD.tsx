@@ -22,8 +22,10 @@ interface GameHUDProps {
   minLineLength: number;
   currentPathLength: number;
   linesFound: number;
-  remainingCells: number;
+  totalPossibleLines: number;
   onReset: () => void;
+  onUndo?: () => void;
+  canUndo?: boolean;
   onHint?: () => void;
   hintUsed?: boolean;
 }
@@ -63,8 +65,10 @@ export function GameHUD({
   minLineLength,
   currentPathLength,
   linesFound,
-  remainingCells,
+  totalPossibleLines,
   onReset,
+  onUndo,
+  canUndo = false,
   onHint,
   hintUsed = false,
 }: GameHUDProps) {
@@ -128,20 +132,15 @@ export function GameHUD({
           <Text style={[styles.statLabel, { color: theme.textMuted }]}>LINES</Text>
           <View style={styles.linesContainer}>
             <Animated.Text style={[styles.statValue, styles.linesValue, { color: theme.success }, linesAnimatedStyle]}>
-              {linesFound}
+              {linesFound} / {totalPossibleLines}
             </Animated.Text>
             {showPlusOne && (
-              <FloatingPlusOne 
-                theme={theme} 
-                onComplete={() => setShowPlusOne(false)} 
+              <FloatingPlusOne
+                theme={theme}
+                onComplete={() => setShowPlusOne(false)}
               />
             )}
           </View>
-        </View>
-        
-        <View style={styles.stat}>
-          <Text style={[styles.statLabel, { color: theme.textMuted }]}>CELLS</Text>
-          <Text style={[styles.statValue, { color: theme.text }]}>{remainingCells}</Text>
         </View>
       </View>
       
@@ -164,10 +163,29 @@ export function GameHUD({
       
       {/* Action buttons */}
       <View style={styles.buttonRow}>
-        <Pressable 
+        {onUndo && (
+          <Pressable
+            style={({ pressed }) => [
+              styles.actionButton,
+              { backgroundColor: theme.buttonSecondary },
+              (pressed || !canUndo) && styles.buttonPressed
+            ]}
+            onPress={onUndo}
+            disabled={!canUndo}
+          >
+            <Text style={[
+              styles.buttonText,
+              { color: theme.textSecondary },
+              !canUndo && { opacity: 0.5 }
+            ]}>
+              ← Back
+            </Text>
+          </Pressable>
+        )}
+
+        <Pressable
           style={({ pressed }) => [
             styles.actionButton,
-            styles.resetButton,
             { backgroundColor: theme.buttonSecondary },
             pressed && styles.buttonPressed
           ]}
@@ -175,12 +193,11 @@ export function GameHUD({
         >
           <Text style={[styles.buttonText, { color: theme.textSecondary }]}>↺ Reset</Text>
         </Pressable>
-        
+
         {onHint && (
-          <Pressable 
+          <Pressable
             style={({ pressed }) => [
               styles.actionButton,
-              styles.hintButton,
               { backgroundColor: theme.buttonSecondary },
               (pressed || hintUsed) && styles.buttonPressed
             ]}
@@ -188,7 +205,7 @@ export function GameHUD({
             disabled={hintUsed}
           >
             <Text style={[
-              styles.buttonText, 
+              styles.buttonText,
               { color: theme.textSecondary },
               hintUsed && { opacity: 0.5 }
             ]}>
@@ -284,6 +301,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 12,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   resetButton: {},
   hintButton: {},

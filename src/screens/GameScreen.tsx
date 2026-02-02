@@ -16,7 +16,7 @@ import {
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { GameBoard, GameHUD, GameModal, LineCelebration } from '../components';
 import { getDailyPuzzleId } from '../core/puzzleGenerator';
-import { Difficulty, GameMode } from '../core/types';
+import { Difficulty, GameMode, ScoreResult } from '../core/types';
 import {
   trackHintRequested,
   trackLineCommitted,
@@ -28,7 +28,8 @@ import {
 import { useGameStore } from '../stores/gameStore';
 import { useUserStore } from '../stores/userStore';
 import { useTheme } from '../theme';
-import { heavyTap, lightTap, success, warning } from '../utils/haptics';
+import { heavyTap, lightTap, success } from '../utils/haptics';
+import { calculateScore } from '../utils/scoring';
 
 interface GameScreenProps {
   mode: GameMode;
@@ -47,6 +48,7 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
     addToPath,
     clearPath,
     commitLine,
+    undoLine,
     resetPuzzle,
     saveProgress,
     requestHint,
@@ -55,9 +57,9 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
   
   const { recordLineDrawn, recordPuzzleComplete, updateDailyStreak } = useUserStore();
   
-  const [showWinModal, setShowWinModal] = useState(false);
-  const [showStuckModal, setShowStuckModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [showLineCelebration, setShowLineCelebration] = useState(false);
+  const [scoreResult, setScoreResult] = useState<ScoreResult | null>(null);
   
   // Track previous app state to detect when app resumes from background
   const appState = useRef(AppState.currentState);
@@ -95,8 +97,8 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
         if (gameState.puzzleId !== todaysPuzzleId) {
           startDailyPuzzle();
           trackPuzzleStarted(mode, difficulty);
-          setShowWinModal(false);
-          setShowStuckModal(false);
+          setShowModal(false);
+          setScoreResult(null);
         }
       }
     }, [mode, gameState?.puzzleId, startDailyPuzzle, difficulty])
@@ -115,11 +117,11 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
         if (gameState.puzzleId !== todaysPuzzleId) {
           startDailyPuzzle();
           trackPuzzleStarted(mode, difficulty);
-          setShowWinModal(false);
-          setShowStuckModal(false);
+          setShowModal(false);
+          setScoreResult(null);
         }
       }
-      
+
       appState.current = nextAppState;
     };
     
@@ -130,28 +132,26 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
     };
   }, [mode, gameState?.puzzleId, startDailyPuzzle, difficulty]);
   
-  // Handle win/stuck state changes
+  // Handle win/stuck state changes - both show the same success modal
   useEffect(() => {
-    if (gameState?.isWon && !showWinModal) {
-      setShowWinModal(true);
+    const gameComplete = gameState?.isWon || gameState?.isStuck;
+    if (gameState && gameComplete && !showModal) {
+      const result = calculateScore(gameState);
+      setScoreResult(result);
+      setShowModal(true);
       success();
-      
+
       // Record stats
       if (gameState.completedAt && gameState.startedAt) {
         const timeMs = gameState.completedAt - gameState.startedAt;
         recordPuzzleComplete(timeMs, gameState.puzzleId);
-        
+
         // Track analytics
         trackPuzzleCompleted(mode, timeMs, gameState.lines.length, difficulty);
       }
       if (mode === 'daily') {
         updateDailyStreak();
       }
-    }
-    
-    if (gameState?.isStuck && !showStuckModal && !gameState.isWon) {
-      setShowStuckModal(true);
-      warning();
     }
   }, [gameState?.isWon, gameState?.isStuck]);
   
@@ -193,13 +193,24 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
   const handleReset = useCallback(() => {
     resetPuzzle();
     clearHint();
-    setShowWinModal(false);
-    setShowStuckModal(false);
-    
+    setShowModal(false);
+    setScoreResult(null);
+
     // Track reset
     trackPuzzleReset(mode);
   }, [resetPuzzle, clearHint, mode]);
-  
+
+  const handleUndo = useCallback(() => {
+    const success = undoLine();
+    if (success) {
+      lightTap();
+      clearHint();
+      // Clear modal if it was showing (game was complete)
+      setShowModal(false);
+      setScoreResult(null);
+    }
+  }, [undoLine, clearHint]);
+
   const handleNewPuzzle = useCallback(() => {
     if (mode === 'practice') {
       startPracticePuzzle(difficulty);
@@ -209,8 +220,8 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
       trackPuzzleStarted(mode);
     }
     clearHint();
-    setShowWinModal(false);
-    setShowStuckModal(false);
+    setShowModal(false);
+    setScoreResult(null);
   }, [mode, difficulty, startPracticePuzzle, startDailyPuzzle, clearHint]);
   
   const handleHint = useCallback(() => {
@@ -248,8 +259,10 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
             minLineLength={gameState.minLineLength}
             currentPathLength={currentPathCellIds.length}
             linesFound={gameState.lines.length}
-            remainingCells={gameState.remainingCells}
+            totalPossibleLines={gameState.solutionPaths.length}
             onReset={handleReset}
+            onUndo={handleUndo}
+            canUndo={gameState.lines.length > 0}
             onHint={handleHint}
             hintUsed={hintUsed}
           />
@@ -269,27 +282,18 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
           </View>
         </View>
         
-        {/* Win Modal */}
-        <GameModal
-          visible={showWinModal}
-          type="win"
-          gameState={gameState}
-          gameMode={mode}
-          onClose={() => setShowWinModal(false)}
-          onReset={handleReset}
-          onNewPuzzle={mode === 'practice' ? handleNewPuzzle : undefined}
-        />
-        
-        {/* Stuck Modal */}
-        <GameModal
-          visible={showStuckModal}
-          type="stuck"
-          gameState={gameState}
-          gameMode={mode}
-          onClose={() => setShowStuckModal(false)}
-          onReset={handleReset}
-          onNewPuzzle={mode === 'practice' ? handleNewPuzzle : undefined}
-        />
+        {/* Game Complete Modal */}
+        {scoreResult && (
+          <GameModal
+            visible={showModal}
+            scoreResult={scoreResult}
+            gameState={gameState}
+            gameMode={mode}
+            onClose={() => setShowModal(false)}
+            onReset={handleReset}
+            onNewPuzzle={mode === 'practice' ? handleNewPuzzle : undefined}
+          />
+        )}
         
         {/* Line Celebration */}
         <LineCelebration

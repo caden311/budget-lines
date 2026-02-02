@@ -161,3 +161,15 @@ export function areAdjacent(a: Position, b: Position): boolean {
   const colDiff = Math.abs(a.col - b.col);
   return (rowDiff === 1 && colDiff === 0) || (rowDiff === 0 && colDiff === 1);
 }
+
+/** Score rank for medal system */
+export type ScoreRank = 'gold' | 'silver' | 'bronze';
+
+/** Score result after game completion */
+export interface ScoreResult {
+  rank: ScoreRank;
+  linesFound: number;
+  totalPossibleLines: number;
+  percentage: number;
+  isPerfect: boolean;
+}

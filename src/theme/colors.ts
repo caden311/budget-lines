@@ -97,6 +97,11 @@ export interface Theme {
   tabBarBorder: string;
   tabBarActive: string;
   tabBarInactive: string;
+
+  // Medal colors
+  medalGold: string;
+  medalSilver: string;
+  medalBronze: string;
 }
 
 export const darkTheme: Theme = {
@@ -141,6 +146,11 @@ export const darkTheme: Theme = {
   tabBarBorder: '#1e3a5f',
   tabBarActive: colors.blue[500],
   tabBarInactive: '#64748b',
+
+  // Medal colors
+  medalGold: '#FFD700',
+  medalSilver: '#C0C0C0',
+  medalBronze: '#CD7F32',
 };
 
 export const lightTheme: Theme = {
@@ -185,4 +195,9 @@ export const lightTheme: Theme = {
   tabBarBorder: '#e2e8f0',
   tabBarActive: colors.blue[600],
   tabBarInactive: '#94a3b8',
+
+  // Medal colors
+  medalGold: '#FFD700',
+  medalSilver: '#C0C0C0',
+  medalBronze: '#CD7F32',
 };

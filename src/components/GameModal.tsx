@@ -1,6 +1,6 @@
 /**
  * Game modal component for SumTrails
- * Shows win/stuck states with sharing options
+ * Shows medal-based results with sharing options
  */
 
 import * as Clipboard from 'expo-clipboard';
@@ -13,14 +13,16 @@ import {
   Text,
   View,
 } from 'react-native';
-import { GameMode, GameState } from '../core/types';
+import { GameMode, GameState, ScoreResult } from '../core/types';
 import { trackShareResults } from '../services/analytics';
 import { useTheme } from '../theme';
+import { Theme } from '../theme/colors';
+import { getRankEmoji, getRankTitle } from '../utils/scoring';
 import { formatTime, generateEmojiGrid, generateShareText } from '../utils/sharing';
 
 interface GameModalProps {
   visible: boolean;
-  type: 'win' | 'stuck';
+  scoreResult: ScoreResult;
   gameState: GameState | null;
   gameMode?: GameMode;
   onClose: () => void;
@@ -28,33 +30,41 @@ interface GameModalProps {
   onNewPuzzle?: () => void;
 }
 
+function getMedalColor(rank: ScoreResult['rank'], theme: Theme): string {
+  switch (rank) {
+    case 'gold':
+      return theme.medalGold;
+    case 'silver':
+      return theme.medalSilver;
+    case 'bronze':
+      return theme.medalBronze;
+  }
+}
+
 export function GameModal({
   visible,
-  type,
+  scoreResult,
   gameState,
   gameMode = 'daily',
   onClose,
   onReset,
   onNewPuzzle,
 }: GameModalProps) {
-  const { theme, isDark } = useTheme();
-  
+  const { theme } = useTheme();
+
   if (!gameState) return null;
-  
-  const isWin = type === 'win';
-  
+
   // Calculate elapsed time
-  // Use current time if completedAt not set yet (modal might render before state updates)
   const endTime = gameState.completedAt || Date.now();
   const startTime = gameState.startedAt || 0;
   const timeMs = startTime > 0 ? endTime - startTime : 0;
-  
+
   const handleShare = async () => {
-    const shareText = generateShareText(gameState);
-    
+    const shareText = generateShareText(gameState, timeMs);
+
     // Track share event
     trackShareResults(gameMode, gameState.lines.length);
-    
+
     if (Platform.OS === 'web') {
       await Clipboard.setStringAsync(shareText);
       alert('Copied to clipboard!');
@@ -68,7 +78,10 @@ export function GameModal({
       }
     }
   };
-  
+
+  const medalColor = getMedalColor(scoreResult.rank, theme);
+  const isGold = scoreResult.rank === 'gold';
+
   return (
     <Modal
       visible={visible}
@@ -81,32 +94,37 @@ export function GameModal({
           {/* Header */}
           <View style={styles.header}>
             <Text style={styles.emoji}>
-              {isWin ? '🎉' : '😅'}
+              {getRankEmoji(scoreResult.rank)}
             </Text>
             <Text style={[styles.title, { color: theme.text }]}>
-              {isWin ? 'Puzzle Complete!' : 'Got Stuck!'}
+              {getRankTitle(scoreResult.rank)}
             </Text>
             <Text style={[styles.subtitle, { color: theme.textSecondary }]}>
-              {isWin 
-                ? `You found ${gameState.lines.length} lines!`
-                : `${gameState.remainingCells} squares left - this puzzle is solvable, try a different path!`
-              }
+              You found {scoreResult.linesFound} of {scoreResult.totalPossibleLines} lines in {formatTime(timeMs)}!
             </Text>
           </View>
-          
+
+          {/* Medal Badge */}
+          <View style={[styles.medalBadge, { borderColor: medalColor }]}>
+            <Text style={[styles.medalText, { color: medalColor }]}>
+              {scoreResult.rank.toUpperCase()}
+            </Text>
+            <Text style={[styles.medalPercentage, { color: theme.textMuted }]}>
+              {scoreResult.percentage}% complete
+            </Text>
+          </View>
+
           {/* Emoji grid preview */}
-          {isWin && (
-            <View style={[styles.gridPreview, { backgroundColor: theme.backgroundSecondary }]}>
-              <Text style={styles.emojiGrid}>
-                {generateEmojiGrid(gameState)}
-              </Text>
-            </View>
-          )}
-          
+          <View style={[styles.gridPreview, { backgroundColor: theme.backgroundSecondary }]}>
+            <Text style={styles.emojiGrid}>
+              {generateEmojiGrid(gameState)}
+            </Text>
+          </View>
+
           {/* Stats */}
           <View style={[styles.stats, { borderColor: theme.border }]}>
             <View style={styles.statItem}>
-              <Text style={[styles.statValue, { color: theme.text }]}>{gameState.lines.length}</Text>
+              <Text style={[styles.statValue, { color: theme.text }]}>{scoreResult.linesFound}</Text>
               <Text style={[styles.statLabel, { color: theme.textMuted }]}>Lines</Text>
             </View>
             <View style={styles.statItem}>
@@ -118,27 +136,25 @@ export function GameModal({
               <Text style={[styles.statLabel, { color: theme.textMuted }]}>Target</Text>
             </View>
           </View>
-          
+
           {/* Actions */}
           <View style={styles.actions}>
-            {isWin && (
-              <Pressable
-                style={[styles.button, { backgroundColor: theme.primary }]}
-                onPress={handleShare}
-              >
-                <Text style={styles.primaryButtonText}>Share Results</Text>
-              </Pressable>
-            )}
-            
             <Pressable
-              style={[styles.button, { backgroundColor: isWin ? theme.buttonSecondary : theme.primary }]}
+              style={[styles.button, { backgroundColor: theme.primary }]}
+              onPress={handleShare}
+            >
+              <Text style={styles.primaryButtonText}>Share Results</Text>
+            </Pressable>
+
+            <Pressable
+              style={[styles.button, { backgroundColor: theme.buttonSecondary }]}
               onPress={onReset}
             >
-              <Text style={[isWin ? styles.secondaryButtonText : styles.primaryButtonText, isWin && { color: theme.text }]}>
-                {isWin ? 'Play Again' : 'Try Again'}
+              <Text style={[styles.secondaryButtonText, { color: theme.text }]}>
+                {isGold ? 'Play Again' : 'Try Again'}
               </Text>
             </Pressable>
-            
+
             {onNewPuzzle && (
               <Pressable
                 style={[styles.button, styles.tertiaryButton, { borderColor: theme.border }]}
@@ -147,7 +163,7 @@ export function GameModal({
                 <Text style={[styles.tertiaryButtonText, { color: theme.textSecondary }]}>New Puzzle</Text>
               </Pressable>
             )}
-            
+
             <Pressable
               style={styles.closeButton}
               onPress={onClose}
@@ -193,6 +209,23 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginTop: 6,
     textAlign: 'center',
+  },
+  medalBadge: {
+    borderWidth: 3,
+    borderRadius: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  medalText: {
+    fontSize: 20,
+    fontWeight: '800',
+    letterSpacing: 2,
+  },
+  medalPercentage: {
+    fontSize: 12,
+    marginTop: 4,
   },
   gridPreview: {
     borderRadius: 12,
