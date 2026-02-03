@@ -6,6 +6,7 @@ import { useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
+  Alert,
   AppState,
   AppStateStatus,
   SafeAreaView,
@@ -13,6 +14,7 @@ import {
   Text,
   View,
 } from 'react-native';
+import * as StoreReview from 'expo-store-review';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { GameBoard, GameHUD, GameModal, LineCelebration } from '../components';
 import { getDailyPuzzleId } from '../core/puzzleGenerator';
@@ -55,7 +57,7 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
     clearHint,
   } = useGameStore();
   
-  const { recordLineDrawn, recordPuzzleComplete, updateDailyStreak } = useUserStore();
+  const { recordLineDrawn, recordPuzzleComplete, updateDailyStreak, stats, setHasSeenRatingPrompt } = useUserStore();
   
   const [showModal, setShowModal] = useState(false);
   const [showLineCelebration, setShowLineCelebration] = useState(false);
@@ -152,6 +154,29 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
       if (mode === 'daily') {
         updateDailyStreak();
       }
+
+      // Show rating prompt after 3 completed puzzles (check after stats update)
+      setTimeout(() => {
+        const currentStats = useUserStore.getState().stats;
+        if (currentStats.totalPuzzlesCompleted >= 3 && !currentStats.hasSeenRatingPrompt) {
+          setHasSeenRatingPrompt();
+          Alert.alert(
+            'Enjoying SumTrails?',
+            'Would you mind taking a moment to rate us?',
+            [
+              { text: 'Not Now', style: 'cancel' },
+              {
+                text: 'Rate App',
+                onPress: async () => {
+                  if (await StoreReview.hasAction()) {
+                    await StoreReview.requestReview();
+                  }
+                },
+              },
+            ]
+          );
+        }
+      }, 500);
     }
   }, [gameState?.isWon, gameState?.isStuck]);
   

@@ -32,6 +32,10 @@ interface UserStore {
   
   // Preferences
   setPreferredDifficulty: (difficulty: Difficulty) => void;
+
+  // Prompts
+  setHasSeenNotificationPrompt: () => Promise<void>;
+  setHasSeenRatingPrompt: () => Promise<void>;
 }
 
 const DEFAULT_STATS: UserStats = {
@@ -42,6 +46,8 @@ const DEFAULT_STATS: UserStats = {
   totalLinesDrawn: 0,
   bestTime: null,
   averageTime: null,
+  hasSeenNotificationPrompt: false,
+  hasSeenRatingPrompt: false,
 };
 
 const DEFAULT_PREMIUM: PremiumStatus = {
@@ -141,5 +147,25 @@ export const useUserStore = create<UserStore>((set, get) => ({
   
   setPreferredDifficulty: (difficulty: Difficulty) => {
     set({ preferredDifficulty: difficulty });
+  },
+
+  setHasSeenNotificationPrompt: async () => {
+    const { stats } = get();
+    const newStats: UserStats = {
+      ...stats,
+      hasSeenNotificationPrompt: true,
+    };
+    set({ stats: newStats });
+    await saveUserStats(newStats);
+  },
+
+  setHasSeenRatingPrompt: async () => {
+    const { stats } = get();
+    const newStats: UserStats = {
+      ...stats,
+      hasSeenRatingPrompt: true,
+    };
+    set({ stats: newStats });
+    await saveUserStats(newStats);
   },
 }));

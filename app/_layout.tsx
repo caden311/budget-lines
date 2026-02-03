@@ -9,12 +9,12 @@ import { AppState, AppStateStatus } from 'react-native';
 import { ThemeProvider, useTheme } from '../src/theme';
 import { useUserStore } from '../src/stores/userStore';
 import { initializeIAP, terminateIAP } from '../src/services/iap';
-import { configureNotifications, restoreScheduledNotifications } from '../src/services/notifications';
+import { configureNotifications, requestNotificationPermissions, restoreScheduledNotifications, scheduleDailyReminder } from '../src/services/notifications';
 import { setUserPremiumStatus, setUserPuzzlesCompleted, setUserStreak } from '../src/services/analytics';
 
 function RootLayoutNav() {
   const { theme, isDark } = useTheme();
-  const { loadUserData, stats, premium } = useUserStore();
+  const { loadUserData, stats, premium, setHasSeenNotificationPrompt } = useUserStore();
   
   useEffect(() => {
     // Initialize services on app start
@@ -50,6 +50,21 @@ function RootLayoutNav() {
     };
   }, []);
   
+  // Prompt for notification permissions on first launch
+  useEffect(() => {
+    const promptForNotifications = async () => {
+      if (stats && !stats.hasSeenNotificationPrompt) {
+        const granted = await requestNotificationPermissions();
+        await setHasSeenNotificationPrompt();
+        // If permission granted, actually enable notifications
+        if (granted) {
+          await scheduleDailyReminder();
+        }
+      }
+    };
+    promptForNotifications();
+  }, [stats?.hasSeenNotificationPrompt]);
+
   // Update analytics user properties when user data changes
   useEffect(() => {
     if (premium) {

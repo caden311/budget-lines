@@ -122,7 +122,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
           isStuck,
           remainingCells,
           completedAt: isWon ? Date.now() : null,
-          hintUsed: savedProgress.hintUsed ?? false, // Restore hint usage from saved progress
+          hintUsed: savedProgress.hintUsed ?? false,
+          hintCellIds: savedProgress.hintCellIds, // Restore locked-in hint cells
         },
         isLoading: false,
       });
@@ -199,11 +200,12 @@ export const useGameStore = create<GameStore>((set, get) => ({
         isStuck,
         remainingCells,
         completedAt: isWon ? Date.now() : null,
-        hintUsed: savedProgress.hintUsed ?? false, // Restore hint usage from saved progress
+        hintUsed: savedProgress.hintUsed ?? false,
+        hintCellIds: savedProgress.hintCellIds, // Restore locked-in hint cells
       },
       isLoading: false,
     });
-    
+
     return true;
   },
   
@@ -419,10 +421,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
   resetPuzzle: () => {
     const { gameState, saveProgress } = get();
     if (!gameState) return;
-    
+
     // Reset the grid to all available
     const grid = resetGrid(gameState.grid);
-    
+
     set({
       gameState: {
         ...gameState,
@@ -433,10 +435,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
         isStuck: false,
         remainingCells: countAvailableCells(grid),
         completedAt: null,
-        hintUsed: false, // Reset hint when resetting puzzle
+        // Keep hintUsed and hintCellIds - hint persists across resets
       },
     });
-    
+
     // Save the reset state
     setTimeout(() => saveProgress(), 0);
   },
@@ -444,7 +446,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   saveProgress: async () => {
     const { gameState } = get();
     if (!gameState) return;
-    
+
     const progress: SavedGameProgress = {
       puzzleId: gameState.puzzleId,
       mode: gameState.mode,
@@ -456,20 +458,28 @@ export const useGameStore = create<GameStore>((set, get) => ({
       startedAt: gameState.startedAt,
       solutionPaths: gameState.solutionPaths,
       hintUsed: gameState.hintUsed,
+      hintCellIds: gameState.hintCellIds,
     };
-    
+
     await saveGameProgress(progress);
   },
   
   requestHint: () => {
     const { gameState, saveProgress } = get();
     if (!gameState) return null;
-    
-    // If hint already used, don't provide another
-    if (gameState.hintUsed) {
-      return null;
+
+    // If hint was already given, return the same locked-in hint cells
+    if (gameState.hintUsed && gameState.hintCellIds) {
+      const hint: HintResult = {
+        type: 'full-line',
+        cellIds: gameState.hintCellIds,
+        message: 'This line is part of the solution',
+      };
+      set({ currentHint: hint });
+      return hint;
     }
-    
+
+    // Generate a new hint
     const hint = generateHint(
       gameState.grid,
       gameState.currentPath?.cellIds ?? [],
@@ -477,14 +487,15 @@ export const useGameStore = create<GameStore>((set, get) => ({
       gameState.minLineLength,
       gameState.solutionPaths
     );
-    
-    // If hint was provided, mark it as used and persist immediately
+
+    // If hint was provided, mark it as used and lock in the cell IDs
     if (hint) {
-      set({ 
+      set({
         currentHint: hint,
         gameState: {
           ...gameState,
           hintUsed: true,
+          hintCellIds: hint.cellIds, // Lock in the hint cells
         }
       });
       // Persist hint usage immediately so refreshing won't reset it
@@ -492,7 +503,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     } else {
       set({ currentHint: null });
     }
-    
+
     return hint;
   },
   

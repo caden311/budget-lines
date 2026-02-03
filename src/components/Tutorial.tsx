@@ -511,7 +511,6 @@ export function Tutorial({ visible, onComplete, onSkip }: TutorialProps) {
               <Text style={[styles.tipText, { color: theme.textMuted }]}>
                 • Swipe to backtrack your path{'\n'}
                 • Stuck? Try a different starting cell{'\n'}
-                • Premium users get hints when stuck
               </Text>
             </View>
           </Animated.View>

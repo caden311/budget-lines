@@ -3,8 +3,11 @@
  * Generates shareable results like Wordle
  */
 
+import Constants from 'expo-constants';
 import * as Sharing from 'expo-sharing';
 import { GameState } from '../core/types';
+
+const APP_URL = Constants.expoConfig?.extra?.appUrl ?? 'https://sumtrails.app';
 
 /** Generate emoji grid for sharing */
 export function generateEmojiGrid(gameState: GameState): string {
@@ -78,7 +81,7 @@ export function generateShareText(gameState: GameState, timeMs?: number): string
 
   const timeClause = timeStr ? ` in ${timeStr}` : '';
 
-  return `Check out SumTrails! I found ${lineCount} lines${timeClause}!\n\n${emojiGrid}\n\nPlay at: sumtrails.app`;
+  return `Check out SumTrails! I found ${lineCount} lines${timeClause}!\n\n${emojiGrid}\n\nPlay at: ${APP_URL}`;
 }
 
 /** Check if sharing is available */

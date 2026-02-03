@@ -79,6 +79,8 @@ export interface GameState {
   hintUsed: boolean;
   /** Original solution paths from puzzle generation (for hints) */
   solutionPaths: string[][];
+  /** Locked-in hint cell IDs (persists across resets) */
+  hintCellIds?: string[];
 }
 
 /** Saved game progress for persistence */
@@ -101,6 +103,8 @@ export interface SavedGameProgress {
   solutionPaths?: string[][];
   /** Whether a hint was used for this puzzle */
   hintUsed?: boolean;
+  /** Locked-in hint cell IDs (persists across resets) */
+  hintCellIds?: string[];
 }
 
 /** User statistics */
@@ -112,6 +116,10 @@ export interface UserStats {
   totalLinesDrawn: number;
   bestTime: number | null;
   averageTime: number | null;
+  /** Whether user has seen the notification permission prompt */
+  hasSeenNotificationPrompt?: boolean;
+  /** Whether user has seen the app rating prompt */
+  hasSeenRatingPrompt?: boolean;
 }
 
 /** Premium/subscription status */
