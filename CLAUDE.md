@@ -23,6 +23,10 @@ npx jest --testPathPattern=grid  # Run specific test file
 npm run deploy-iphone  # Build and deploy to physical iPhone
 ```
 
+## Runtime flags (env)
+
+- **Unlimited hints**: set `EXPO_PUBLIC_UNLIMITED_HINTS=true` to allow requesting hints repeatedly (the hint button won’t disable after the first use).
+
 ## Architecture
 
 ### Navigation (Expo Router)

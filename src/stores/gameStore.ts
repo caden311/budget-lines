@@ -4,6 +4,7 @@
  */
 
 import { create } from 'zustand';
+import { UNLIMITED_HINTS_ENABLED } from '../config';
 import {
   countAvailableCells,
   extractGridValues,
@@ -468,15 +469,19 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const { gameState, saveProgress } = get();
     if (!gameState) return null;
 
-    // If hint was already given, return the same locked-in hint cells
-    if (gameState.hintUsed && gameState.hintCellIds) {
-      const hint: HintResult = {
-        type: 'full-line',
-        cellIds: gameState.hintCellIds,
-        message: 'This line is part of the solution',
-      };
-      set({ currentHint: hint });
-      return hint;
+    // In normal mode, hints are single-use and persisted.
+    // When UNLIMITED_HINTS_ENABLED, we allow requesting hints repeatedly and do not persist hint usage.
+    if (!UNLIMITED_HINTS_ENABLED) {
+      // If hint was already given, return the same locked-in hint cells
+      if (gameState.hintUsed && gameState.hintCellIds) {
+        const hint: HintResult = {
+          type: 'full-line',
+          cellIds: gameState.hintCellIds,
+          message: 'This line is part of the solution',
+        };
+        set({ currentHint: hint });
+        return hint;
+      }
     }
 
     // Generate a new hint
@@ -488,18 +493,22 @@ export const useGameStore = create<GameStore>((set, get) => ({
       gameState.solutionPaths
     );
 
-    // If hint was provided, mark it as used and lock in the cell IDs
+    // If hint was provided, persist usage only in normal mode
     if (hint) {
-      set({
-        currentHint: hint,
-        gameState: {
-          ...gameState,
-          hintUsed: true,
-          hintCellIds: hint.cellIds, // Lock in the hint cells
-        }
-      });
-      // Persist hint usage immediately so refreshing won't reset it
-      setTimeout(() => saveProgress(), 0);
+      if (UNLIMITED_HINTS_ENABLED) {
+        set({ currentHint: hint });
+      } else {
+        set({
+          currentHint: hint,
+          gameState: {
+            ...gameState,
+            hintUsed: true,
+            hintCellIds: hint.cellIds, // Lock in the hint cells
+          }
+        });
+        // Persist hint usage immediately so refreshing won't reset it
+        setTimeout(() => saveProgress(), 0);
+      }
     } else {
       set({ currentHint: null });
     }

@@ -27,6 +27,7 @@ import {
   trackPuzzleStarted,
   trackScreenView,
 } from '../services/analytics';
+import { UNLIMITED_HINTS_ENABLED } from '../config';
 import { useGameStore } from '../stores/gameStore';
 import { useUserStore } from '../stores/userStore';
 import { useTheme } from '../theme';
@@ -271,7 +272,7 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
   const currentPathCellIds = gameState.currentPath?.cellIds ?? [];
   const currentSum = gameState.currentPath?.sum ?? 0;
   const hintCellIds = currentHint?.cellIds ?? null;
-  const hintUsed = gameState.hintUsed;
+  const hintUsed = UNLIMITED_HINTS_ENABLED ? false : gameState.hintUsed;
   
   return (
     <GestureHandlerRootView style={styles.gestureRoot}>
