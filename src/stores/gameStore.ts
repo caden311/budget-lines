@@ -25,7 +25,6 @@ import { isGameStuck } from '../core/stuckDetector';
 import { calculatePathSum, isSumCorrect, meetsMinLength } from '../core/sumCalculator';
 import {
   CommitResult,
-  Difficulty,
   GameState,
   HintResult,
   Line,
@@ -42,7 +41,7 @@ interface GameStore {
   
   // Actions
   startDailyPuzzle: (date?: Date) => Promise<void>;
-  startPracticePuzzle: (difficulty?: Difficulty) => Promise<void>;
+  startPracticePuzzle: () => Promise<void>;
   loadSavedGame: (puzzleId: string) => Promise<boolean>;
   
   // Path drawing
@@ -140,12 +139,12 @@ export const useGameStore = create<GameStore>((set, get) => ({
     }
   },
   
-  startPracticePuzzle: async (difficulty = 'medium') => {
+  startPracticePuzzle: async () => {
     set({ isLoading: true, gameState: null });
     // Defer to next tick so loading UI can render
     await new Promise<void>((resolve) => {
       setTimeout(() => {
-        const gameState = generatePracticePuzzle(difficulty);
+        const gameState = generatePracticePuzzle();
         set({ gameState, isLoading: false });
         resolve();
       }, 0);

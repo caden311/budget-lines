@@ -4,18 +4,15 @@
  * Firebase has been removed for now
  */
 
-import { GameMode, Difficulty } from '../core/types';
+import { GameMode } from '../core/types';
 
 // ============ Game Events ============
 
 /**
  * Track when a puzzle is started
  */
-export async function trackPuzzleStarted(
-  mode: GameMode,
-  difficulty?: Difficulty
-): Promise<void> {
-  console.log(`[Analytics] puzzle_started:`, { mode, difficulty: difficulty || 'medium' });
+export async function trackPuzzleStarted(mode: GameMode): Promise<void> {
+  console.log(`[Analytics] puzzle_started:`, { mode });
 }
 
 /**
@@ -24,14 +21,12 @@ export async function trackPuzzleStarted(
 export async function trackPuzzleCompleted(
   mode: GameMode,
   timeMs: number,
-  linesCount: number,
-  difficulty?: Difficulty
+  linesCount: number
 ): Promise<void> {
   console.log(`[Analytics] puzzle_completed:`, {
     mode,
     time_seconds: Math.floor(timeMs / 1000),
     lines_count: linesCount,
-    difficulty: difficulty || 'medium',
   });
 }
 

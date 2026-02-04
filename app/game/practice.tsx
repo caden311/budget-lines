@@ -5,18 +5,16 @@
 import { useRouter } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { GameScreen } from '../../src/screens/GameScreen';
-import { useUserStore } from '../../src/stores/userStore';
 import { useTheme } from '../../src/theme';
 
 export default function PracticeGameScreen() {
   const router = useRouter();
   const { theme } = useTheme();
-  const { preferredDifficulty } = useUserStore();
-  
+
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <View style={styles.header}>
-        <Pressable 
+        <Pressable
           style={styles.backButton}
           onPress={() => router.replace('/practice')}
         >
@@ -25,7 +23,7 @@ export default function PracticeGameScreen() {
         <Text style={[styles.title, { color: theme.text }]}>Practice Mode</Text>
         <View style={styles.placeholder} />
       </View>
-      <GameScreen mode="practice" difficulty={preferredDifficulty} />
+      <GameScreen mode="practice" />
     </View>
   );
 }

@@ -4,14 +4,26 @@
 
 import { generateHint } from '../hintGenerator';
 import { createGrid, updateCellsState } from '../grid';
+import { generateSolvablePuzzle } from '../constructiveGenerator';
+import seedrandom from 'seedrandom';
 
-// Create a grid with known values for testing
+// Create a grid with known values for testing (NOT guaranteed solvable)
 function createTestGrid(): number[][] {
   return [
     [1, 2, 3],
     [4, 5, 6],
     [7, 8, 9],
   ];
+}
+
+// Create a guaranteed solvable grid using constructive generator
+function createSolvableTestGrid(seed: string = 'test-hint-seed') {
+  const rng = seedrandom(seed);
+  const puzzle = generateSolvablePuzzle(
+    { gridSize: 7, minLineLength: 3, targetSum: 18, valueRange: { min: 1, max: 8 } },
+    rng
+  );
+  return puzzle;
 }
 
 describe('generateHint', () => {
@@ -32,18 +44,21 @@ describe('generateHint', () => {
 
   describe('full-line hint', () => {
     it('should return a complete valid line', () => {
-      const grid = createGrid(3, createTestGrid());
-      const hint = generateHint(grid, [], 10, 3);
+      // Use constructive generator to create a guaranteed solvable puzzle
+      const { values, solutionPaths } = createSolvableTestGrid();
+      const grid = createGrid(7, values);
+      const hint = generateHint(grid, [], 18, 3, solutionPaths);
 
       expect(hint).not.toBeNull();
       expect(hint!.type).toBe('full-line');
       expect(hint!.cellIds.length).toBeGreaterThanOrEqual(3); // minLineLength
-      expect(hint!.message).toBe('This line is part of a solvable solution');
+      expect(hint!.message).toBe('This line is part of the solution');
     });
 
     it('should return a line with valid sum', () => {
-      const grid = createGrid(3, createTestGrid());
-      const hint = generateHint(grid, [], 10, 3);
+      const { values, solutionPaths } = createSolvableTestGrid();
+      const grid = createGrid(7, values);
+      const hint = generateHint(grid, [], 18, 3, solutionPaths);
 
       if (hint) {
         // Calculate sum of hinted line
@@ -52,7 +67,7 @@ describe('generateHint', () => {
           const [row, col] = cellId.split('-').map(Number);
           sum += grid[row][col].value;
         }
-        expect(sum).toBe(10); // targetSum
+        expect(sum).toBe(18); // targetSum
       }
     });
 
@@ -74,10 +89,10 @@ describe('generateHint', () => {
     });
 
     it('should return a line that leads to solvable state', () => {
-      // This is a complex test - we verify the hint returns a line
-      // The actual solvability check is tested in stuckDetector tests
-      const grid = createGrid(3, createTestGrid());
-      const hint = generateHint(grid, [], 10, 3);
+      // Use constructive generator to create a guaranteed solvable puzzle
+      const { values, solutionPaths } = createSolvableTestGrid('solvable-state-test');
+      const grid = createGrid(7, values);
+      const hint = generateHint(grid, [], 18, 3, solutionPaths);
 
       expect(hint).not.toBeNull();
       if (hint) {

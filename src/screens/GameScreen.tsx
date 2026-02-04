@@ -18,7 +18,7 @@ import * as StoreReview from 'expo-store-review';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { GameBoard, GameHUD, GameModal, LineCelebration } from '../components';
 import { getDailyPuzzleId } from '../core/puzzleGenerator';
-import { Difficulty, GameMode, ScoreResult } from '../core/types';
+import { GameMode, ScoreResult } from '../core/types';
 import {
   trackHintRequested,
   trackLineCommitted,
@@ -36,10 +36,9 @@ import { calculateScore } from '../utils/scoring';
 
 interface GameScreenProps {
   mode: GameMode;
-  difficulty?: Difficulty;
 }
 
-export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
+export function GameScreen({ mode }: GameScreenProps) {
   const { theme } = useTheme();
   const {
     gameState,
@@ -78,19 +77,19 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
       if (mode === 'daily') {
         await startDailyPuzzle();
       } else {
-        await startPracticePuzzle(difficulty);
+        await startPracticePuzzle();
       }
       // Track puzzle start
-      trackPuzzleStarted(mode, difficulty);
+      trackPuzzleStarted(mode);
     };
-    
+
     initGame();
-    
+
     // Save progress when leaving
     return () => {
       saveProgress();
     };
-  }, [mode, difficulty]);
+  }, [mode]);
   
   // For daily mode: check if day has changed when screen comes into focus
   useFocusEffect(
@@ -99,12 +98,12 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
         const todaysPuzzleId = getDailyPuzzleId(new Date());
         if (gameState.puzzleId !== todaysPuzzleId) {
           startDailyPuzzle();
-          trackPuzzleStarted(mode, difficulty);
+          trackPuzzleStarted(mode);
           setShowModal(false);
           setScoreResult(null);
         }
       }
-    }, [mode, gameState?.puzzleId, startDailyPuzzle, difficulty])
+    }, [mode, gameState?.puzzleId, startDailyPuzzle])
   );
   
   // For daily mode: check if day has changed when app resumes from background
@@ -119,7 +118,7 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
         const todaysPuzzleId = getDailyPuzzleId(new Date());
         if (gameState.puzzleId !== todaysPuzzleId) {
           startDailyPuzzle();
-          trackPuzzleStarted(mode, difficulty);
+          trackPuzzleStarted(mode);
           setShowModal(false);
           setScoreResult(null);
         }
@@ -127,13 +126,13 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
 
       appState.current = nextAppState;
     };
-    
+
     const subscription = AppState.addEventListener('change', handleAppStateChange);
-    
+
     return () => {
       subscription.remove();
     };
-  }, [mode, gameState?.puzzleId, startDailyPuzzle, difficulty]);
+  }, [mode, gameState?.puzzleId, startDailyPuzzle]);
   
   // Handle win/stuck state changes - both show the same success modal
   useEffect(() => {
@@ -150,7 +149,7 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
         recordPuzzleComplete(timeMs, gameState.puzzleId);
 
         // Track analytics
-        trackPuzzleCompleted(mode, timeMs, gameState.lines.length, difficulty);
+        trackPuzzleCompleted(mode, timeMs, gameState.lines.length);
       }
       if (mode === 'daily') {
         updateDailyStreak();
@@ -239,8 +238,8 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
 
   const handleNewPuzzle = useCallback(() => {
     if (mode === 'practice') {
-      startPracticePuzzle(difficulty);
-      trackPuzzleStarted(mode, difficulty);
+      startPracticePuzzle();
+      trackPuzzleStarted(mode);
     } else {
       startDailyPuzzle();
       trackPuzzleStarted(mode);
@@ -248,7 +247,7 @@ export function GameScreen({ mode, difficulty = 'medium' }: GameScreenProps) {
     clearHint();
     setShowModal(false);
     setScoreResult(null);
-  }, [mode, difficulty, startPracticePuzzle, startDailyPuzzle, clearHint]);
+  }, [mode, startPracticePuzzle, startDailyPuzzle, clearHint]);
   
   const handleHint = useCallback(() => {
     const hint = requestHint();

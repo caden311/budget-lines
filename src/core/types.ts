@@ -37,9 +37,6 @@ export interface DifficultyConfig {
   valueRange: { min: number; max: number };
 }
 
-/** Difficulty presets */
-export type Difficulty = 'easy' | 'medium' | 'hard';
-
 /** Game mode - daily (shared puzzle) or practice (random) */
 export type GameMode = 'daily' | 'practice';
 

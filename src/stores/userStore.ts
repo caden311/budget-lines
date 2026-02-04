@@ -4,7 +4,7 @@
  */
 
 import { create } from 'zustand';
-import { UserStats, PremiumStatus, Difficulty } from '../core/types';
+import { UserStats, PremiumStatus } from '../core/types';
 import {
   loadUserStats,
   saveUserStats,
@@ -16,22 +16,18 @@ interface UserStore {
   // State
   stats: UserStats;
   premium: PremiumStatus;
-  preferredDifficulty: Difficulty;
   isLoading: boolean;
-  
+
   // Actions
   loadUserData: () => Promise<void>;
-  
+
   // Stats updates
   recordPuzzleComplete: (timeMs: number, puzzleId: string) => Promise<void>;
   recordLineDrawn: () => Promise<void>;
   updateDailyStreak: () => Promise<void>;
-  
+
   // Premium
   setPremiumStatus: (status: PremiumStatus) => Promise<void>;
-  
-  // Preferences
-  setPreferredDifficulty: (difficulty: Difficulty) => void;
 
   // Prompts
   setHasSeenNotificationPrompt: () => Promise<void>;
@@ -59,7 +55,6 @@ const DEFAULT_PREMIUM: PremiumStatus = {
 export const useUserStore = create<UserStore>((set, get) => ({
   stats: DEFAULT_STATS,
   premium: DEFAULT_PREMIUM,
-  preferredDifficulty: 'medium',
   isLoading: true,
   
   loadUserData: async () => {
@@ -143,10 +138,6 @@ export const useUserStore = create<UserStore>((set, get) => ({
   setPremiumStatus: async (status: PremiumStatus) => {
     set({ premium: status });
     await savePremiumStatus(status);
-  },
-  
-  setPreferredDifficulty: (difficulty: Difficulty) => {
-    set({ preferredDifficulty: difficulty });
   },
 
   setHasSeenNotificationPrompt: async () => {

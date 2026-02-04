@@ -2,7 +2,7 @@
  * Practice mode screen - Free for all users
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,35 +12,21 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTheme } from '../../src/theme';
-import { useUserStore } from '../../src/stores/userStore';
-import { Difficulty } from '../../src/core/types';
-import { getDifficultyConfig } from '../../src/core/puzzleGenerator';
 import { trackScreenView } from '../../src/services/analytics';
-
-const DIFFICULTIES: { id: Difficulty; name: string; emoji: string }[] = [
-  { id: 'easy', name: 'Easy', emoji: '🌱' },
-  { id: 'medium', name: 'Medium', emoji: '🌿' },
-  { id: 'hard', name: 'Hard', emoji: '🌲' },
-];
 
 export default function PracticeScreen() {
   const router = useRouter();
   const { theme } = useTheme();
-  const { preferredDifficulty, setPreferredDifficulty } = useUserStore();
-  const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>(preferredDifficulty);
-  
-  const config = getDifficultyConfig(selectedDifficulty);
-  
+
   // Track screen view
   useEffect(() => {
     trackScreenView('Practice');
   }, []);
-  
+
   const handlePlay = () => {
-    setPreferredDifficulty(selectedDifficulty);
     router.push('/game/practice');
   };
-  
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
       <View style={styles.content}>
@@ -51,69 +37,28 @@ export default function PracticeScreen() {
             Unlimited puzzles to sharpen your skills
           </Text>
         </View>
-        
-        {/* Difficulty selector */}
-        <View style={styles.difficultySection}>
-          <Text style={[styles.sectionTitle, { color: theme.textMuted }]}>Select Difficulty</Text>
-          
-          <View style={styles.difficultyOptions}>
-            {DIFFICULTIES.map((diff) => (
-              <Pressable
-                key={diff.id}
-                style={[
-                  styles.difficultyCard,
-                  { backgroundColor: theme.cardBackground },
-                  selectedDifficulty === diff.id && { 
-                    borderColor: theme.primary,
-                    backgroundColor: theme.backgroundTertiary,
-                  },
-                ]}
-                onPress={() => setSelectedDifficulty(diff.id)}
-              >
-                <Text style={styles.difficultyEmoji}>
-                  {diff.emoji}
-                </Text>
-                <Text style={[
-                  styles.difficultyName,
-                  { color: theme.textSecondary },
-                  selectedDifficulty === diff.id && { color: theme.text },
-                ]}>
-                  {diff.name}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
-        </View>
-        
-        {/* Difficulty details */}
+
+        {/* Puzzle details */}
         <View style={[styles.detailsCard, { backgroundColor: theme.cardBackground }]}>
           <Text style={[styles.detailsTitle, { color: theme.text }]}>Puzzle Settings</Text>
           <View style={[styles.detailRow, { borderBottomColor: theme.border }]}>
             <Text style={[styles.detailLabel, { color: theme.textMuted }]}>Grid Size</Text>
-            <Text style={[styles.detailValue, { color: theme.text }]}>
-              {config.gridSize}×{config.gridSize}
-            </Text>
+            <Text style={[styles.detailValue, { color: theme.text }]}>7x7</Text>
           </View>
           <View style={[styles.detailRow, { borderBottomColor: theme.border }]}>
             <Text style={[styles.detailLabel, { color: theme.textMuted }]}>Target Sum</Text>
-            <Text style={[styles.detailValue, { color: theme.text }]}>
-              {config.targetSum}
-            </Text>
+            <Text style={[styles.detailValue, { color: theme.text }]}>18</Text>
           </View>
           <View style={[styles.detailRow, { borderBottomColor: theme.border }]}>
             <Text style={[styles.detailLabel, { color: theme.textMuted }]}>Min Line Length</Text>
-            <Text style={[styles.detailValue, { color: theme.text }]}>
-              {config.minLineLength} cells
-            </Text>
+            <Text style={[styles.detailValue, { color: theme.text }]}>3 cells</Text>
           </View>
           <View style={[styles.detailRow, { borderBottomColor: theme.border }]}>
             <Text style={[styles.detailLabel, { color: theme.textMuted }]}>Cell Values</Text>
-            <Text style={[styles.detailValue, { color: theme.text }]}>
-              {config.valueRange.min}-{config.valueRange.max}
-            </Text>
+            <Text style={[styles.detailValue, { color: theme.text }]}>1-8</Text>
           </View>
         </View>
-        
+
         {/* Play button */}
         <View style={styles.playSection}>
           <Pressable
@@ -151,36 +96,6 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     marginTop: 8,
-  },
-  difficultySection: {
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 16,
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-  },
-  difficultyOptions: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  difficultyCard: {
-    flex: 1,
-    borderRadius: 16,
-    padding: 20,
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: 'transparent',
-  },
-  difficultyEmoji: {
-    fontSize: 32,
-    marginBottom: 8,
-  },
-  difficultyName: {
-    fontSize: 16,
-    fontWeight: '600',
   },
   detailsCard: {
     borderRadius: 16,
