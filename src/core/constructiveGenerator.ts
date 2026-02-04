@@ -37,26 +37,24 @@ type GenerationStrategy =
 
 /** Select generation strategies based on seed for day-to-day variety */
 function selectStrategies(rng: () => number): GenerationStrategy[] {
+  // Always include direction-change to ensure path variety (no pure horizontal/vertical puzzles)
+  const strategies: GenerationStrategy[] = ['direction-change'];
+
   const roll = rng();
-  const strategies: GenerationStrategy[] = [];
-  
-  // Primary strategy selection
-  if (roll < 0.2) {
+
+  // Add secondary strategies for additional variety
+  if (roll < 0.25) {
     strategies.push('center-snake', 'long-chains');
-  } else if (roll < 0.4) {
-    strategies.push('corner-converge', 'direction-change');
-  } else if (roll < 0.6) {
+  } else if (roll < 0.5) {
+    strategies.push('corner-converge');
+  } else if (roll < 0.7) {
     strategies.push('mixed-lengths');
-  } else if (roll < 0.75) {
-    strategies.push('long-chains', 'direction-change');
   } else if (roll < 0.85) {
-    strategies.push('center-snake', 'mixed-lengths');
-  } else if (roll < 0.95) {
-    strategies.push('corner-converge', 'long-chains');
+    strategies.push('long-chains');
   } else {
-    strategies.push('direction-change', 'mixed-lengths');
+    strategies.push('center-snake', 'mixed-lengths');
   }
-  
+
   return strategies;
 }
 
@@ -316,7 +314,8 @@ function growPath(
   
   // Track direction for turn-aware selection
   let lastDirection: Position | null = null;
-  
+  let consecutiveStraight = 0; // Track how many cells in the same direction
+
   while (path.length < targetLength) {
     const currentCell = path[path.length - 1];
     const currentPos = positionFromCellId(currentCell);
@@ -351,24 +350,21 @@ function growPath(
           row: pos.row - currentPos.row,
           col: pos.col - currentPos.col,
         };
-        const isTurn = !(
-          (direction.row === lastDirection.row && direction.col === lastDirection.col) ||
-          (direction.row === -lastDirection.row && direction.col === -lastDirection.col)
-        );
-        
-        if (strategies.includes('direction-change')) {
-          // Prefer turns to create L/S/Z shapes
-          if (isTurn) {
-            score += 2.0;
-          }
-        } else {
-          // Slight preference for continuing direction (but not too strong)
-          if (!isTurn) {
-            score += 0.5;
-          }
+        const isSameDirection =
+          direction.row === lastDirection.row && direction.col === lastDirection.col;
+        const isTurn = !isSameDirection;
+
+        // Always prefer turns to create interesting paths
+        if (isTurn) {
+          score += 2.0;
+        }
+
+        // After 2+ consecutive cells in same direction, strongly prefer a turn
+        if (consecutiveStraight >= 2 && isTurn) {
+          score += 3.0; // Strong bonus for breaking long straight runs
         }
       }
-      
+
       return { pos, score };
     });
     
@@ -388,10 +384,21 @@ function growPath(
     // Update direction tracking
     if (path.length > 0) {
       const prevPos = positionFromCellId(path[path.length - 1]);
-      lastDirection = {
+      const newDirection = {
         row: chosen.pos.row - prevPos.row,
         col: chosen.pos.col - prevPos.col,
       };
+
+      // Track consecutive straight moves
+      if (lastDirection &&
+          newDirection.row === lastDirection.row &&
+          newDirection.col === lastDirection.col) {
+        consecutiveStraight++;
+      } else {
+        consecutiveStraight = 0;
+      }
+
+      lastDirection = newDirection;
     }
     
     const nextId = cellIdFromPosition(chosen.pos);
@@ -568,59 +575,126 @@ function shuffleArray<T>(array: T[], rng: () => number): T[] {
 
 /**
  * Generate a simple fallback puzzle if constructive generation fails
- * Creates a grid with simple horizontal/vertical line solutions
+ * Creates a grid with a mix of horizontal, vertical, and L-shaped paths
  */
 function generateFallbackPuzzle(
   config: GenerationConfig,
   rng: () => number
 ): GeneratedPuzzle {
   const { gridSize, minLineLength, targetSum, valueRange } = config;
-  
-  const values: number[][] = [];
+
+  const values: number[][] = Array(gridSize).fill(null).map(() => Array(gridSize).fill(0));
   const solutionPaths: string[][] = [];
-  
-  // Fill grid row by row with paths
-  for (let row = 0; row < gridSize; row++) {
-    const rowValues: number[] = [];
-    let col = 0;
-    
-    while (col < gridSize) {
-      // Determine path length for this segment
-      const remaining = gridSize - col;
-      let pathLength: number;
-      
-      if (remaining < minLineLength * 2) {
-        // Take all remaining cells
-        pathLength = remaining;
-      } else {
-        // Random length between minLineLength and remaining/2
-        pathLength = minLineLength + Math.floor(rng() * (remaining / 2 - minLineLength + 1));
-        pathLength = Math.max(minLineLength, Math.min(pathLength, remaining));
-      }
-      
-      // Generate values for this path
-      const pathValues = assignValuesToPath(pathLength, targetSum, valueRange, rng);
-      
-      if (pathValues) {
-        // Record the path
-        const path: string[] = [];
-        for (let i = 0; i < pathLength; i++) {
-          path.push(cellIdFromPosition({ row, col: col + i }));
-          rowValues.push(pathValues[i]);
+  const covered = new Set<string>();
+
+  // Helper to check if a cell is available
+  const isAvailable = (row: number, col: number) => {
+    if (row < 0 || row >= gridSize || col < 0 || col >= gridSize) return false;
+    return !covered.has(cellIdFromPosition({ row, col }));
+  };
+
+  // Try to create L-shaped or mixed paths instead of only horizontal
+  let row = 0;
+  let col = 0;
+
+  while (covered.size < gridSize * gridSize) {
+    // Find next uncovered cell
+    let foundStart = false;
+    for (let r = 0; r < gridSize && !foundStart; r++) {
+      for (let c = 0; c < gridSize && !foundStart; c++) {
+        if (isAvailable(r, c)) {
+          row = r;
+          col = c;
+          foundStart = true;
         }
-        solutionPaths.push(path);
-        col += pathLength;
-      } else {
-        // Fallback: just fill with middle values
-        for (let i = 0; i < pathLength; i++) {
-          rowValues.push(Math.floor((valueRange.min + valueRange.max) / 2));
-        }
-        col += pathLength;
       }
     }
-    
-    values.push(rowValues);
+
+    if (!foundStart) break;
+
+    // Build a path with turns
+    const path: string[] = [];
+    let currentRow = row;
+    let currentCol = col;
+    let lastDir: 'h' | 'v' | null = null;
+
+    // Alternate between horizontal and vertical moves
+    while (path.length < gridSize && isAvailable(currentRow, currentCol)) {
+      path.push(cellIdFromPosition({ row: currentRow, col: currentCol }));
+      covered.add(cellIdFromPosition({ row: currentRow, col: currentCol }));
+
+      if (path.length >= minLineLength && rng() < 0.3) {
+        // Sometimes stop early to create varied path lengths
+        break;
+      }
+
+      // Prefer to turn if we've been going straight
+      const preferTurn = lastDir !== null && rng() < 0.6;
+
+      // Try directions in order based on preference
+      const directions: Array<{ dr: number; dc: number; dir: 'h' | 'v' }> = [
+        { dr: 0, dc: 1, dir: 'h' },   // right
+        { dr: 1, dc: 0, dir: 'v' },   // down
+        { dr: 0, dc: -1, dir: 'h' },  // left
+        { dr: -1, dc: 0, dir: 'v' },  // up
+      ];
+
+      // Shuffle directions, but prefer turns
+      const shuffled = shuffleArray(directions, rng);
+      if (preferTurn && lastDir) {
+        // Sort to prefer turns (different direction type)
+        shuffled.sort((a, b) => {
+          const aTurn = a.dir !== lastDir ? 1 : 0;
+          const bTurn = b.dir !== lastDir ? 1 : 0;
+          return bTurn - aTurn;
+        });
+      }
+
+      let moved = false;
+      for (const { dr, dc, dir } of shuffled) {
+        const newRow = currentRow + dr;
+        const newCol = currentCol + dc;
+        if (isAvailable(newRow, newCol)) {
+          currentRow = newRow;
+          currentCol = newCol;
+          lastDir = dir;
+          moved = true;
+          break;
+        }
+      }
+
+      if (!moved) break;
+    }
+
+    // Assign values if path is long enough
+    if (path.length >= minLineLength) {
+      const pathValues = assignValuesToPath(path.length, targetSum, valueRange, rng);
+      if (pathValues) {
+        for (let i = 0; i < path.length; i++) {
+          const pos = positionFromCellId(path[i]);
+          values[pos.row][pos.col] = pathValues[i];
+        }
+        solutionPaths.push(path);
+      } else {
+        // Fill with middle values if assignment fails
+        for (let i = 0; i < path.length; i++) {
+          const pos = positionFromCellId(path[i]);
+          values[pos.row][pos.col] = Math.floor((valueRange.min + valueRange.max) / 2);
+        }
+        solutionPaths.push(path);
+      }
+    } else {
+      // Path too short - mark cells but fill with middle values
+      for (let i = 0; i < path.length; i++) {
+        const pos = positionFromCellId(path[i]);
+        values[pos.row][pos.col] = Math.floor((valueRange.min + valueRange.max) / 2);
+      }
+      // Still add to solution paths even if short (fallback is best effort)
+      if (path.length > 0) {
+        solutionPaths.push(path);
+      }
+    }
   }
-  
+
   return { values, solutionPaths };
 }
