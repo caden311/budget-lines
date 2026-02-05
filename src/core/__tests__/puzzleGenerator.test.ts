@@ -9,6 +9,7 @@ import {
   generatePracticePuzzle,
   restorePuzzleFromValues,
 } from '../puzzleGenerator';
+import { classifyPath } from '../constructiveGenerator';
 import { countAvailableCells } from '../grid';
 
 describe('getDailyPuzzleId', () => {
@@ -302,7 +303,6 @@ describe('center-out generation', () => {
 
   it('should generate paths with turns across multiple dates', () => {
     // Test multiple dates to find at least one with turns
-    // (some dates may hit the fallback which generates straight lines)
     let foundTurnInAnyPuzzle = false;
 
     for (let d = 1; d <= 10; d++) {
@@ -332,5 +332,109 @@ describe('center-out generation', () => {
     }
 
     expect(foundTurnInAnyPuzzle).toBe(true);
+  });
+});
+
+describe('classifyPath', () => {
+  it('should classify a horizontal path as horizontal', () => {
+    // Straight horizontal: (0,0) → (0,1) → (0,2) → (0,3)
+    expect(classifyPath(['0-0', '0-1', '0-2', '0-3'])).toBe('horizontal');
+  });
+
+  it('should classify a vertical path as vertical', () => {
+    // Straight vertical: (0,0) → (1,0) → (2,0) → (3,0)
+    expect(classifyPath(['0-0', '1-0', '2-0', '3-0'])).toBe('vertical');
+  });
+
+  it('should classify a mixed path as mixed', () => {
+    // L-shape: (0,0) → (1,0) → (1,1) → (1,2)
+    // 1 vertical step + 2 horizontal steps = 33% V, 67% H → mixed (neither > 75%)
+    expect(classifyPath(['0-0', '1-0', '1-1', '1-2'])).toBe('mixed');
+  });
+
+  it('should classify a single-cell path as mixed', () => {
+    expect(classifyPath(['3-3'])).toBe('mixed');
+  });
+
+  it('should classify a mostly-horizontal path with one turn as horizontal', () => {
+    // 4 horizontal + 1 vertical = 80% H → horizontal
+    expect(classifyPath(['0-0', '0-1', '0-2', '0-3', '0-4', '1-4'])).toBe('horizontal');
+  });
+});
+
+describe('direction variety', () => {
+  it('should generate puzzles with balanced H/V ratio across 20 seeds', () => {
+    // Generate 20 puzzles across different dates and check that
+    // the H/V step ratio stays between 0.20 and 0.80 for each
+    for (let i = 0; i < 20; i++) {
+      const date = new Date('2025-07-01T17:00:00Z');
+      date.setDate(date.getDate() + i);
+      const puzzle = generateDailyPuzzle(date);
+
+      let hSteps = 0;
+      let vSteps = 0;
+      for (const path of puzzle.solutionPaths) {
+        for (let j = 1; j < path.length; j++) {
+          const [r1, c1] = path[j - 1].split('-').map(Number);
+          const [r2, c2] = path[j].split('-').map(Number);
+          if (c2 !== c1) hSteps++;
+          if (r2 !== r1) vSteps++;
+        }
+      }
+
+      const total = hSteps + vSteps;
+      expect(total).toBeGreaterThan(0);
+
+      const hRatio = hSteps / total;
+      expect(hRatio).toBeGreaterThanOrEqual(0.20);
+      expect(hRatio).toBeLessThanOrEqual(0.80);
+    }
+  });
+
+  it('should produce mixed-direction paths (not all horizontal or all vertical)', () => {
+    // Across 30 puzzles, at least some paths should be classified as mixed
+    let mixedCount = 0;
+    let totalPaths = 0;
+
+    for (let i = 0; i < 30; i++) {
+      const date = new Date('2025-08-01T17:00:00Z');
+      date.setDate(date.getDate() + i);
+      const puzzle = generateDailyPuzzle(date);
+
+      for (const path of puzzle.solutionPaths) {
+        totalPaths++;
+        if (classifyPath(path) === 'mixed') {
+          mixedCount++;
+        }
+      }
+    }
+
+    // At least some paths across all puzzles should be mixed
+    expect(mixedCount).toBeGreaterThan(0);
+  });
+
+  it('should have solution paths that cover all cells with valid adjacency', () => {
+    // Verify structural integrity for multiple puzzles
+    for (let i = 0; i < 10; i++) {
+      const puzzle = generatePracticePuzzle();
+
+      const allCells = new Set<string>();
+      for (const path of puzzle.solutionPaths) {
+        // Check adjacency within each path
+        for (let j = 1; j < path.length; j++) {
+          const [r1, c1] = path[j - 1].split('-').map(Number);
+          const [r2, c2] = path[j].split('-').map(Number);
+          const dist = Math.abs(r1 - r2) + Math.abs(c1 - c2);
+          expect(dist).toBe(1);
+        }
+
+        for (const cellId of path) {
+          allCells.add(cellId);
+        }
+      }
+
+      // All 49 cells covered
+      expect(allCells.size).toBe(49);
+    }
   });
 });
