@@ -33,15 +33,18 @@ export function GameBoard({
   onEndPath,
   hintCellIds,
 }: GameBoardProps) {
-  const { width: screenWidth } = useWindowDimensions();
+  const { width: screenWidth, height: screenHeight } = useWindowDimensions();
   const lastCellId = useSharedValue<string | null>(null);
-  
+
   const gridSize = grid.length;
   const padding = 20;
   const gridPadding = 8;
   const cellGap = 6;
   const availableWidth = screenWidth - padding * 2;
-  const cellSize = Math.floor((availableWidth - cellGap * gridSize) / gridSize);
+  const maxBoardHeight = screenHeight - 220;
+  const cellSizeFromWidth = Math.floor((availableWidth - cellGap * gridSize) / gridSize);
+  const cellSizeFromHeight = Math.floor((maxBoardHeight - cellGap * gridSize - gridPadding * 2) / gridSize);
+  const cellSize = Math.min(cellSizeFromWidth, cellSizeFromHeight);
   const totalGridSize = cellSize * gridSize + cellGap * gridSize + gridPadding * 2;
   
   // Convert touch position to cell ID (worklet-compatible version)

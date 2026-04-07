@@ -18,13 +18,17 @@ interface GridProps {
 
 export function Grid({ grid, currentSum, targetSum, hintCellIds }: GridProps) {
   const { theme } = useTheme();
-  const { width: screenWidth } = useWindowDimensions();
-  
+  const { width: screenWidth, height: screenHeight } = useWindowDimensions();
+
   const gridSize = grid.length;
   const padding = 20;
+  const gridPadding = 8;
   const cellGap = 6; // margin * 2
   const availableWidth = screenWidth - padding * 2;
-  const cellSize = Math.floor((availableWidth - cellGap * gridSize) / gridSize);
+  const maxBoardHeight = screenHeight - 220;
+  const cellSizeFromWidth = Math.floor((availableWidth - cellGap * gridSize) / gridSize);
+  const cellSizeFromHeight = Math.floor((maxBoardHeight - cellGap * gridSize - gridPadding * 2) / gridSize);
+  const cellSize = Math.min(cellSizeFromWidth, cellSizeFromHeight);
   
   const isOverTarget = currentSum > targetSum;
   
