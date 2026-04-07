@@ -4,8 +4,9 @@
 
 import React, { useEffect } from 'react';
 import { Stack } from 'expo-router';
+import Head from 'expo-router/head';
 import { StatusBar } from 'expo-status-bar';
-import { AppState, AppStateStatus } from 'react-native';
+import { AppState, AppStateStatus, Platform } from 'react-native';
 import { ThemeProvider, useTheme } from '../src/theme';
 import { useUserStore } from '../src/stores/userStore';
 import { initializeIAP, terminateIAP } from '../src/services/iap';
@@ -81,6 +82,30 @@ function RootLayoutNav() {
   
   return (
     <>
+      {Platform.OS === 'web' && (
+        <Head>
+          <title>SumTrails - Daily Number Puzzle Game</title>
+          <meta name="description" content="Draw paths through numbered cells to hit the target sum. A free daily puzzle game that challenges your math skills. New puzzle every day!" />
+          <meta name="keywords" content="puzzle game, math game, number puzzle, daily puzzle, brain teaser, sum game, path drawing" />
+          <meta name="author" content="vientapps" />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <meta name="theme-color" content="#0c1222" />
+
+          <meta property="og:type" content="website" />
+          <meta property="og:url" content="https://sumtrails.vientapps.com/" />
+          <meta property="og:title" content="SumTrails - Daily Number Puzzle Game" />
+          <meta property="og:description" content="Draw paths through numbered cells to hit the target sum. A free daily puzzle game that challenges your math skills." />
+          <meta property="og:image" content="https://sumtrails.vientapps.com/og-image.png" />
+          <meta property="og:site_name" content="SumTrails" />
+
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:title" content="SumTrails - Daily Number Puzzle Game" />
+          <meta name="twitter:description" content="Draw paths through numbered cells to hit the target sum. A free daily puzzle game that challenges your math skills." />
+          <meta name="twitter:image" content="https://sumtrails.vientapps.com/og-image.png" />
+
+          <link rel="canonical" href="https://sumtrails.vientapps.com/" />
+        </Head>
+      )}
       <StatusBar style={isDark ? 'light' : 'dark'} />
       <Stack
         screenOptions={{

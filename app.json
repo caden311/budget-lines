@@ -31,7 +31,13 @@
     },
     "web": {
       "favicon": "./assets/favicon.png",
-      "bundler": "metro"
+      "bundler": "metro",
+      "name": "SumTrails - Daily Number Puzzle Game",
+      "shortName": "SumTrails",
+      "description": "Draw paths through numbered cells to hit the target sum. A free daily puzzle game.",
+      "lang": "en",
+      "themeColor": "#0c1222",
+      "backgroundColor": "#0c1222"
     },
     "plugins": [
       "expo-router",
@@ -53,7 +59,7 @@
         "projectId": "de60c69e-f752-46a8-b765-85475d73db8c"
       },
       "showPracticeTab": false,
-      "appUrl": "https://sumtrails.app"
+      "appUrl": "https://sumtrails.vientapps.com"
     },
     "owner": "cadensorenson"
   }

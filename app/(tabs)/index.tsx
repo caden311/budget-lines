@@ -5,8 +5,10 @@
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import {
+  Linking,
   Pressable,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -86,7 +88,7 @@ export default function HomeScreen() {
         onSkip={handleTutorialSkip}
       />
       
-      <View style={styles.content}>
+      <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer}>
         {/* Header */}
         <View style={styles.header}>
           <Text style={[styles.logo, { color: theme.text }]}>SumTrails</Text>
@@ -141,7 +143,17 @@ export default function HomeScreen() {
             <Text style={[styles.ruleText, { color: theme.textSecondary }]}>Clear all cells — more lines = higher score! 🎉</Text>
           </View>
         </View>
-      </View>
+
+        {/* Attribution */}
+        <Pressable
+          style={styles.attribution}
+          onPress={() => Linking.openURL('https://vientapps.com/')}
+        >
+          <Text style={[styles.attributionText, { color: theme.textMuted }]}>
+            Created by <Text style={{ color: theme.primary }}>vientapps</Text>
+          </Text>
+        </Pressable>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -152,7 +164,10 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+  },
+  contentContainer: {
     padding: 24,
+    flexGrow: 1,
   },
   header: {
     alignItems: 'center',
@@ -248,5 +263,13 @@ const styles = StyleSheet.create({
   ruleText: {
     flex: 1,
     fontSize: 15,
+  },
+  attribution: {
+    alignItems: 'center',
+    marginTop: 'auto',
+    paddingVertical: 16,
+  },
+  attributionText: {
+    fontSize: 13,
   },
 });
