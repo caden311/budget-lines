@@ -147,10 +147,10 @@ export default function HomeScreen() {
         {/* Attribution */}
         <Pressable
           style={styles.attribution}
-          onPress={() => Linking.openURL('https://vientapps.com/')}
+          onPress={() => Linking.openURL('https://vient.org/')}
         >
           <Text style={[styles.attributionText, { color: theme.textMuted }]}>
-            Created by <Text style={{ color: theme.primary }}>vientapps</Text>
+            Created by <Text style={{ color: theme.primary }}>Vient</Text>
           </Text>
         </Pressable>
       </ScrollView>
